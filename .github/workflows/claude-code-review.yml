@@ -37,8 +37,31 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
-          plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
+          plugins: 'plugin-dev@claude-code-plugins'
+          prompt: |
+            /plugin-dev:create-plugin
+
+            Review this pull request for Claude Code plugin repository: ${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+
+            Use your plugin-dev skills to validate:
+            1. Plugin structure and manifest correctness (plugin.json)
+            2. Agent definitions (YAML frontmatter, system prompts, triggers)
+            3. Command structure (argument-hint, allowed-tools, orchestration patterns)
+            4. Skill organization (SKILL.md structure, progressive disclosure)
+            5. Hook implementations if any (schema validation, security)
+            6. MCP configurations if any (.mcp.json correctness)
+
+            Focus on Claude Code plugin best practices:
+            - Proper use of ${CLAUDE_PLUGIN_ROOT}
+            - Correct frontmatter fields
+            - Strong trigger descriptions
+            - Security considerations
+
+            Review each changed file in parallel for faster feedback.
+
+            Provide specific, actionable feedback with file paths and line numbers.
+          claude_args: |
+            --model claude-opus-4-5-20251101
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
