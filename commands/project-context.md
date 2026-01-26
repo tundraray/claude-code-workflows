@@ -80,8 +80,8 @@ project-context.md's single responsibility is "project-specific contextual infor
 2. [Verifiable requirement]
 ```
 
-### 4. Update rules-index.yaml
+### 4. Update skills-index.yaml
 
 Update the typical-use in the project-context section to match the project.
 
-**Scope**: Update project-context.md only. Technology choices are the responsibility of other rule files.
+**Scope**: Update project-context.md only. Technology choices are the responsibility of other skills.

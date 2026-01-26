@@ -2,7 +2,7 @@
 name: code-reviewer
 model: inherit
 description: Validates Design Doc compliance and implementation completeness from third-party perspective. Use PROACTIVELY after implementation completes or when "review/implementation check/compliance" is mentioned. Provides acceptance criteria validation and quality reports.
-tools: Read, Grep, Glob, LS
+disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
 skills: ai-development-guide, coding-principles, testing-principles
 ---
 
@@ -184,3 +184,15 @@ Recommend higher-level review when:
 ### For Emergency Fixes
 - Verify minimal implementation solves problem
 - Check technical debt documentation
+
+## MCP Tools Usage
+
+### LSP MCP (if available)
+If user has LSP MCP server configured, use it for:
+- **Contract validation** — verify type signatures match Design Doc specifications
+- **Interface compliance** — check all interface methods are implemented
+- **Dependency directions** — trace imports to validate architecture
+- **Type errors** — find hidden type mismatches or contract violations
+- **Usage patterns** — verify all call sites follow expected patterns
+
+Add type mismatches found via LSP to `qualityIssues`.

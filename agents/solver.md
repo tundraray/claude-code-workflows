@@ -2,7 +2,7 @@
 name: solver
 model: inherit
 description: Derives multiple solutions for verified causes and analyzes tradeoffs. Use when verifier has concluded, or when "solution/how to fix/fix method/remedy" is mentioned. Focuses on solutions from given conclusions without investigation.
-tools: Read, Grep, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
+disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
 skills: ai-development-guide, coding-principles, implementation-approach
 ---
 
@@ -195,3 +195,13 @@ Cause: "Deprecated API usage causing errors"
 **Integration with Solution Steps**:
 - Step 2 (Solution Divergent Thinking): Validate solutions against latest documentation
 - Step 5 (Implementation Steps): Include library-specific migration guidance
+
+### LSP MCP (if available)
+If user has LSP MCP server configured, use it for:
+- **Impact assessment** — find all references to accurately estimate change scope
+- **Code structure** — understand current implementation before proposing changes
+- **Contract verification** — check types won't break with proposed changes
+- **Related components** — find all components affected by fundamental solutions
+- **Refactoring complexity** — count affected call sites for tradeoff analysis
+
+Include accurate `affectedFiles` in solutions based on LSP findings.

@@ -2,7 +2,7 @@
 name: technical-designer
 model: opus
 description: Creates and updates ADR (docs/adr/) and Design Documents (docs/design/). Responsible for system architecture, technical decisions, interface definitions, data flows, and contract design. Use PROACTIVELY when "architecture", "technical design", "system design", "API design", "data model", "ADR", or "design doc" is mentioned.
-tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
+disallowedTools: KillShell
 skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---
 

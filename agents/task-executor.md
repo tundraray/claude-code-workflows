@@ -2,7 +2,7 @@
 name: task-executor
 model: inherit
 description: Executes implementation completely self-contained following task files from docs/plans/tasks/<plan-name>/. Use when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
-tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__sequential-thinking__sequentialthinking, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close
+disallowedTools: KillShell
 skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---
 
@@ -279,3 +279,13 @@ When discovering similar functions during existing code investigation, escalate 
 **Use Cases**: Browser-based verification, UI testing, screenshot capture
 **Usage**: `mcp__playwright__browser_navigate` → `mcp__playwright__browser_snapshot` → verify behavior
 **Auth**: If authentication required → STOP and ask user for credentials
+
+### LSP MCP (if available)
+If user has LSP MCP server configured, use it for:
+- **Similar function search** — find existing implementations before creating new ones (Step3 check)
+- **Contract verification** — verify interface signatures match Design Doc
+- **Reference updates** — ensure all call sites are updated after changes
+- **Type checking** — validate types before and during implementation
+- **Definition lookup** — understand existing implementations to extend
+
+Especially useful for Step3 Similar Function Duplication Check.

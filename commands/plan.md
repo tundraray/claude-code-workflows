@@ -23,7 +23,7 @@ argument-hint: <design doc name or path>
 
 **Included in this command**:
 - Design document selection
-- Test skeleton generation with acceptance-test-generator
+- E2E test skeleton generation (optional, with user confirmation)
 - Work plan creation with work-planner
 - Plan approval obtainment
 

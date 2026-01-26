@@ -25,7 +25,7 @@ argument-hint: (no arguments - uses existing task files)
 
 Work plan: $ARGUMENTS
 
-## Pre-execution Prerequisites
+## 📋 Pre-execution Prerequisites
 
 ### Task File Existence Check
 ```bash
@@ -38,7 +38,7 @@ Work plan: $ARGUMENTS
 
 ### Task Generation Decision Flow
 
-**THINK DEEPLY AND SYSTEMATICALLY** Analyze task file existence state and determine the EXACT action required:
+**Think deeply** Analyze task file existence state and determine the EXACT action required:
 
 | State | Criteria | Next Action |
 |-------|----------|-------------|
@@ -46,7 +46,7 @@ Work plan: $ARGUMENTS
 | No tasks + plan exists | Plan exists but no task files | Confirm with user → run task-decomposer |
 | Neither exists | No plan or task files | Error: Prerequisites not met |
 
-## Task Decomposition Phase (Conditional)
+## 🔄 Task Decomposition Phase (Conditional)
 
 When task files don't exist:
 
@@ -59,12 +59,11 @@ Generate tasks from the work plan? (y/n):
 ```
 
 ### 2. Task Decomposition (if approved)
-```
-@task-decomposer Read work plan and decompose into atomic tasks:
-- Input: docs/plans/[plan-name].md
-- Output: Individual task files in docs/plans/tasks/
-- Granularity: 1 task = 1 commit = independently executable
-```
+
+Invoke task-decomposer using Task tool:
+- `subagent_type`: "task-decomposer"
+- `description`: "Decompose work plan into tasks"
+- `prompt`: "Read work plan and decompose into atomic tasks. Input: docs/plans/[plan-name].md. Output: Individual task files in docs/plans/tasks/. Granularity: atomic, independently executable units (commit grouping determined by selected strategy)"
 
 ### 3. Verify Generation
 ```bash
@@ -74,7 +73,7 @@ Generate tasks from the work plan? (y/n):
 
 ✅ **Flow**: Task generation → Autonomous execution (in this order)
 
-## Commit Strategy Selection (Before Autonomous Mode)
+## 🎯 Commit Strategy Selection (Before Autonomous Mode)
 
 **Ask user before starting execution**:
 
@@ -84,7 +83,7 @@ Generate tasks from the work plan? (y/n):
 - **per-feature** — Single commit at the end. Clean history
 - **manual** — You decide when to commit. Full control
 
-## Task Execution Cycle
+## 🧠 Task Execution Cycle
 **MANDATORY EXECUTION CYCLE**: `task-executor → escalation check → quality-fixer → [conditional commit]`
 
 For EACH task, YOU MUST:

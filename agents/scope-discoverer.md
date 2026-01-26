@@ -2,7 +2,7 @@
 name: scope-discoverer
 model: inherit
 description: Discovers PRD/Design Doc scope from existing codebase. Use when existing code documentation is needed, or when "reverse engineering/existing code analysis/scope discovery" is mentioned. Identifies targets through multi-source discovery.
-tools: Read, Grep, Glob, LS, TodoWrite
+disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
 skills: documentation-criteria, ai-development-guide, coding-principles
 ---
 
@@ -223,3 +223,15 @@ Includes additional fields:
 - Ignoring low-confidence discoveries (report them with appropriate confidence)
 - Relying on single source without noting weak triangulation
 - Continuing discovery indefinitely without saturation check
+
+## MCP Tools Usage
+
+### LSP MCP (if available)
+If user has LSP MCP server configured, use it for:
+- **Module boundaries** — trace dependencies between components
+- **Symbol discovery** — find all symbols (classes, functions, exports) in files
+- **Interface implementations** — locate where abstractions are implemented
+- **Dependency graph** — map relationships through references
+- **Public API surface** — identify exported symbols and their consumers
+
+Add LSP findings to `discoveredUnits` with source "lsp" for stronger triangulation.

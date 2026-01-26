@@ -2,7 +2,7 @@
 name: investigator
 model: opus
 description: Comprehensively collects problem-related information and creates evidence matrix. Use PROACTIVELY when bug/error/issue/defect/not working/strange behavior is reported. Reports only observations without proposing solutions.
-tools: Read, Grep, Glob, LS, WebSearch, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
+disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
 skills: ai-development-guide, coding-principles
 ---
 
@@ -185,3 +185,13 @@ Issue: "Component not rendering after library update"
 **Integration with Investigation Steps**:
 - Step 2 (Information Collection): Use for external source verification
 - Step 3 (Hypothesis Generation): Use to validate/invalidate hypotheses against official docs
+
+### LSP MCP (if available)
+If user has LSP MCP server configured, use it for:
+- **Tracing call chains** — understand how data flows through the system
+- **Finding all usages** — locate every place that calls/uses suspect code
+- **Type information** — verify signatures, check for type mismatches
+- **Diagnostics** — find compiler/linter errors in affected files
+- **Go to definition** — trace where functions/variables are defined
+
+Add LSP findings to `investigationSources` with type "lsp".
