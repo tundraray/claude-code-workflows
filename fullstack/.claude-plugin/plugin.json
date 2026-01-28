@@ -1,7 +1,7 @@
 {
-  "name": "react-workflow",
+  "name": "fullstack-workflow",
   "version": "0.16.2",
-  "description": "React/TypeScript frontend with orchestrated agents, component design skills, and MCP integration (context7, sequential-thinking, playwright)",
+  "description": "Full-stack development with backend + frontend orchestrated agents, comprehensive skills, and MCP integration (context7, sequential-thinking, playwright)",
   "author": {
     "name": "Mikhail Andreev",
     "url": "https://github.com/tundraray"
@@ -10,16 +10,18 @@
   "repository": "https://github.com/tundraray/claude-code-workflows.git",
   "license": "MIT",
   "keywords": [
-    "react",
+    "fullstack",
+    "backend",
     "frontend",
-    "workflows",
+    "react",
     "typescript",
-    "testing",
-    "quality",
+    "workflows",
     "sub-agents",
+    "quality",
+    "testing",
     "tdd",
-    "react-testing-library",
-    "best-practices"
+    "best-practices",
+    "architecture"
   ],
   "commands": [
     "./commands/add-integration-tests.md",
@@ -42,19 +44,24 @@
     "./commands/task.md"
   ],
   "agents": [
+    "./agents/acceptance-test-generator.md",
     "./agents/code-reviewer.md",
     "./agents/code-verifier.md",
     "./agents/design-sync.md",
     "./agents/document-reviewer.md",
+    "./agents/integration-test-reviewer.md",
     "./agents/investigator.md",
     "./agents/prd-creator.md",
+    "./agents/quality-fixer.md",
     "./agents/quality-fixer-frontend.md",
     "./agents/requirement-analyzer.md",
     "./agents/rule-advisor.md",
     "./agents/scope-discoverer.md",
     "./agents/solver.md",
     "./agents/task-decomposer.md",
+    "./agents/task-executor.md",
     "./agents/task-executor-frontend.md",
+    "./agents/technical-designer.md",
     "./agents/technical-designer-frontend.md",
     "./agents/ux-designer.md",
     "./agents/verifier.md",
@@ -67,6 +74,7 @@
     "./skills/documentation-criteria",
     "./skills/frontend-ai-guide",
     "./skills/implementation-approach",
+    "./skills/integration-e2e-testing",
     "./skills/project-context",
     "./skills/subagents-orchestration-guide",
     "./skills/task-analyzer",

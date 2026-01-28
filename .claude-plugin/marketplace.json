@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "owner": {
     "name": "Mikhail Andreev",
     "url": "https://github.com/tundraray"
@@ -18,6 +18,11 @@
       "name": "react-workflow",
       "source": "./frontend",
       "description": "React/TypeScript frontend with orchestrated agents, component design skills, and MCP integration"
+    },
+    {
+      "name": "fullstack-workflow",
+      "source": "./fullstack",
+      "description": "Full-stack development combining backend + frontend agents, skills, and MCP integration"
     }
   ]
 }
