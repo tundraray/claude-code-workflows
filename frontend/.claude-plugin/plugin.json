@@ -22,15 +22,22 @@
     "best-practices"
   ],
   "commands": [
+    "./commands/add-integration-tests.md",
     "./commands/brand-context.md",
+    "./commands/build.md",
+    "./commands/design.md",
     "./commands/diagnose.md",
     "./commands/front-build.md",
     "./commands/front-design.md",
     "./commands/front-plan.md",
     "./commands/front-reverse-design.md",
     "./commands/front-review.md",
+    "./commands/implement.md",
+    "./commands/plan.md",
     "./commands/project-context.md",
     "./commands/refine-skill.md",
+    "./commands/reverse-engineer.md",
+    "./commands/review.md",
     "./commands/sync-skills.md",
     "./commands/task.md"
   ],
