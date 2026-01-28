@@ -1,6 +1,6 @@
 {
   "name": "react-workflow",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "React/TypeScript frontend with orchestrated agents, component design skills, and MCP integration (context7, sequential-thinking, playwright)",
   "author": {
     "name": "Mikhail Andreev",
