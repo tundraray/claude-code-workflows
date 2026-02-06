@@ -1,6 +1,4 @@
-# Claude Code Workflows 🚀
-
-*Forked from [shinpr/claude-code-workflows](https://github.com/shinpr/claude-code-workflows)*
+# Overture 🚀
 
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-purple)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,10 +9,11 @@
 
 ## ⚡ Quick Start
 
-This marketplace includes two plugins:
+This marketplace includes three plugins:
 
-- **node-workflow** - Node.js/TypeScript backend development
-- **react-workflow** - React/TypeScript frontend development
+- **backend-overture** - Node.js/TypeScript backend development
+- **frontend-overture** - React/TypeScript frontend development
+- **fullstack-overture** - Full-stack development (backend + frontend)
 
 Choose what fits your project:
 
@@ -25,10 +24,10 @@ Choose what fits your project:
 claude
 
 # 2. Install the marketplace
-/plugin marketplace add tundraray/claude-code-workflows
+/plugin marketplace add tundraray/overture
 
 # 3. Install backend plugin
-/plugin install node-workflow@claude-code-workflows
+/plugin install backend-overture@overture
 
 # 4. Restart session (required)
 # Exit and restart Claude Code
@@ -43,7 +42,7 @@ claude
 # 1-2. Same as above (start Claude Code and add marketplace)
 
 # 3. Install frontend plugin
-/plugin install react-workflow@claude-code-workflows
+/plugin install frontend-overture@overture
 
 # 4-5. Same as above (restart and start building)
 
@@ -53,7 +52,12 @@ claude
 
 ### Full-Stack Development
 
-Install both plugins to get the complete toolkit for backend and frontend work.
+```bash
+# Install the fullstack plugin (includes both backend and frontend)
+/plugin install fullstack-overture@overture
+```
+
+Or install backend + frontend separately for more control.
 
 > **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
 >
@@ -137,7 +141,7 @@ graph TB
 
 ## ⚡ Workflow Commands
 
-### Backend Development (node-workflow)
+### Backend Development (backend-overture)
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
@@ -150,11 +154,12 @@ graph TB
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 | `/add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
+| `/audit` | Interactive dead code detection and cleanup | Codebase hygiene, removing dead code |
 | `/project-context` | Initialize project-context skill | New project setup |
 | `/refine-skill` | Improve and refine existing skills | Skill optimization |
 | `/sync-skills` | Synchronize skills across plugins | Skill management |
 
-### Frontend Development (react-workflow)
+### Frontend Development (frontend-overture)
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
@@ -170,7 +175,7 @@ graph TB
 | `/refine-skill` | Improve and refine existing skills | Skill optimization |
 | `/sync-skills` | Synchronize skills across plugins | Skill management |
 
-> **Tip**: Both plugins share `/task`, `/diagnose`, `/project-context`, `/refine-skill`, and `/sync-skills`. `/brand-context` is only in react-workflow. For reverse engineering, use `/reverse-engineer` (node-workflow) to generate PRD, then `/front-reverse-design` (react-workflow) to generate frontend Design Docs from that PRD.
+> **Tip**: All plugins share `/task`, `/diagnose`, `/audit`, `/project-context`, `/refine-skill`, and `/sync-skills`. `/brand-context` is only in frontend-overture. For reverse engineering, use `/reverse-engineer` (backend-overture) to generate PRD, then `/front-reverse-design` (frontend-overture) to generate frontend Design Docs from that PRD.
 
 ---
 
@@ -194,7 +199,7 @@ These agents work the same way whether you're building a REST API or a React app
 | **scope-discoverer** | Discovers PRD/Design Doc targets from codebase for reverse engineering |
 | **code-verifier** | Validates consistency between documentation and code implementation |
 
-### Backend-Specific Agents (node-workflow)
+### Backend-Specific Agents (backend-overture)
 
 | Agent | What It Does |
 |-------|--------------|
@@ -206,7 +211,7 @@ These agents work the same way whether you're building a REST API or a React app
 | **quality-fixer** | Runs tests, fixes type errors, handles linting - everything quality-related |
 | **rule-advisor** | Picks the best coding rules for your current task |
 
-### Frontend-Specific Agents (react-workflow)
+### Frontend-Specific Agents (frontend-overture)
 
 | Agent | What It Does |
 |-------|--------------|
@@ -224,7 +229,7 @@ These agents work the same way whether you're building a REST API or a React app
 
 Skills are knowledge modules that agents load automatically when relevant.
 
-### node-workflow (10 skills)
+### backend-overture (11 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -239,9 +244,9 @@ Skills are knowledge modules that agents load automatically when relevant.
 | **technical-spec** | Technical design rules and build/testing commands |
 | **testing-principles** | TDD, coverage, test patterns |
 
-### react-workflow (13 skills)
+### frontend-overture (15 skills)
 
-All skills from node-workflow (except integration-e2e-testing) plus:
+All skills from backend-overture (except integration-e2e-testing) plus:
 
 | Skill | Description |
 |-------|-------------|
@@ -366,7 +371,7 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 
 ### Reverse Engineering
 
-**Backend (node-workflow):**
+**Backend (backend-overture):**
 
 ```bash
 /reverse-engineer "src/auth module"
@@ -381,10 +386,10 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 7. Produces complete documentation from existing code
 ```
 
-**Frontend (react-workflow):**
+**Frontend (frontend-overture):**
 
 ```bash
-# First, generate PRD using node-workflow's /reverse-engineer
+# First, generate PRD using backend-overture's /reverse-engineer
 # Then, generate frontend Design Docs from existing PRD:
 
 /front-reverse-design "docs/prd/my-feature-prd.md"
@@ -404,12 +409,15 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 ## 📂 Repository Structure
 
 ```
-claude-code-workflows/
+overture/
 ├── .claude-plugin/
-│   └── marketplace.json        # Manages both plugins
+│   └── marketplace.json        # Manages all plugins
 │
-├── agents/                     # Shared agents (symlinked by both plugins)
+├── agents/                     # Shared agents (symlinked by all plugins)
 │   ├── code-reviewer.md
+│   ├── expert-analyst.md       # Multi-expert analysis
+│   ├── codebase-scanner.md     # Dead code detection
+│   ├── cleanup-executor.md     # Safe code removal
 │   ├── investigator.md         # Diagnosis workflow
 │   ├── verifier.md             # Diagnosis workflow
 │   ├── solver.md               # Diagnosis workflow
@@ -418,41 +426,50 @@ claude-code-workflows/
 │   ├── ux-designer.md          # UX/UI design (frontend)
 │   ├── task-executor.md
 │   ├── technical-designer.md
-│   └── ... (22 agents total)
+│   └── ...
 │
 ├── commands/                   # Shared commands
 │   ├── implement.md
 │   ├── design.md
+│   ├── audit.md                # Dead code audit
 │   ├── diagnose.md             # Problem diagnosis
 │   ├── reverse-engineer.md     # Reverse documentation
 │   ├── project-context.md      # Project context initialization
 │   ├── brand-context.md        # Brand system initialization
 │   ├── plan.md
 │   ├── build.md
-│   └── ... (13 commands for backend, 9 for frontend)
+│   └── ...
 │
 ├── skills/                     # Skills (auto-loaded by agents)
 │   ├── ai-development-guide/
 │   ├── coding-principles/
 │   ├── testing-principles/
+│   ├── expert-analysis-guide/  # Multi-expert analysis framework
 │   ├── implementation-approach/
 │   ├── project-context/        # Project-specific context
 │   ├── technical-spec/         # Technical design rules
 │   ├── brand-system-guide/     # Brand design system
 │   ├── typescript-rules/       # Frontend-specific
-│   └── ... (14 skills total)
+│   └── ...
 │
-├── backend/                    # node-workflow plugin
+├── backend/                    # backend-overture plugin
 │   ├── agents/                 # Symlinks to shared agents
 │   ├── commands/               # Symlinks to shared commands
-│   ├── skills/                 # Symlinks to shared skills (10 skills)
+│   ├── skills/                 # Symlinks to shared skills
 │   └── .claude-plugin/
 │       └── plugin.json
 │
-├── frontend/                   # react-workflow plugin
+├── frontend/                   # frontend-overture plugin
 │   ├── agents/                 # Symlinks to shared agents
 │   ├── commands/               # Symlinks to shared commands
-│   ├── skills/                 # Symlinks to shared skills (13 skills)
+│   ├── skills/                 # Symlinks to shared skills
+│   └── .claude-plugin/
+│       └── plugin.json
+│
+├── fullstack/                  # fullstack-overture plugin
+│   ├── agents/                 # Symlinks to shared agents
+│   ├── commands/               # Symlinks to shared commands
+│   ├── skills/                 # Symlinks to shared skills
 │   └── .claude-plugin/
 │       └── plugin.json
 │
@@ -467,11 +484,9 @@ claude-code-workflows/
 **Q: Which plugin should I install?**
 
 A: Depends on what you're building:
-- **Node.js backend, APIs, CLI tools** → Install `node-workflow`
-- **React/TypeScript frontend** → Install `react-workflow`
-- **Full-stack projects** → Install both
-
-Both plugins can run side-by-side without conflicts.
+- **Node.js backend, APIs, CLI tools** → Install `backend-overture`
+- **React/TypeScript frontend** → Install `frontend-overture`
+- **Full-stack projects** → Install `fullstack-overture` (or both backend + frontend separately)
 
 **Q: Can I use both plugins at the same time?**
 
@@ -517,14 +532,6 @@ ssh -T git@github.com
 
 ---
 
-## 🙏 Acknowledgments
-
-This project is a fork of [shinpr/claude-code-workflows](https://github.com/shinpr/claude-code-workflows).
-
-Special thanks to [Shinsuke Kagawa](https://github.com/shinpr) for creating the original Claude Code Workflows — an excellent foundation for building production-ready software with Claude Code. The well-designed agent orchestration architecture and comprehensive workflow system made this project possible.
-
----
-
 ## 📄 License
 
 MIT License - Free to use, modify, and distribute.
@@ -533,4 +540,4 @@ See [LICENSE](LICENSE) for full details.
 
 ---
 
-**Happy Coding with Claude Code Workflows!** 🚀✨
+**Happy Coding with Overture!** 🚀✨
