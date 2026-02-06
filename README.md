@@ -532,6 +532,12 @@ ssh -T git@github.com
 
 ---
 
+## 🙏 Acknowledgments
+
+Special thanks to [Shinsuke Kagawa](https://github.com/shinpr) for creating the original Claude Code Workflows — an excellent foundation for building production-ready software with Claude Code. The well-designed agent orchestration architecture and comprehensive workflow system made this project possible.
+
+---
+
 ## 📄 License
 
 MIT License - Free to use, modify, and distribute.
