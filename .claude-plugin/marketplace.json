@@ -1,6 +1,6 @@
 {
   "name": "overture",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "owner": {
     "name": "Mikhail Andreev",
     "url": "https://github.com/tundraray"
@@ -23,6 +23,31 @@
       "name": "fullstack-overture",
       "source": "./fullstack",
       "description": "Full-stack development combining backend + frontend agents, skills, and MCP integration"
+    },
+    {
+      "name": "javascript-expert",
+      "source": "./javascript-expert",
+      "description": "Senior JavaScript specialist with ES2023+ features, async patterns, Node.js, and browser APIs"
+    },
+    {
+      "name": "nestjs-expert",
+      "source": "./nestjs-expert",
+      "description": "Senior NestJS specialist with enterprise-grade TypeScript backend architecture and testing"
+    },
+    {
+      "name": "nextjs-developer",
+      "source": "./nextjs-developer",
+      "description": "Senior Next.js 14+ developer with App Router, server components, and production deployment"
+    },
+    {
+      "name": "playwright-expert",
+      "source": "./playwright-expert",
+      "description": "Senior E2E testing specialist with Playwright test architecture and debugging"
+    },
+    {
+      "name": "postgres-expert",
+      "source": "./postgres-expert",
+      "description": "Senior PostgreSQL expert with query optimization, JSONB, replication, and maintenance"
     }
   ]
 }

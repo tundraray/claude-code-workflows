@@ -1,0 +1,30 @@
+{
+  "name": "postgres-expert",
+  "version": "0.17.0",
+  "description": "Senior+ PostgreSQL expert covering query planner internals, index design, JSONB at scale, replication/failover, partitioning, transaction isolation, security hardening, and production maintenance",
+  "author": {
+    "name": "Mikhail Andreev",
+    "url": "https://github.com/tundraray"
+  },
+  "homepage": "https://github.com/tundraray/overture",
+  "repository": "https://github.com/tundraray/overture.git",
+  "license": "MIT",
+  "keywords": [
+    "postgresql",
+    "database",
+    "query-optimization",
+    "query-planner",
+    "jsonb",
+    "replication",
+    "extensions",
+    "maintenance",
+    "partitioning",
+    "transactions",
+    "security",
+    "rls",
+    "vacuum"
+  ],
+  "skills": [
+    "./skills/postgres-expert"
+  ]
+}

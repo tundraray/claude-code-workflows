@@ -1,0 +1,24 @@
+{
+  "name": "nestjs-expert",
+  "version": "0.17.0",
+  "description": "Senior NestJS specialist with enterprise-grade TypeScript backend architecture, dependency injection, and testing expertise",
+  "author": {
+    "name": "Mikhail Andreev",
+    "url": "https://github.com/tundraray"
+  },
+  "homepage": "https://github.com/tundraray/overture",
+  "repository": "https://github.com/tundraray/overture.git",
+  "license": "MIT",
+  "keywords": [
+    "nestjs",
+    "typescript",
+    "backend",
+    "dependency-injection",
+    "controllers",
+    "guards",
+    "testing"
+  ],
+  "skills": [
+    "./skills/nestjs-expert"
+  ]
+}

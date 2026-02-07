@@ -1,0 +1,24 @@
+{
+  "name": "nextjs-developer",
+  "version": "0.17.0",
+  "description": "Senior Next.js 14+ developer with App Router, React Server Components, server actions, and production deployment expertise",
+  "author": {
+    "name": "Mikhail Andreev",
+    "url": "https://github.com/tundraray"
+  },
+  "homepage": "https://github.com/tundraray/overture",
+  "repository": "https://github.com/tundraray/overture.git",
+  "license": "MIT",
+  "keywords": [
+    "nextjs",
+    "react",
+    "app-router",
+    "server-components",
+    "server-actions",
+    "deployment",
+    "performance"
+  ],
+  "skills": [
+    "./skills/nextjs-developer"
+  ]
+}

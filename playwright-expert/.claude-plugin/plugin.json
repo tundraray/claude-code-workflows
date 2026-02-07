@@ -1,0 +1,23 @@
+{
+  "name": "playwright-expert",
+  "version": "0.17.0",
+  "description": "Senior E2E testing specialist with Playwright test architecture, Page Object Model, API mocking, and debugging expertise",
+  "author": {
+    "name": "Mikhail Andreev",
+    "url": "https://github.com/tundraray"
+  },
+  "homepage": "https://github.com/tundraray/overture",
+  "repository": "https://github.com/tundraray/overture.git",
+  "license": "MIT",
+  "keywords": [
+    "playwright",
+    "e2e-testing",
+    "browser-automation",
+    "page-object-model",
+    "visual-testing",
+    "debugging"
+  ],
+  "skills": [
+    "./skills/playwright-expert"
+  ]
+}
