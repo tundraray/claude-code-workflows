@@ -94,7 +94,8 @@
     "./skills/typescript-rules",
     "./skills/typescript-testing",
     "./skills/security-checks",
-    "./skills/skill-optimization"
+    "./skills/skill-optimization",
+    "./skills/llm-friendly-context"
   ],
   "mcpServers": "./.mcp.json"
 }

@@ -93,6 +93,7 @@
     "./skills/type-safety-standards",
     "./skills/security-checks",
     "./skills/skill-optimization",
+    "./skills/llm-friendly-context",
     "./skills/game-analysis-criteria"
   ],
   "mcpServers": "./.mcp.json"

@@ -341,3 +341,17 @@ skills:
       - "Component Examples"
       - "Accessibility Guidelines"
       - "White-Label Customization"
+
+  llm-friendly-context:
+    skill: "llm-friendly-context"
+    tags: [prompt-quality, handoff, delegation, ambiguity, output-shape, escalation, generated-artifacts, subagent-prompts]
+    typical-use: "Writing subagent prompts, agent handoffs, planning artifacts, reviews, reports, or generated instructions"
+    size: small
+    key-references:
+      - "Positive Instruction Framing"
+      - "Explicit Output Contracts"
+    sections:
+      - "Core Rules"
+      - "Rewrite Patterns"
+      - "Handoff Checklist"
+      - "Generated Artifact Checklist"

@@ -76,7 +76,8 @@
     "./skills/typescript-rules-backend",
     "./skills/typescript-testing-backend",
     "./skills/security-checks",
-    "./skills/skill-optimization"
+    "./skills/skill-optimization",
+    "./skills/llm-friendly-context"
   ],
   "mcpServers": "./.mcp.json"
 }

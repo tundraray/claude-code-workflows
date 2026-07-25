@@ -332,3 +332,14 @@ skills:
       - "Editing Principles"
       - "Grading System"
       - "Assessment Checklist"
+
+  llm-friendly-context:
+    description: "Clarity rules for LLM-facing output — prompts, handoffs, and generated artifacts — so downstream agents execute without guessing"
+    tags: [prompt-quality, handoff, delegation, ambiguity, output-shape, escalation, generated-artifacts, subagent-prompts]
+    typical_use: "Writing subagent prompts, agent handoffs, planning artifacts, reviews, reports, or generated instructions"
+    size: small
+    key_sections:
+      - "Core Rules"
+      - "Rewrite Patterns"
+      - "Handoff Checklist"
+      - "Generated Artifact Checklist"
