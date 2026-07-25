@@ -259,6 +259,11 @@ Store selected strategy for autonomous execution mode.
 3. quality-fixer MUST run after each task-executor (no skipping)
 4. Commit execution depends on strategy (see subagents-gamedev-orchestration)
 
+**Step 2 branch conditions**:
+- `status: escalation_needed` or `status: blocked` → escalate to user
+- `testsAdded` contains `*.int.test.ts` or `*.e2e.test.ts`, or the task reports `requiresTestReview: true` → run **integration-test-reviewer** before quality-fixer. `needs_revision` → return to task-executor in Fix Mode with `requiredFixes`; `approved` → proceed to quality-fixer.
+- `stub_detected` → return to task-executor in **Fix Mode** with `incompleteImplementations[]`. Do not advance to quality-fixer: a stub can pass quality checks while implementing nothing.
+
 **Commit by strategy**:
 - **per-task**: Commit when quality-fixer returns `approved: true`
 - **per-phase**: Accumulate, commit when phase completes
@@ -270,20 +275,43 @@ Store selected strategy for autonomous execution mode.
 - Skipping quality-fixer
 - Committing without asking strategy first
 
-### Security Review (Post-Implementation)
+### Post-Implementation Verification
 
-After all tasks complete and before generating the final completion report:
+The per-task quality cycle checks tasks in isolation. It cannot detect drift between the finished implementation and the Design Doc, nor assess the security posture of the change set as a whole. After all tasks complete and before generating the final completion report:
 
-1. Invoke security-reviewer using Task tool:
-   - `subagent_type`: "security-reviewer"
-   - `description`: "Security compliance review"
-   - `prompt`: "Review implementation for security compliance. Design Doc: [path]. Files modified: [all modified files from task execution]."
+1. **Invoke both verifiers in parallel** (single message, two Task tool calls):
 
-2. **Handle security-reviewer response**:
-   - `blocked` → **STOP immediately**. Report credentials/critical vulnerability to user. Do NOT commit.
-   - `needs_revision` → Create security fix task file, execute via task-executor → quality-fixer → re-run security-reviewer
-   - `approved_with_notes` → Include security notes in completion report. Proceed to commit.
-   - `approved` → Proceed to completion report.
+   | Agent | Prompt inputs |
+   |-------|---------------|
+   | `code-verifier` | `doc_type: design-doc`, Design Doc path, `code_paths` from `git diff --name-only main...HEAD` |
+   | `security-reviewer` | Design Doc path, same modified-file list |
+
+   Append to each prompt: `[SYSTEM CONSTRAINT] This agent operates within implement command scope.`
+
+2. **Apply pass/fail criteria**:
+   - `code-verifier`: `consistent` / `mostly_consistent` = pass; `needs_review` / `inconsistent` = fail
+   - `security-reviewer`: `approved` / `approved_with_notes` = pass; `needs_revision` = fail; `blocked` → **STOP immediately**, report credentials/critical vulnerability, do NOT commit
+
+3. **Fix cycle** (any verifier failed, max 2 cycles):
+   - Create a consolidated fix task file (`docs/plans/tasks/post-impl-fixes-YYYYMMDD.md`) from the task template
+   - Populate its Target Files with the **union** of file paths from every verifier's `requiredFixes[].location` and `discrepancies[].codeLocation`. Without this union the executor's File Scope Constraint rejects the very files it was dispatched to fix.
+   - `task-executor` in **Fix Mode** → `quality-fixer` → re-run **only** the failed verifiers
+   - No progress in a cycle, or findings remaining after cycle 2 → escalate to user
+
+4. **All passed** → include any `approved_with_notes` security notes in the completion report and proceed to Final Cleanup.
+
+### Final Cleanup
+
+Before the completion report, delete the implementation task files this run consumed. Their work is committed; `docs/plans/tasks/` is ephemeral working state.
+
+- `docs/plans/tasks/{plan-name}-task-*.md`, `-backend-task-*.md`, `-frontend-task-*.md`
+- `docs/plans/tasks/{plan-name}-phase*-completion.md`
+- `docs/plans/tasks/_overview-{plan-name}.md`
+- The consolidated fix task file from the verification cycle, if one was created
+
+**Preserve** the work plan and all documents under `docs/design/`, `docs/prd/`, `docs/adr/`.
+
+If deletion fails, report the failure but do not block the completion report.
 
 ### Test Information Communication
 After acceptance-test-generator execution, when calling work-planner, communicate:

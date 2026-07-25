@@ -26,9 +26,9 @@ description: This skill should be used when the user asks to "create a PRD", "wr
 |-----------|-------------------|----------------|
 | New Feature Addition | PRD → [ADR] → Design Doc → Work Plan | After PRD approval |
 | ADR Conditions Met (see below) | ADR → Design Doc → Work Plan | Start immediately |
-| 6+ Files | ADR → Design Doc → Work Plan (Required) | Start immediately |
-| 3-5 Files | Design Doc → Work Plan (Recommended) | Start immediately |
-| 1-2 Files | None | Direct implementation |
+| Large scale | ADR → Design Doc → Work Plan (Required) | Start immediately |
+| Medium scale | Design Doc → Work Plan (Recommended) | Start immediately |
+| Small scale | None | Direct implementation |
 | New Game Project | GDD → Market Analysis → [ADR] → Design Doc → Work Plan | After GDD approval |
 | New Game Feature | Feature Spec → [GDD Update] → Design Doc → Work Plan | After Feature Spec approval |
 | Art/Visual Change | Art Direction → Design Doc | After Art Direction approval |
@@ -209,12 +209,39 @@ Interface Change Matrix:
 2. **Quality Complete**: Tests, static checks, linting pass
 3. **Integration Complete**: Verified connection with other components
 
+## Scale Axes
+
+**File count is one scale signal, not the deciding rule.** Contract, data, boundary, and decision risk can each raise the scale on their own — a two-file change that breaks a save-file format or a networked contract is not a small-scale change. Take the scale and its `decidingAxis` from `task-analyzer`'s assessment; where none is available, evaluate directly:
+
+| Axis | Small | Medium | Large |
+|------|-------|--------|-------|
+| Estimated files | 1-2 | 3-5 | 6+ |
+| Observable outcomes | One behavior | Multiple related behaviors | Multiple independently verifiable outcomes |
+| Contracts/data | No public contract or persisted-data change | Backward-compatible contract change | Breaking contract, save-format migration, or persisted-data migration |
+| Boundaries | One local module/component | Multiple modules in one layer | Cross-layer, cross-service, or external-system boundary |
+| Decision risk | Existing pattern applies directly | One bounded technical decision | Architecture, security, compliance, or irreversible operational decision |
+
+Select the highest scale triggered by any observed axis.
+
 ## Creation Process
 
-1. **Problem Analysis**: Change scale assessment, ADR condition check
-2. **ADR Option Consideration** (ADR only): Compare 3+ options, specify trade-offs
-3. **Creation**: Use templates, include measurable conditions
-4. **Approval**: "Accepted" after review enables implementation
+Each step names the evidence that must exist before the next step starts. A step without its output evidence has not completed, regardless of elapsed effort.
+
+**1. Problem Analysis** — change scale assessment, ADR condition check
+- *Output evidence*: confirmed scale with its deciding axis named; a named source for each existing document consulted
+- *Transition*: proceed when the scale and every applicable ADR condition have an explicit yes/no
+
+**2. ADR Option Consideration** (ADR only) — compare 3+ options, specify trade-offs
+- *Output evidence*: at least 3 options with trade-offs stated as concrete costs, not generic caveats
+- *Transition*: proceed when the selected option names what the rejected options fail to satisfy
+
+**3. Creation** — use templates, include measurable conditions
+- *Output evidence*: every required template section either filled or explicitly marked N/A with rationale; every acceptance criterion measurable
+- *Transition*: proceed when no section is silently empty
+
+**4. Approval** — "Accepted" after review enables implementation
+- *Output evidence*: reviewer verdict recorded; every blocking issue resolved or explicitly deferred with justification
+- *Transition*: implementation begins only on an approved verdict
 
 ## Storage Locations
 
