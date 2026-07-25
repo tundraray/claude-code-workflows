@@ -10,9 +10,14 @@ per entry.
 
 ## [0.21.2] — 2026-07-26
 
-Backport of patterns from the upstream `ai-coding-project-boilerplate` framework.
-Affects `backend-overture` 0.18.5, `frontend-overture` 0.18.5,
-`fullstack-overture` 0.18.5, `gamedev-overture` 0.20.1.
+Backport of patterns from the upstream `ai-coding-project-boilerplate` framework,
+plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
+`frontend-overture` 0.18.5, `fullstack-overture` 0.18.5, `gamedev-overture`
+0.20.1, `strategy-overture` 0.20.2.
+
+### Removed
+
+- `sequential-thinking` MCP server from all plugins: dropped from every `.mcp.json`, from plugin descriptions, and from the agent prompts that referenced it (`task-executor`, `task-executor-frontend`, `ux-designer`, and the four strategy agents). `strategy/.mcp.json` is removed entirely, having held no other server.
 
 ### Fixed
 
