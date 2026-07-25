@@ -465,6 +465,39 @@ N. [pending] Verify task essence: {taskEssence}
 
 **Note**: quality-fixer MUST still run after each task regardless of commit strategy
 
+### Post-Implementation Verification
+
+The per-task cycle checks each task in isolation. It cannot detect drift between the finished implementation and the Design Doc, nor assess the security posture of the change set as a whole. After **all** task cycles finish — before the completion report — run a whole-implementation verification pass.
+
+**Invoke both verifiers in parallel** (single message, two Agent calls):
+
+| Verifier | Inputs |
+|----------|--------|
+| `code-verifier` | `doc_type: design-doc`, Design Doc path, `code_paths` from `git diff --name-only main...HEAD` |
+| `security-reviewer` | Design Doc path, same implementation file list |
+
+**Pass/fail criteria**:
+
+| Verifier | Pass | Fail | Blocked |
+|----------|------|------|---------|
+| `code-verifier` | `status` is `consistent` or `mostly_consistent` | `status` is `needs_review` or `inconsistent` | — |
+| `security-reviewer` | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → escalate to user |
+
+**Normalizing verifier output into a unified `requiredFixes[]`** — the two verifiers emit different shapes and must be reconciled before invoking task-executor:
+
+- `security-reviewer.requiredFixes[]` is already `{location, issue, fix}` → pass through unchanged
+- `code-verifier.discrepancies[]` → convert each actionable entry (status `drift`, `gap`, or `conflict`) to `{location: discrepancy.codeLocation, issue: discrepancy.claim, fix: "<correction needed to restore Design Doc consistency, derived from classification and evidence>"}`
+- When `discrepancy.codeLocation` is `null` (the claim is unimplemented), set `location` to the planned target file path. If no target file can be determined, escalate to the user rather than invoking Fix Mode with an unresolvable location.
+
+**Fix cycle** (when any verifier failed, maximum 2 cycles):
+
+1. Create a consolidated fix task file (`docs/plans/tasks/post-impl-fixes-YYYYMMDD.md`) from the task template
+2. Populate its Target Files with the **union** of file paths from every verifier's `requiredFixes[].location` and `discrepancies[].codeLocation` (parse `file[:line]`, keep the file part). Without this union the executor's File Scope Constraint rejects the very files it was dispatched to fix, since they belong to different original tasks.
+3. Invoke `task-executor` in **Fix Mode** with `task_file` set to the consolidated path and `requiredFixes` set to the normalized array
+4. Run `quality-fixer`, then re-run **only the verifiers that failed**, retaining recorded evidence from those that passed
+
+**Re-run rule**: a cycle makes progress only when a previously failing verifier reaches a pass status, or its count of named remaining findings decreases. Escalate immediately when a cycle makes no progress or requires external input. After cycle 2, escalate every remaining failure with its findings.
+
 ### 2-Stage TodoWrite Management
 
 **Stage 1: Phase Management** (Orchestrator responsibility)

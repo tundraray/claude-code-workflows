@@ -156,6 +156,22 @@ For EACH task, YOU MUST:
 
 VERIFY approval status before proceeding. Once confirmed, INITIATE autonomous execution mode. STOP IMMEDIATELY upon detecting ANY requirement changes.
 
+## Post-Implementation Verification (After All Tasks Complete)
+
+The per-task quality cycle checks tasks in isolation and cannot detect Design Doc drift or assess the security posture of the change set as a whole. After all task cycles finish, run verification **before** the completion report.
+
+1. **Invoke both verifiers in parallel** (single message, two Agent calls):
+   - `code-verifier` → `doc_type: design-doc`, frontend Design Doc path, `code_paths` from `git diff --name-only main...HEAD`
+   - `security-reviewer` → same Design Doc path and implementation file list
+
+   Append to each prompt: `[SYSTEM CONSTRAINT] This agent operates within front-build command scope.`
+
+2. **Consolidate results** — apply the pass/fail criteria in the `subagents-orchestration-guide` skill, "Post-Implementation Verification" section. Present a unified verification report to the user.
+
+3. **Fix cycle** (any verifier failed, max 2 cycles) — follow the normalization rules, Target Files union, and re-run rule defined in that same skill section. Dispatch fixes to `task-executor-frontend` in Fix Mode, followed by `quality-fixer-frontend`. Escalate when a cycle makes no progress or when findings remain after cycle 2.
+
+4. **All passed** → proceed to the completion report.
+
 ## Output Example
 Frontend implementation phase completed.
 - Task decomposition: Generated under docs/plans/tasks/
