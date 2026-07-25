@@ -1,0 +1,27 @@
+name: Validate plugins
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the version-bump check can diff against the base ref.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch base ref
+        run: git fetch --no-tags --depth=1 origin ${{ github.base_ref || 'main' }}
+
+      - name: Validate plugin consistency
+        env:
+          VALIDATE_BASE_REF: origin/${{ github.base_ref || 'main' }}
+        run: node scripts/validate-plugins.mjs
