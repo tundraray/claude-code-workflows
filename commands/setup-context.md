@@ -156,6 +156,8 @@ Before saving, verify the generated SKILL.md:
 
 ### 4. Update skills-index.yaml
 
-Update the `typical-use` in the `project-context` section of `skills/skills-index.yaml` to match the project.
+Update the `typical-use` in the `project-context` section of the **project-local** index at `.claude/skills/task-analyzer/references/skills-index.yaml` to match the project.
+
+If that file does not exist yet, run `/sync-skills` first — it generates the project-local copy from the template bundled with the plugin. Do not edit the bundled template directly; `/sync-skills` regenerates the local copy from it.
 
 **Scope**: Update `skills/project-context/SKILL.md` only. Technology choices are the responsibility of other skills.

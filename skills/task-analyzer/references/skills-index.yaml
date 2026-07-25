@@ -355,3 +355,67 @@ skills:
       - "Rewrite Patterns"
       - "Handoff Checklist"
       - "Generated Artifact Checklist"
+
+  expert-analysis-guide:
+    skill: "expert-analysis-guide"
+    tags: [expert-analysis, multi-perspective, parallel-analysis, security, api-design, architecture, performance, data-modeling, testability, error-handling, ux-impact]
+    typical-use: "Pre-design expert evaluation, parallel expert spawning, aspect selection, synthesis of expert recommendations"
+    size: medium
+    key-references:
+      - "Fan-Out / Fan-In Parallelism"
+      - "Multi-Perspective Review"
+    sections:
+      - "Purpose"
+      - "Expert Persona Reference Table"
+      - "Fan-Out Pattern (Parallel Spawning)"
+      - "Fan-In Synthesis (Merging Results)"
+      - "Aspect Selection Heuristics"
+      - "Skip Conditions"
+
+  security-checks:
+    skill: "security-checks"
+    tags: [security, vulnerability, cve, xss, sql-injection, path-traversal, ssrf, credentials, jwt, dependency-audit, owasp]
+    typical-use: "Security review, vulnerability detection, security compliance validation, dependency auditing"
+    size: medium
+    key-references:
+      - "OWASP Top 10"
+      - "CWE - Common Weakness Enumeration"
+    sections:
+      - "Stable Detection Patterns"
+      - "Trend-Sensitive Patterns"
+      - "Severity Classification Guide"
+      - "Expert References (Reasoning Calibration)"
+
+  skill-optimization:
+    skill: "skill-optimization"
+    tags: [skill-quality, optimization, grading, bp-patterns, skill-assessment, prompt-engineering, skill-creation]
+    typical-use: "Creating new skills, evaluating skill quality, improving existing skills, skill review"
+    size: small
+    key-references:
+      - "Progressive Disclosure"
+      - "Context Window Optimization"
+    sections:
+      - "BP Patterns (Best Practice Patterns)"
+      - "Editing Principles"
+      - "Grading System"
+      - "Assessment Checklist"
+
+  type-safety-standards:
+    skill: "type-safety-standards"
+    tags: [type-safety, typescript, react, zod, runtime-validation, type-guards, branded-types, discriminated-unions, generics, props]
+    typical-use: "Ensuring type safety in React components, API boundaries, form handling, and state management"
+    size: medium
+    key-references:
+      - "Parse, Don't Validate - Alexis King"
+      - "Zod - Runtime Schema Validation"
+    sections:
+      - "Runtime Validation with Zod"
+      - "Discriminated Unions and Type Guards"
+      - "Branded Types"
+      - "Type Assertion Avoidance"
+      - "Generic Component Typing"
+      - "State Type Safety"
+      - "Result Type Pattern for Typed Error Handling"
+      - "Zod Performance Optimization"
+      - "Testing Type Safety"
+      - "Risks and Mitigations"

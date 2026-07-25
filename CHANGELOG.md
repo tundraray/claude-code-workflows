@@ -18,6 +18,8 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 ### Removed
 
 - `sequential-thinking` MCP server from all plugins: dropped from every `.mcp.json`, from plugin descriptions, and from the agent prompts that referenced it (`task-executor`, `task-executor-frontend`, `ux-designer`, and the four strategy agents). `strategy/.mcp.json` is removed entirely, having held no other server.
+- **`/create-skill` and `/refine-skill` no longer ship in the plugins.** Skill authoring is meta-work on this marketplace, not a capability a consuming project needs, and it is already covered by the separate `plugin-dev` plugin. Both commands moved to this repository's `.claude/commands/`. `/sync-skills` is unaffected and still ships. If you relied on these commands from an Overture plugin, install `plugin-dev` or copy them into your own project's `.claude/commands/`.
+- **`skills/skills-index.yaml` deleted.** It was an orphan — registered in no `plugin.json`, symlinked into no plugin, and therefore never delivered to any consumer, while having drifted to a different schema than the copy that does ship. Its four missing entries (`expert-analysis-guide`, `security-checks`, `skill-optimization`, `type-safety-standards`) were merged into the shipped index at `skills/task-analyzer/references/skills-index.yaml`, which now matches the skills on disk exactly. `setup-context` pointed at the dead file and now points at the project-local path `/sync-skills` generates.
 
 ### Fixed
 

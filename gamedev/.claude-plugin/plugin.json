@@ -34,11 +34,9 @@
     "./commands/reverse-engineer.md",
     "./commands/setup-context.md",
     "./commands/add-integration-tests.md",
-    "./commands/refine-skill.md",
     "./commands/sync-skills.md",
     "./commands/update-doc.md",
     "./commands/uxdoc.md",
-    "./commands/create-skill.md",
     "./commands/game-analyze.md"
   ],
   "agents": [
