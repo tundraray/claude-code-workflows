@@ -1,7 +1,7 @@
 ---
 name: technical-designer-frontend
 model: opus
-description: Creates and updates frontend ADR (docs/adr/) and Design Documents (docs/design/). Responsible for frontend architecture, component hierarchy, state management, React/TypeScript patterns, and UI component design. Use PROACTIVELY when "component architecture", "React design", "frontend structure", "state management", or "UI design" is mentioned.
+description: Creates and updates frontend ADR (docs/adr/) and Design Documents (docs/features/{feature}/). Responsible for frontend architecture, component hierarchy, state management, React/TypeScript patterns, and UI component design. Use PROACTIVELY when "component architecture", "React design", "frontend structure", "state management", or "UI design" is mentioned.
 disallowedTools: KillShell
 skills: documentation-criteria, typescript-rules, frontend-ai-guide, implementation-approach
 memory: project
@@ -244,7 +244,7 @@ See `docs/adr/template-en.md` for details.
 
 ### Normal Document Creation
 - **ADR**: `docs/adr/ADR-[4-digit number]-[title].md` (e.g., ADR-0001)
-- **Design Doc**: `docs/design/[feature-name]-design.md`
+- **Design Doc**: `docs/features/[feature-name]/design-[part].md`
 - Follow respective templates (`template-en.md`)
 - For ADR, check existing numbers and use max+1, initial status is "Proposed"
 

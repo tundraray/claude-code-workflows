@@ -49,7 +49,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Early Termination Condition
 
-**When target Design Docs count is 0** (no files other than source_design in docs/design/):
+**When target Design Docs count is 0** (no files other than source_design in docs/features/{feature}/):
 - Skip investigation and immediately terminate with NO_CONFLICTS status
 - Reason: Consistency verification is unnecessary when there is no comparison target
 
@@ -69,7 +69,7 @@ Read the Design Doc specified in arguments and extract:
 
 ### 2. Survey All Design Docs
 
-- Search docs/design/*.md (excluding template)
+- Search docs/features/*/design-*.md (excluding template)
 - Read all files except source_design
 - Detect conflict patterns
 

@@ -15,6 +15,35 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 `frontend-overture` 0.18.5, `fullstack-overture` 0.18.5, `gamedev-overture`
 0.20.1, `strategy-overture` 0.20.2.
 
+### Changed
+
+- **Documents are now grouped by feature instead of by document type.** Everything a feature produces lives under one directory, so the whole record of a change is readable in one place. ADRs stay global — a decision usually outlives and spans features.
+
+  ```
+  docs/
+  ├── adr/ADR-0007-token-storage.md
+  └── features/{feature}/
+      ├── prd.md
+      ├── uxrd.md
+      ├── design-{part}.md
+      └── {part}/
+          ├── {plan-name}.md
+          └── {plan-name}/
+              ├── _overview.md
+              ├── task-01.md
+              └── analysis/
+  ```
+
+  A **part** is one independently designable slice of a feature, always present even when there is only one, so every agent resolves paths with a single glob. One design per part: when a change needs materially different designs, those are separate parts rather than two documents in one. PRD and UXRD stay at feature level — splitting into parts is an implementation decision, not a product or UX one.
+
+  A part may hold several plans (a first pass and a hardening pass, say). Each plan file pairs with a directory of the same name holding its decomposition, so two plans never contend for one task directory.
+
+- **Work plans now carry frontmatter** (`feature`, `part`, `design`, `plan: N of M`, `status`, `depends-on`) as the single source of truth for plan sequencing — how many plans a part expects, which one runs now, and in what order. There is no separate index file to drift out of sync with the directory. Ambiguous states (two active plans, a file count disagreeing with `M`, a dangling `depends-on`) are escalated rather than guessed, since each silently produces work against the wrong plan.
+
+- **Layer routing no longer reads a filename.** Design docs were `*-backend-design.md` / `*-frontend-design.md`; they are now the layer-neutral `design-{part}.md`. `/build`, `/front-build`, and `/update-doc` determine the layer from the design's content and the part name, and require a positive same-layer signal before proceeding rather than inferring from the absence of the other layer's markers.
+
+- **`validate-plugins.mjs` gained a feature-layout check** covering part/design pairing, plan frontmatter, `N of M` agreement with the file count, and `depends-on` and `design` resolution. It skips in repositories with no `docs/features/` — this marketplace has none, but consuming projects can run the same script.
+
 ### Removed
 
 - `sequential-thinking` MCP server from all plugins: dropped from every `.mcp.json`, from plugin descriptions, and from the agent prompts that referenced it (`task-executor`, `task-executor-frontend`, `ux-designer`, and the four strategy agents). `strategy/.mcp.json` is removed entirely, having held no other server.

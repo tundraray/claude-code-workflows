@@ -62,7 +62,7 @@ Create appropriate design documents according to scale determination:
 
 ## Output Example
 Frontend design phase completed.
-- Design document: docs/design/[document-name].md or docs/adr/[document-name].md
+- Design document: docs/features/[feature]/design-[part].md or docs/adr/ADR-[number]-[title].md
 - Approval status: User approved
 
 **Important**: This command ends with design approval. Does not propose transition to next phase.

@@ -319,6 +319,83 @@ function checkVersions(plugins) {
 }
 
 // ---------------------------------------------------------------------------
+// 5. Feature document layout (only when docs/features/ exists)
+// ---------------------------------------------------------------------------
+
+/**
+ * Validates the per-feature document layout documented in the
+ * documentation-criteria skill. Skipped in repositories that have no
+ * docs/features/ tree — this marketplace itself has none; the check exists so
+ * consuming projects can run the same script.
+ */
+function checkFeatureDocs() {
+  const featuresDir = join(ROOT, 'docs', 'features');
+  if (!existsSync(featuresDir)) {
+    console.log('  features      skipped (no docs/features/ in this repo)');
+    return;
+  }
+
+  for (const feature of readdirSync(featuresDir, { withFileTypes: true }).filter((e) => e.isDirectory())) {
+    const fdir = join(featuresDir, feature.name);
+    const designParts = new Set(
+      readdirSync(fdir)
+        .filter((n) => /^design-.+\.md$/.test(n))
+        .map((n) => n.replace(/^design-/, '').replace(/\.md$/, '')),
+    );
+
+    for (const part of readdirSync(fdir, { withFileTypes: true }).filter((e) => e.isDirectory())) {
+      seen('features');
+      const pdir = join(fdir, part.name);
+
+      if (!designParts.has(part.name)) {
+        fail('features', `docs/features/${feature.name}/${part.name}/ has no matching design-${part.name}.md`);
+      }
+
+      const planFiles = readdirSync(pdir).filter((n) => n.endsWith('.md'));
+      const plans = [];
+      for (const pf of planFiles) {
+        const fm = frontmatter(join(pdir, pf));
+        if (!fm) {
+          fail('features', `docs/features/${feature.name}/${part.name}/${pf}: plan has no frontmatter`);
+          continue;
+        }
+        plans.push({ file: pf, ...fm });
+      }
+      if (plans.length === 0) continue;
+
+      const active = plans.filter((p) => p.status === 'active');
+      if (active.length > 1) {
+        fail('features', `docs/features/${feature.name}/${part.name}/: ${active.length} plans claim status: active (${active.map((p) => p.file).join(', ')})`);
+      }
+
+      for (const p of plans) {
+        const m = /^(\d+)\s+of\s+(\d+)$/.exec(p.plan || '');
+        if (!m) {
+          fail('features', `${feature.name}/${part.name}/${p.file}: "plan" must read "N of M", got ${JSON.stringify(p.plan ?? null)}`);
+          continue;
+        }
+        const total = Number(m[2]);
+        if (total !== plans.length) {
+          fail('features', `${feature.name}/${part.name}/${p.file}: declares "${p.plan}" but the part holds ${plans.length} plan file(s)`);
+        }
+        if (p['depends-on'] && !planFiles.includes(p['depends-on'])) {
+          fail('features', `${feature.name}/${part.name}/${p.file}: depends-on "${p['depends-on']}" does not exist`);
+        }
+        if (p.design && !existsSync(join(fdir, p.design))) {
+          fail('features', `${feature.name}/${part.name}/${p.file}: design "${p.design}" does not exist`);
+        }
+        if (p.part && p.part !== part.name) {
+          fail('features', `${feature.name}/${part.name}/${p.file}: frontmatter part is "${p.part}" but the file sits in "${part.name}"`);
+        }
+        if (p.feature && p.feature !== feature.name) {
+          fail('features', `${feature.name}/${part.name}/${p.file}: frontmatter feature is "${p.feature}" but the file sits in "${feature.name}"`);
+        }
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 
 const plugins = findPlugins();
 const shared = sharedComponents();
@@ -329,15 +406,17 @@ checkRegistration(plugins, shared);
 checkSymlinks(plugins);
 checkFrontmatter(shared);
 checkVersions(plugins);
+checkFeatureDocs();
 
 // A check that inspected nothing cannot report green.
 for (const check of ['registration', 'symlinks', 'frontmatter']) {
   if (!counts[check]) fail(check, `inspected 0 items — the matcher is broken or the layout changed`);
 }
 
-for (const check of ['registration', 'symlinks', 'frontmatter', 'versions']) {
+for (const check of ['registration', 'symlinks', 'frontmatter', 'versions', 'features']) {
   const errs = failures.filter((f) => f.check === check);
   const n = counts[check] || 0;
+  if (check === 'features' && n === 0 && errs.length === 0) continue;
   if (errs.length === 0) {
     console.log(`  ${check.padEnd(13)} OK (${n} checked)`);
   } else {

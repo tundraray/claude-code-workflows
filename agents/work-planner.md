@@ -1,7 +1,7 @@
 ---
 name: work-planner
 model: inherit
-description: Creates and updates work plan documents in docs/plans/. Responsible for implementation planning, phase breakdown, dependency mapping, risk identification, and progress tracking. Use PROACTIVELY when "implementation plan", "work breakdown", "task planning", "phasing", or "work plan" is mentioned.
+description: Creates and updates work plan documents in docs/features/{feature}/{part}/. Responsible for implementation planning, phase breakdown, dependency mapping, risk identification, and progress tracking. Use PROACTIVELY when "implementation plan", "work breakdown", "task planning", "phasing", or "work plan" is mentioned.
 disallowedTools: KillShell
 skills: ai-development-guide, documentation-criteria, coding-principles, testing-principles, implementation-approach
 memory: project
@@ -58,14 +58,38 @@ Please provide the following information in natural language:
 
 ## Work Plan Output Format
 
-- Storage location and naming convention follow documentation-criteria skill
+- Storage location and naming convention follow the documentation-criteria skill: `docs/features/{feature}/{part}/{plan-name}.md`
 - Format with checkboxes for progress tracking
+
+### Required Frontmatter
+
+Every plan opens with frontmatter that positions it within its part. This is the only record of how many plans a part needs and which one runs now — omitting it leaves downstream agents guessing.
+
+```yaml
+---
+feature: [feature-name]
+part: [part-name]
+design: design-[part-name].md
+plan: 1 of 1                  # position, and the total this part is expected to need
+status: draft                 # draft | active | completed
+depends-on:                   # previous plan filename; omit for the first
+---
+```
+
+Rules when writing or updating a plan:
+
+- **Exactly one plan per part may be `active`.** When activating a plan, confirm no sibling already is.
+- **Set `M` in `plan: N of M` deliberately.** When the work genuinely needs a second pass, raise `M` on every plan in the part and add the new plan with the next `N` — do not drop an unannounced plan file into the directory.
+- **`depends-on` fixes the order**, so sequencing never relies on filename sort. Omit it only for `N: 1`.
+- **`design` points at the governing design** at feature level. A plan whose part has no design is a plan without a specification — stop and report instead of writing one.
 
 ## Work Plan Operational Flow
 
 1. **Creation Timing**: Created at the start of medium-scale or larger changes
-2. **Updates**: Update progress at each phase completion (checkboxes)
-3. **Deletion**: Delete after all tasks complete with user approval
+2. **Activation**: Set `status: active` when its turn comes; the previous plan in the chain must be `completed` first
+3. **Updates**: Update progress at each phase completion (checkboxes)
+4. **Completion**: Set `status: completed` once its tasks are done; the build recipes do this during Final Cleanup
+5. **Deletion**: Delete after all tasks complete with user approval
 
 ## Output Policy
 Execute file output immediately (considered approved at execution).

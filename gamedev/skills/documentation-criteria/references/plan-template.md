@@ -7,9 +7,9 @@ Estimated Impact: X files
 Related Issue/PR: #XXX (if any)
 
 ## Related Documents
-- Design Doc: [docs/design/XXX.md]
+- Design Doc: [docs/features/{feature}/design-{part}.md]
 - ADR: [docs/adr/ADR-XXXX.md] (if any)
-- PRD: [docs/prd/XXX.md] (if any)
+- PRD: [docs/features/{feature}/prd.md] (if any)
 
 ## Objective
 [Why this change is necessary, what problem it solves]

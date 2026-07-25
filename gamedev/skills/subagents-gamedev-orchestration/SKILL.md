@@ -136,9 +136,9 @@ Assign work based on each subagent's responsibilities:
 | `docs/analytics/*.md` | data-scientist |
 | `docs/handoffs/*.md` | producer-agent |
 | `docs/adr/*.md` | technical-designer |
-| `docs/design/*.md` | technical-designer |
-| `docs/plans/*.md` (work plans) | gamedev-work-planner |
-| `docs/plans/tasks/<plan-name>/*.md` | task-decomposer |
+| `docs/features/*/design-*.md` | technical-designer |
+| `docs/features/*/*/*.md` (work plans) | gamedev-work-planner |
+| `docs/features/<feature>/<part>/<plan-name>/*.md` | task-decomposer |
 | `src/**/*`, `tests/**/*` (code) | task-executor |
 | `docs/game-research/**/*.md` | game-researcher |
 | Any file (quality fixes) | quality-fixer |
@@ -192,7 +192,7 @@ Call subagents using the Task tool:
 ### Call Example (task-executor)
 - subagent_type: "task-executor"
 - description: "Task execution"
-- prompt: "Task file: docs/plans/tasks/[plan-name]/task-01.md Please complete the implementation"
+- prompt: "Task file: docs/features/[feature]/[part]/[plan-name]/task-01.md Please complete the implementation"
 
 ## Structured Response Specification
 

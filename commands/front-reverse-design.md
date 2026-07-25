@@ -23,7 +23,7 @@ Use AskUserQuestion to confirm:
 
 ### 0.2 Output Configuration
 
-- Design Doc output: `docs/design/` or existing design directory
+- Design Doc output: `docs/features/{feature}/` or existing design directory
 - Verify directories exist, create if needed
 
 ## Workflow Overview

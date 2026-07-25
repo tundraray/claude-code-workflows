@@ -31,7 +31,7 @@ Design Doc (uses most recent if omitted): $ARGUMENTS
 ### 1. Prerequisite Check
 ```bash
 # Identify Design Doc
-ls docs/design/*.md | grep -v template | tail -1
+ls docs/features/*/design-*.md | grep -v template | tail -1
 
 # Check implementation files
 git diff --name-only main...HEAD
@@ -67,7 +67,7 @@ If user selects `y`:
 **Required**: `rule-advisor → TodoWrite → task-executor-frontend → quality-fixer-frontend`
 
 1. **Execute rule-advisor**: Understand fix essence (symptomatic treatment vs root solution)
-2. **Update TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Create task file following task template (see documentation-criteria skill) → `docs/plans/tasks/review-fixes-YYYYMMDD.md`
+2. **Update TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Create task file following task template (see documentation-criteria skill) → `docs/features/{feature}/{part}/{plan-name}/review-fixes-YYYYMMDD.md`
 3. **Execute task-executor-frontend**: Staged auto-fixes (stops at 5 files)
 4. **Execute quality-fixer-frontend**: Confirm quality gate passage
 5. **Re-validate**: Measure improvement with code-reviewer

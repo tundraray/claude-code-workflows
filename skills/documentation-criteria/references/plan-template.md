@@ -1,3 +1,12 @@
+---
+feature: [feature-name]           # directory under docs/features/
+part: [part-name]                 # directory holding this plan
+design: design-[part-name].md     # governing design, at feature level
+plan: 1 of 1                      # position in the part, and expected total
+status: draft                     # draft | active | completed
+depends-on:                       # previous plan filename; omit for the first
+---
+
 # Work Plan: [Feature Name] Implementation
 
 Created Date: YYYY-MM-DD
@@ -6,10 +15,13 @@ Estimated Duration: X days
 Estimated Impact: X files
 Related Issue/PR: #XXX (if any)
 
+**Frontmatter is the source of truth for plan sequencing.** `plan: N of M` states how many plans this part is expected to need, `status` marks which one runs now, and `depends-on` fixes the order without relying on filename sort. Exactly one plan per part may be `active`. Raise `M` when the part turns out to need another pass, rather than adding an unannounced plan file.
+
 ## Related Documents
-- Design Doc: [docs/design/XXX.md]
+- Design Doc: [docs/features/{feature}/design-{part}.md]
 - ADR: [docs/adr/ADR-XXXX.md] (if any)
-- PRD: [docs/prd/XXX.md] (if any)
+- PRD: [docs/features/{feature}/prd.md] (if any)
+- UXRD: [docs/features/{feature}/uxrd.md] (if any)
 
 ## Verification Strategy (from Design Doc)
 
@@ -42,8 +54,8 @@ Maps each Design Doc technical requirement to its covering task(s). One row per 
 
 | Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
 |---|---|---|---|---|---|---|
-| [docs/design/XXX.md] | [Section name] | [Specific item] | impl-target / connection-switching / contract-change / verification / prerequisite | [Phase X Task Y] | covered | |
-| docs/design/XXX.md | Security Considerations | Input validation for API | prerequisite | — | gap | Deferred to Phase 2 per user decision |
+| [docs/features/{feature}/design-{part}.md] | [Section name] | [Specific item] | impl-target / connection-switching / contract-change / verification / prerequisite | [Phase X Task Y] | covered | |
+| docs/features/{feature}/design-{part}.md | Security Considerations | Input validation for API | prerequisite | — | gap | Deferred to Phase 2 per user decision |
 
 **Category values**: `impl-target` (implementation target), `connection-switching` (connection/switching/registration), `contract-change` (contract change and propagation), `verification` (verification requirement), `prerequisite` (prerequisite work)
 
@@ -57,7 +69,7 @@ The Traceability table records *that* a row is covered; this table carries the v
 
 | Design Doc (§ Section) | Contract Type | Required Observable Value (verbatim) | Covered By Task(s) |
 |---|---|---|---|
-| [docs/design/XXX.md (§ Section)] | structure-order / derived-display / state-lifecycle-negative | [exact value copied from the Design Doc — e.g. "the listed fields in the specified order"; "the label shows the looked-up name in place of the raw code"; "persisted state is applied only when an explicit restore signal is present"] | [Phase X Task Y] |
+| [docs/features/{feature}/design-{part}.md (§ Section)] | structure-order / derived-display / state-lifecycle-negative | [exact value copied from the Design Doc — e.g. "the listed fields in the specified order"; "the label shows the looked-up name in place of the raw code"; "persisted state is applied only when an explicit restore signal is present"] | [Phase X Task Y] |
 
 ## Failure Mode Checklist
 

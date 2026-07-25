@@ -1,8 +1,8 @@
 # Task: [Task Name]
 
 Metadata:
-- Dependencies: task-01 → Deliverable: docs/plans/analysis/research-results.md
-- Provides: docs/plans/analysis/api-spec.md (for research/design tasks)
+- Dependencies: task-01 → Deliverable: docs/features/{feature}/{part}/{plan-name}/analysis/research-results.md
+- Provides: docs/features/{feature}/{part}/{plan-name}/analysis/api-spec.md (for research/design tasks)
 - Size: Small (1-2 files)
 
 ## Implementation Content

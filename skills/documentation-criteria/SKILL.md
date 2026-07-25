@@ -188,16 +188,90 @@ Each step names the evidence that must exist before the next step starts. A step
 
 ## Storage Locations
 
+Documents are grouped **by feature**, not by document type. Everything a feature produces lives under one directory, so the whole record of a change is readable in one place. ADRs are the exception: a decision usually outlives and spans features, so they stay global.
+
+```
+docs/
+├── adr/
+│   └── ADR-0007-token-storage.md
+└── features/
+    └── {feature}/
+        ├── prd.md
+        ├── uxrd.md
+        ├── design-{part}.md
+        └── {part}/
+            ├── {plan-name}.md          # e.g. 20260726-feature-auth.md
+            └── {plan-name}/            # same name as its plan file
+                ├── _overview.md
+                ├── task-01.md
+                ├── phase1-completion.md
+                └── analysis/
+                    └── {topic}.md
+```
+
 | Document | Path | Naming Convention | Template |
 |----------|------|------------------|----------|
-| PRD | `docs/prd/` | `[feature-name]-prd.md` | [prd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/prd-template.md) |
+| PRD | `docs/features/{feature}/` | `prd.md` | [prd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/prd-template.md) |
+| UXRD | `docs/features/{feature}/` | `uxrd.md` | [uxrd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/uxrd-template.md) |
 | ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | [adr-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/adr-template.md) |
-| Design Doc | `docs/design/` | `[feature-name]-design.md` | [design-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/design-template.md) |
-| Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | [plan-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/plan-template.md) |
-| Task File | `docs/plans/tasks/{plan-name}/` | `task-{number}.md` | [task-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/task-template.md) |
-| UXRD | `docs/uxrd/` | `[feature-name]-uxrd.md` | [uxrd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/uxrd-template.md) |
+| Design Doc | `docs/features/{feature}/` | `design-{part}.md` | [design-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/design-template.md) |
+| Work Plan | `docs/features/{feature}/{part}/` | `YYYYMMDD-{type}-{description}.md` | [plan-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/plan-template.md) |
+| Task File | `docs/features/{feature}/{part}/{plan-name}/` | `task-{number}.md` | [task-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/task-template.md) |
+| Analysis deliverable | `docs/features/{feature}/{part}/{plan-name}/analysis/` | `{topic}.md` | — |
 
-*Note: Work plans are excluded by `.gitignore`
+### Parts
+
+A **part** is one independently designable slice of a feature — a short name such as `core`, `api`, `checkout-ui`, or `migration`. Every feature has at least one, even when it is the only one: a uniform depth lets every agent resolve paths with a single glob instead of two.
+
+`design-{part}.md` and the directory `{part}/` share the part name and are read as a pair — the design states what to build, the directory holds the plans that build it.
+
+- **One design per part.** When a change needs materially different designs — a service contract and the screen consuming it — those are separate parts, not two documents in one.
+- PRD and UXRD sit at feature level: they describe the feature as a whole, and splitting into parts is an implementation decision rather than a product or UX one.
+
+### Plans within a part
+
+A part may need more than one work plan — a first pass and a hardening pass, for example. Each plan file is paired with a directory of the **same name** holding its decomposition, so two plans never contend for one task directory.
+
+Each plan declares its own position and state in frontmatter:
+
+```yaml
+---
+feature: user-auth              # required
+part: core                      # required
+design: design-core.md          # required — back-reference to the governing design
+plan: 2 of 3                    # required — position and expected total
+status: active                  # draft | active | completed
+depends-on: 20260726-auth.md    # omitted for the first plan
+---
+```
+
+The frontmatter is the single source of truth for plan sequencing — there is no separate index file to drift out of sync with the directory.
+
+| Question | Answer |
+|----------|--------|
+| How many plans should this part have? | the `M` in `plan: N of M` |
+| Which plan runs now? | the one with `status: active` |
+| What order? | the `depends-on` chain, not filename sort |
+| Is the part done? | every plan `completed`, and the file count matches `M` |
+
+**Escalate rather than guess** when: two plans claim `status: active`; no plan is active while the part has unfinished work; the number of plan files disagrees with `M`; or a `depends-on` names a file that does not exist. Each of these means the part's state is ambiguous, and picking one reading silently produces work against the wrong plan.
+
+### Resolution globs
+
+| To find | Glob |
+|---------|------|
+| Every PRD | `docs/features/*/prd.md` |
+| Every UXRD | `docs/features/*/uxrd.md` |
+| Every Design Doc | `docs/features/*/design-*.md` |
+| Design for one part | `docs/features/{feature}/design-{part}.md` |
+| Every work plan | `docs/features/*/*/*.md` |
+| Plans of one part | `docs/features/{feature}/{part}/*.md` |
+| Tasks of one plan | `docs/features/{feature}/{part}/{plan-name}/task-*.md` |
+| Every ADR | `docs/adr/ADR-*.md` |
+
+**Layer determination**: a design's layer is not encoded in its filename. Read the document (React/component/UI signals versus API/data/infrastructure signals) or take it from the part name where the part is layer-defined.
+
+*Note: work plans and task files are ephemeral working state and are excluded by `.gitignore`.*
 
 ## ADR Status
 `Proposed` → `Accepted` → `Deprecated`/`Superseded`/`Rejected`

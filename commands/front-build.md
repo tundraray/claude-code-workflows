@@ -31,49 +31,54 @@ Work plan: $ARGUMENTS
 
 Before any task processing, locate the work plan. This recipe is the **frontend** build lane — it routes to `task-executor-frontend` and must never pick up a backend plan.
 
-**When `$ARGUMENTS` is provided**, it is the work plan path supplied by the user. Use it directly without auto-resolution. Extract `{plan-name}` from the filename by stripping the `.md` extension (and any trailing `-plan` suffix when present).
+**When `$ARGUMENTS` is provided**, it is the work plan path supplied by the user. Use it directly. Its `{plan-name}` is the filename without `.md`; its task directory is the sibling directory of the same name.
 
-**When `$ARGUMENTS` is empty**, auto-resolve from task files:
+**When `$ARGUMENTS` is empty**, resolve from plan frontmatter — see the storage convention in the `documentation-criteria` skill:
 
-1. List task files in `docs/plans/tasks/` matching this recipe's consumable pattern:
-   - `{plan-name}-frontend-task-*.md` (frontend portion of a plan)
-   - `{plan-name}-task-*.md` and `{plan-name}-backend-task-*.md` are **not** consumable here — the unqualified form is reserved for backend by the routing table, and both route to `task-executor`
-2. Exclude files originating from other workflow phases: `*-task-prep-*.md`, `_overview-*.md`, `*-phase*-completion.md`, `review-fixes-*.md`, `integration-tests-*-task-*.md`
-3. For each remaining file, extract `{plan-name}` by stripping the trailing `-frontend-task-{NN}.md` suffix
-4. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix with the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
-5. **When no frontend task files exist but `*-task-*.md` or `*-backend-task-*.md` files do**: stop and report — "Only backend-named task files were found. If you intended the backend build, run `/build`. If the plan is frontend, re-run task-decomposer so it emits frontend-named task files, or pass the work plan path as `$ARGUMENTS`."
-6. When neither matches, fall back to the most-recent-mtime non-template `.md` in `docs/plans/` **only after positively verifying the plan is a frontend plan**. Absence of backend markers is not sufficient — many plan templates use layer-neutral paths (`src/presentation`, `src/app`) matching neither marker set, so a confirmed frontend signal is required.
+1. Read every plan at `docs/features/*/*/*.md` and parse its frontmatter (`feature`, `part`, `design`, `plan: N of M`, `status`, `depends-on`)
+2. Select the plan with `status: active`. Its tasks are in the sibling directory of the same name: `docs/features/{feature}/{part}/{plan-name}/task-*.md`
+3. **Stop and escalate rather than guess** when the part's state is ambiguous:
+   - two or more plans in one part claim `status: active`
+   - no plan is active while the part still has task files
+   - the number of plan files in the part disagrees with `M` in `plan: N of M`
+   - a `depends-on` names a plan file that does not exist
+   - the active plan's `depends-on` chain contains a plan that is not `completed`
+4. When several parts have an active plan, pick the one whose task directory has the most recently modified `task-*.md`; report the choice and the alternatives rather than resolving silently.
+5. **Verify the plan belongs to this lane before executing it.** A design's layer is not in its filename — `design-{part}.md` is layer-neutral — so read the governing design named in the plan's `design:` frontmatter, plus the plan itself. Absence of backend markers is not sufficient: many plans use layer-neutral paths (`src/presentation`, `src/app`) matching neither marker set, so a confirmed frontend signal is required.
 
    **Frontend signals (need at least one)**:
-   - `## Related Documents` references a UXRD (`docs/uxrd/*`) or a Design Doc whose filename identifies it as frontend (`*-frontend-design.md`, `frontend-*-design.md`)
-   - A `## UXRD Component → Task Mapping` section is present
-   - Target Files under `## Impact Scope > ### Target Files` match frontend markers exclusively: `**/components/**`, `**/pages/**`, `**/web/**`, `**/*.tsx`, `**/*.jsx`, or the project's frontend-equivalent paths declared in the `technical-spec` skill
-   - Plan title, `## Objective`, or `## Background` explicitly identifies the work as frontend ("React component", "screen", "UI")
+   - `## Related Documents` references a UXRD (`docs/features/*/uxrd.md`), or the plan has a `## UXRD Component → Task Mapping` section
+   - Target Files match frontend markers exclusively: `**/components/**`, `**/pages/**`, `**/web/**`, `**/*.tsx`, `**/*.jsx`, or the project's frontend-equivalent paths declared in the `technical-spec` skill
+   - The governing design describes component hierarchy, screen states, or UI interactions
+   - The part name identifies the layer (`ui`, `frontend`, `web`, or a screen name)
+   - Plan title, `## Objective`, or `## Background` explicitly identifies the work as frontend
 
    **Backend signals (any one disqualifies, even alongside a frontend signal)**:
    - Target Files exclusively under `**/api/**`, `**/server/**`, `**/services/**`, `**/backend/**`, `**/handlers/**`, `**/repositories/**`
-   - `## Related Documents` pointing to a backend-named Design Doc
+   - The governing design describes API endpoints, data schemas, or persistence with no rendering surface
    - Title or objective mentioning API endpoints, database migrations, or server-side work
 
    **Decision**: at least one frontend signal AND zero backend signals → proceed. Otherwise stop and report which signals were checked and their results, then ask for an explicit plan path.
-7. When no plan exists in `docs/plans/` at all, stop and report: "No work plan found. Pass a work plan path as `$ARGUMENTS`, or complete the planning phase first."
+
+   **Mixed-layer plans**: when a plan carries both, its part was not split cleanly. Do not guess — report that the plan spans layers, and ask whether to run `/implement` (which drives both) or to split the work into separate parts.
+6. When no plan exists under `docs/features/*/*/`, stop and report: "No work plan found. Pass a work plan path as `$ARGUMENTS`, or complete the planning phase first."
 
 ### Consumed Task Set
 
 Compute the **Consumed Task Set** — the exact files this run owns, executes, and later deletes:
 
-1. List task files in `docs/plans/tasks/` matching `{plan-name}-frontend-task-*.md` for the `{plan-name}` resolved above. `{plan-name}-task-*.md` and `{plan-name}-backend-task-*.md` are excluded — both route to `task-executor` and are owned by `/build`.
-2. Exclude every file matching `*-task-prep-*.md`, `_overview-*.md`, `*-phase*-completion.md`, `review-fixes-*.md`, `integration-tests-*-task-*.md` — these originate from other workflow phases and are not implementation tasks for this run.
+1. List `docs/features/{feature}/{part}/{plan-name}/task-*.md` for the plan resolved above
+2. Exclude files belonging to other workflow phases rather than to implementation: `_overview.md`, `phase*-completion.md`, `task-prep-*.md`, `review-fixes-*.md`, `integration-tests-*.md`
 
-Every subsequent reference to "task files" in this command — the decision flow below, the execution cycle, and Final Cleanup — means this set, **not** the unrestricted `docs/plans/tasks/*.md` glob.
+Every subsequent reference to "task files" in this command — the decision flow below, the execution cycle, and Final Cleanup — means this set, **not** an unrestricted glob over the directory. Tasks of a sibling plan in the same part are never in scope.
 
 ### Task File Existence Check
 ```bash
 # Check work plans
-! ls -la docs/plans/*.md | grep -v template | tail -5
+! ls -la docs/features/*/*/*.md | grep -v template | tail -5
 
 # Check task files
-! ls docs/plans/tasks/*.md 2>/dev/null || echo "⚠️ No task files found"
+! ls docs/features/*/*/*/task-*.md 2>/dev/null || echo "⚠️ No task files found"
 ```
 
 ### Task Generation Decision Flow
@@ -93,7 +98,7 @@ When task files don't exist:
 ### 1. User Confirmation
 ```
 No task files found.
-Work plan: docs/plans/[plan-name].md
+Work plan: docs/features/[feature]/[part]/[plan-name].md
 
 Generate tasks from the work plan? (y/n):
 ```
@@ -103,12 +108,12 @@ Generate tasks from the work plan? (y/n):
 Invoke task-decomposer using Task tool:
 - `subagent_type`: "task-decomposer"
 - `description`: "Decompose work plan into tasks"
-- `prompt`: "Read work plan and decompose into atomic tasks. Input: docs/plans/[plan-name].md. Output: Individual task files in docs/plans/tasks/. Granularity: atomic, independently executable units (commit grouping determined by selected strategy)"
+- `prompt`: "Read work plan and decompose into atomic tasks. Input: docs/features/[feature]/[part]/[plan-name].md. Output: Individual task files in docs/features/{feature}/{part}/{plan-name}/. Granularity: atomic, independently executable units (commit grouping determined by selected strategy)"
 
 ### 3. Verify Generation
 ```bash
 # Verify generated task files
-! ls -la docs/plans/tasks/*.md | head -10
+! ls -la docs/features/*/*/*/task-*.md | head -10
 ```
 
 ✅ **Flow**: Task generation → Autonomous execution (in this order)
@@ -144,7 +149,7 @@ For EACH task, YOU MUST:
 
 1. **UPDATE TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
 2. **USE task-executor-frontend**: Execute frontend implementation
-   - Invocation example: `subagent_type: "task-executor-frontend"`, `description: "Task execution"`, `prompt: "Task file: docs/plans/tasks/[filename].md Execute implementation"`
+   - Invocation example: `subagent_type: "task-executor-frontend"`, `description: "Task execution"`, `prompt: "Task file: docs/features/{feature}/{part}/{plan-name}/[filename].md Execute implementation"`
 3. **CHECK ESCALATION**: Check task-executor-frontend status → If `status: "escalation_needed"` → STOP and escalate to user
 4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer-frontend IMMEDIATELY
 5. **USE quality-fixer-frontend**: Execute all quality checks (Lighthouse, bundle size, tests, etc.)
@@ -161,7 +166,7 @@ For EACH task, YOU MUST:
 
 **CRITICAL**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
 
-! ls -la docs/plans/*.md | head -10
+! ls -la docs/features/*/*/*.md | head -10
 
 VERIFY approval status before proceeding. Once confirmed, INITIATE autonomous execution mode. STOP IMMEDIATELY upon detecting ANY requirement changes.
 
@@ -183,18 +188,18 @@ The per-task quality cycle checks tasks in isolation and cannot detect Design Do
 
 ## Final Cleanup
 
-Before the completion report, delete the implementation task files this run consumed. Their work is committed; `docs/plans/tasks/` is ephemeral working state and is not retained between runs.
+Before the completion report, delete the task directory this run consumed. Its work is committed; `docs/features/{feature}/{part}/{plan-name}/` is ephemeral working state and is not retained between runs.
 
-- Delete every file in the Consumed Task Set
-- Delete `docs/plans/tasks/{plan-name}-phase*-completion.md` (per-phase completion files for this `{plan-name}`)
-- Delete `docs/plans/tasks/_overview-{plan-name}.md` if present
-- **Preserve** the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
+- Delete the whole task directory `docs/features/{feature}/{part}/{plan-name}/` — its `task-*.md`, `_overview.md`, `phase*-completion.md`, and `analysis/` are all working state for this run
+- **Preserve** the plan file `docs/features/{feature}/{part}/{plan-name}.md`, and set its frontmatter `status` to `completed` so the next run resolves the following plan in the chain
+- **Preserve** every sibling plan and its directory — a part may hold several plans, and only the one this run executed is finished
+- **Preserve** `prd.md`, `uxrd.md`, `design-{part}.md`, and everything under `docs/adr/` — those are durable artifacts, not working state
 
 If deletion fails (filesystem error), report the failure but do not block the completion report.
 
 ## Output Example
 Frontend implementation phase completed.
-- Task decomposition: Generated under docs/plans/tasks/
+- Task decomposition: Generated under docs/features/{feature}/{part}/{plan-name}/
 - Implemented tasks: [number] tasks
 - Quality checks: All passed (Lighthouse, bundle size, tests)
 - Commits: [number] commits created

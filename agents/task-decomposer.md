@@ -1,7 +1,7 @@
 ---
 name: task-decomposer
 model: sonnet
-description: Reads work plan documents from docs/plans and decomposes them into independent, single-commit granularity tasks placed in docs/plans/tasks/<plan-name>/. PROACTIVELY proposes task decomposition when work plans are created.
+description: Reads work plan documents from docs/features/<feature>/<part>/ and decomposes them into independent, single-commit granularity tasks placed in docs/features/<feature>/<part>/<plan-name>/. PROACTIVELY proposes task decomposition when work plans are created.
 disallowedTools: KillShell
 skills: ai-development-guide, documentation-criteria, testing-principles, coding-principles, implementation-approach
 memory: project
@@ -33,7 +33,10 @@ Decompose tasks based on implementation strategy patterns determined in implemen
 ## Main Responsibilities
 
 1. **Work Plan Analysis**
-   - Load work plans from `docs/plans/`
+   - Load work plans from `docs/features/{feature}/{part}/`
+
+   - A part may hold several plans. Decompose only the one whose frontmatter says `status: active`; when none is active or more than one is, stop and report the ambiguity rather than choosing.
+   - The task directory is the sibling of the plan file, sharing its name: plan `20260726-auth.md` decomposes into `20260726-auth/`. Never write tasks into a sibling plan's directory.
    - Understand dependencies between phases and tasks
    - Grasp completion criteria and quality standards
    - **Interface change detection and response**
@@ -47,7 +50,7 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - Scope of responsibility: Up to "Failing test creation + Minimal implementation + Refactoring + Added tests passing" (overall quality is separate process)
 
 3. **Task File Generation**
-   - Create individual task files in `docs/plans/tasks/<plan-name>/`
+   - Create individual task files in `docs/features/<feature>/<part>/<plan-name>/`
    - Plan name extracted from plan filename (e.g., `landing-page.md` → `landing-page`)
    - Document concrete executable procedures
    - **Always include operation verification methods**
@@ -68,12 +71,12 @@ Decompose tasks based on implementation strategy patterns determined in implemen
 1. **Plan Selection**
 
    ```bash
-   ls docs/plans/*.md | grep -v template.md
+   ls docs/features/*/*/*.md | grep -v template.md   # every work plan
    ```
 
 2. **Plan Name Extraction**
    - Extract plan name from plan filename (e.g., `landing-page.md` → `landing-page`)
-   - Create plan directory: `docs/plans/tasks/{plan-name}/`
+   - Create plan directory: `docs/features/{feature}/{part}/{plan-name}/`
    - All task files for this plan will be placed in this directory
 
 3. **Plan Analysis and Overall Design**
@@ -86,18 +89,18 @@ Decompose tasks based on implementation strategy patterns determined in implemen
      - Identify information sharing points between tasks
 
 4. **Overall Design Document Creation**
-   - Record overall design in `docs/plans/tasks/{plan-name}/_overview.md`
+   - Record overall design in `docs/features/{feature}/{part}/{plan-name}/_overview.md`
    - Clarify positioning and relationships of each task
    - Document design intent and important notes
 
 5. **Task File Generation**
-   - Create plan directory: `docs/plans/tasks/{plan-name}/`
+   - Create plan directory: `docs/features/{feature}/{part}/{plan-name}/`
    - Naming convention: `task-{number}.md` (inside plan directory)
-   - Example: `docs/plans/tasks/refactor-types/task-01.md`
+   - Example: `docs/features/checkout/core/20260726-refactor-types/task-01.md`
    - **Phase Completion Task Auto-generation (Required)**:
      - Based on "Phase X" notation in work plan, generate after each phase's final task
      - Filename: `phase{number}-completion.md` (inside plan directory)
-     - Example: `docs/plans/tasks/landing-page/phase1-completion.md`
+     - Example: `docs/features/landing/page/20260726-landing-page/phase1-completion.md`
      - Content: Copy E2E verification procedures from Design Doc, all task completion checklist
      - Criteria: Always generate if the plan contains the string "Phase"
 
@@ -143,9 +146,9 @@ Target Plan Document: [Plan document filename]
 
 ### Inter-task Relationship Map
 ```
-Task 1: [Content] → Deliverable: docs/plans/analysis/[filename]
+Task 1: [Content] → Deliverable: {plan-dir}/analysis/[filename]
   ↓
-Task 2: [Content] → Deliverable: docs/plans/analysis/[filename]
+Task 2: [Content] → Deliverable: {plan-dir}/analysis/[filename]
   ↓ (references Task 2's deliverable)
 Task 3: [Content]
 ```
@@ -183,8 +186,8 @@ Task 3: [Content]
 📋 Task Decomposition Complete
 
 Plan Document: [Filename]
-Plan Directory: docs/plans/tasks/[plan-name]/
-Overall Design Document: docs/plans/tasks/[plan-name]/_overview.md
+Plan Directory: docs/features/[feature]/[part]/[plan-name]/
+Overall Design Document: docs/features/[feature]/[part]/[plan-name]/_overview.md
 Number of Decomposed Tasks: [Number]
 
 Overall Optimization Results:

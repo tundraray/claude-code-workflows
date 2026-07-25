@@ -89,7 +89,7 @@ prompt: "Verify consistency between all documents in docs/ directory. Check for 
 
 ## Output Example
 Design phase completed.
-- Design document: docs/design/[document-name].md or docs/adr/[document-name].md
+- Design document: docs/features/[feature]/design-[part].md or docs/adr/ADR-[number]-[title].md
 - Approval status: User approved
 
 **Important**: This command ends with design approval. Does not propose transition to next phase.

@@ -120,7 +120,7 @@ Pass **what to accomplish** and **where to work**. Each specialist determines **
 | | Bad (prescribing how) | Good (passing what) |
 |---|---|---|
 | quality-fixer | "Run these checks: 1. lint 2. test" | "Execute all quality checks and fixes" |
-| task-executor | "Edit file X and add handler Y" | "Task file: docs/plans/tasks/feature/task-03.md" |
+| task-executor | "Edit file X and add handler Y" | "Task file: docs/features/checkout/core/20260726-checkout/task-03.md" |
 
 ### Decision Precedence When Outputs Conflict
 
@@ -153,12 +153,12 @@ Edit, Write, and MultiEdit are performed by subagents, never by the orchestrator
 
 | File Pattern | Owner Agent |
 |--------------|-------------|
-| `docs/prd/*.md` | prd-creator |
-| `docs/uxrd/*.md` | ux-designer |
+| `docs/features/*/prd.md` | prd-creator |
+| `docs/features/*/uxrd.md` | ux-designer |
 | `docs/adr/*.md` | technical-designer(-frontend) |
-| `docs/design/*.md` | technical-designer(-frontend) |
-| `docs/plans/*.md` (work plans) | work-planner |
-| `docs/plans/tasks/<plan-name>/*.md` | task-decomposer |
+| `docs/features/*/design-*.md` | technical-designer(-frontend) |
+| `docs/features/*/*/*.md` (work plans) | work-planner |
+| `docs/features/<feature>/<part>/<plan-name>/*.md` | task-decomposer |
 | `src/**/*`, `tests/**/*` (code) | task-executor(-frontend) |
 | Any file (quality fixes) | quality-fixer(-frontend) |
 
@@ -212,7 +212,7 @@ Call subagents using the Task tool:
 ### Call Example (task-executor)
 - subagent_type: "task-executor"
 - description: "Task execution"
-- prompt: "Task file: docs/plans/tasks/[plan-name]/task-01.md Please complete the implementation"
+- prompt: "Task file: docs/features/[feature]/[part]/[plan-name]/task-01.md Please complete the implementation"
 
 ## Structured Response Specification
 
@@ -547,7 +547,7 @@ The per-task cycle checks each task in isolation. It cannot detect drift between
 
 **Fix cycle** (when any verifier failed, maximum 2 cycles):
 
-1. Create a consolidated fix task file (`docs/plans/tasks/post-impl-fixes-YYYYMMDD.md`) from the task template
+1. Create a consolidated fix task file (`docs/features/{feature}/{part}/{plan-name}/post-impl-fixes-YYYYMMDD.md`) from the task template
 2. Populate its Target Files with the **union** of file paths from every verifier's `requiredFixes[].location` and `discrepancies[].codeLocation` (parse `file[:line]`, keep the file part). Without this union the executor's File Scope Constraint rejects the very files it was dispatched to fix, since they belong to different original tasks.
 3. Invoke `task-executor` in **Fix Mode** with `task_file` set to the consolidated path and `requiredFixes` set to the normalized array
 4. Run `quality-fixer`, then re-run **only the verifiers that failed**, retaining recorded evidence from those that passed

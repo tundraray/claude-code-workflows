@@ -23,7 +23,7 @@ Register execution steps to TodoWrite before any execution:
 
 ## Requirements
 
-- `$ARGUMENTS`: Document path or type (e.g., "docs/design/feature-x.md" or "Design Doc" or "PRD")
+- `$ARGUMENTS`: Document path or type (e.g., "docs/features/user-auth/design-core.md" or "Design Doc" or "PRD")
 - If not provided, search `docs/` directory for existing documents and present list to user
 
 ## Workflow
@@ -36,8 +36,8 @@ If `$ARGUMENTS` is a file path → verify it exists
 If `$ARGUMENTS` is a type name → search for matching documents:
 ```bash
 # Search patterns by type
-Design Doc: docs/design/*.md
-PRD: docs/prd/*.md
+Design Doc: docs/features/*/design-*.md
+PRD: docs/features/*/prd.md
 ADR: docs/adr/*.md
 ```
 
@@ -50,8 +50,8 @@ Determine the document type from path or content, then determine the layer to se
 
 | Path Pattern | Document Type | Update Agent | Review Required |
 |---|---|---|---|
-| `docs/design/*.md` | Design Doc | technical-designer or technical-designer-frontend | document-reviewer + design-sync |
-| `docs/prd/*.md` | PRD | prd-creator | document-reviewer |
+| `docs/features/*/design-*.md` | Design Doc | technical-designer or technical-designer-frontend | document-reviewer + design-sync |
+| `docs/features/*/prd.md` | PRD | prd-creator | document-reviewer |
 | `docs/adr/*.md` | ADR | technical-designer or technical-designer-frontend | document-reviewer |
 
 **Layer detection** (Design Doc and ADR only):

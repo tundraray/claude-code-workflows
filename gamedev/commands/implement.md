@@ -293,7 +293,7 @@ The per-task quality cycle checks tasks in isolation. It cannot detect drift bet
    - `security-reviewer`: `approved` / `approved_with_notes` = pass; `needs_revision` = fail; `blocked` → **STOP immediately**, report credentials/critical vulnerability, do NOT commit
 
 3. **Fix cycle** (any verifier failed, max 2 cycles):
-   - Create a consolidated fix task file (`docs/plans/tasks/post-impl-fixes-YYYYMMDD.md`) from the task template
+   - Create a consolidated fix task file (`docs/features/{feature}/{part}/{plan-name}/post-impl-fixes-YYYYMMDD.md`) from the task template
    - Populate its Target Files with the **union** of file paths from every verifier's `requiredFixes[].location` and `discrepancies[].codeLocation`. Without this union the executor's File Scope Constraint rejects the very files it was dispatched to fix.
    - `task-executor` in **Fix Mode** → `quality-fixer` → re-run **only** the failed verifiers
    - No progress in a cycle, or findings remaining after cycle 2 → escalate to user
@@ -302,14 +302,12 @@ The per-task quality cycle checks tasks in isolation. It cannot detect drift bet
 
 ### Final Cleanup
 
-Before the completion report, delete the implementation task files this run consumed. Their work is committed; `docs/plans/tasks/` is ephemeral working state.
+Before the completion report, delete the task directory this run consumed. Its work is committed; `docs/features/{feature}/{part}/{plan-name}/` is ephemeral working state.
 
-- `docs/plans/tasks/{plan-name}-task-*.md`, `-backend-task-*.md`, `-frontend-task-*.md`
-- `docs/plans/tasks/{plan-name}-phase*-completion.md`
-- `docs/plans/tasks/_overview-{plan-name}.md`
-- The consolidated fix task file from the verification cycle, if one was created
-
-**Preserve** the work plan and all documents under `docs/design/`, `docs/prd/`, `docs/adr/`.
+- Delete the whole task directory `docs/features/{feature}/{part}/{plan-name}/`, including `task-*.md`, `_overview.md`, `phase*-completion.md`, `analysis/`, and the consolidated fix task file from the verification cycle if one was created
+- **Preserve** the plan file `docs/features/{feature}/{part}/{plan-name}.md`, and set its frontmatter `status` to `completed`
+- **Preserve** every sibling plan and its directory — a part may hold several plans
+- **Preserve** `prd.md`, `uxrd.md`, `design-{part}.md`, and everything under `docs/adr/`
 
 If deletion fails, report the failure but do not block the completion report.
 

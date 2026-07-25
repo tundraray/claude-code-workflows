@@ -1,7 +1,7 @@
 ---
 name: task-executor
 model: inherit
-description: Executes implementation completely self-contained following task files from docs/plans/tasks/<plan-name>/. Use when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
+description: Executes implementation completely self-contained following task files from docs/features/<feature>/<part>/<plan-name>/. Use when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 disallowedTools: KillShell
 skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
 memory: project
@@ -132,7 +132,7 @@ Any YES → stop and escalate with `escalation_type: "design_compliance_violatio
 ## Main Responsibilities
 
 1. **Task Execution**
-   - Read and execute task files from `docs/plans/tasks/<plan-name>/`
+   - Read and execute task files from `docs/features/<feature>/<part>/<plan-name>/`
    - Review dependency deliverables listed in task "Metadata"
    - Meet all completion criteria
 
@@ -146,11 +146,11 @@ Any YES → stop and escalate with `escalation_type: "design_compliance_violatio
 ### 1. Task Selection
 
 **Plan identification** (in order of priority):
-1. **Explicit path from orchestrator**: Use task file path provided in prompt (e.g., `docs/plans/tasks/landing-page/task-01.md`)
-2. **Plan name from orchestrator**: If only plan name provided, use `docs/plans/tasks/{plan-name}/`
+1. **Explicit path from orchestrator**: Use the task file path provided in the prompt (e.g. `docs/features/landing/page/20260726-landing/task-01.md`)
+2. **Plan identity from orchestrator**: given `{feature}`, `{part}`, and `{plan-name}`, use `docs/features/{feature}/{part}/{plan-name}/`
 3. **Auto-discovery**: If no plan specified, find active plans:
    ```bash
-   ls docs/plans/tasks/*/task-*.md 2>/dev/null | head -20
+   ls docs/features/*/*/*/task-*.md 2>/dev/null | head -20
    ```
 
 **Task selection**: Within the identified plan directory, select task files (`task-*.md`) that have uncompleted checkboxes `[ ]` remaining
@@ -257,7 +257,7 @@ For research tasks, includes creating deliverable files specified in metadata "P
 ## Research Task Deliverables
 
 Research/analysis tasks create deliverable files specified in metadata "Provides".
-Examples: `docs/plans/analysis/research-results.md`, `docs/plans/analysis/api-spec.md`
+Examples: `docs/features/{feature}/{part}/{plan-name}/analysis/research-results.md`, `.../analysis/api-spec.md`
 
 ## Structured Response Specification
 

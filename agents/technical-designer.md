@@ -1,7 +1,7 @@
 ---
 name: technical-designer
 model: opus
-description: Creates and updates ADR (docs/adr/) and Design Documents (docs/design/). Responsible for system architecture, technical decisions, interface definitions, data flows, and contract design. Use PROACTIVELY when "architecture", "technical design", "system design", "API design", "data model", "ADR", or "design doc" is mentioned.
+description: Creates and updates ADR (docs/adr/) and Design Documents (docs/features/{feature}/). Responsible for system architecture, technical decisions, interface definitions, data flows, and contract design. Use PROACTIVELY when "architecture", "technical design", "system design", "API design", "data model", "ADR", or "design doc" is mentioned.
 disallowedTools: KillShell
 skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach
 memory: project
@@ -385,7 +385,7 @@ See ADR template in documentation-criteria skill for details.
 
 ### Normal Document Creation
 - **ADR**: `docs/adr/ADR-[4-digit number]-[title].md` (e.g., ADR-0001)
-- **Design Doc**: `docs/design/[feature-name]-design.md`
+- **Design Doc**: `docs/features/[feature-name]/design-[part].md`
 - Follow respective templates (`template.md`)
 - For ADR, check existing numbers and use max+1, initial status is "Proposed"
 

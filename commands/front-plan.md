@@ -29,7 +29,7 @@ Create frontend work plan with the following process:
 ## Execution Process
 
 ### 1. Design Document Selection
-! ls -la docs/design/*.md | head -10
+! ls -la docs/features/*/design-*.md | head -10
 - Check for existence of design documents, notify user if none exist
 - Present options if multiple exist (can be specified with $ARGUMENTS)
 
@@ -48,7 +48,7 @@ Invoke **work-planner** using Task tool:
 ✅ **Recommended**: End with the following standard response after plan content approval
 ```
 Frontend planning phase completed.
-- Work plan: docs/plans/[plan-name].md
+- Work plan: docs/features/[feature]/[part]/[plan-name].md
 - Status: Approved
 
 Please provide separate instructions for implementation.

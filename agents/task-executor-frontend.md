@@ -1,7 +1,7 @@
 ---
 name: task-executor-frontend
 model: inherit
-description: Executes frontend implementation completely self-contained following task files from docs/plans/tasks/<plan-name>/. Use when "frontend implementation/React implementation/component creation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
+description: Executes frontend implementation completely self-contained following task files from docs/features/<feature>/<part>/<plan-name>/. Use when "frontend implementation/React implementation/component creation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 disallowedTools: KillShell
 skills: typescript-rules, typescript-testing, frontend-ai-guide, implementation-approach
 memory: project
@@ -136,7 +136,7 @@ Any YES → stop and escalate with `escalation_type: "design_compliance_violatio
 ## Main Responsibilities
 
 1. **Task Execution**
-   - Read and execute task files from `docs/plans/tasks/<plan-name>/`
+   - Read and execute task files from `docs/features/<feature>/<part>/<plan-name>/`
    - Review dependency deliverables listed in task "Metadata"
    - Meet all completion criteria
 
@@ -150,11 +150,11 @@ Any YES → stop and escalate with `escalation_type: "design_compliance_violatio
 ### 1. Task Selection
 
 **Plan identification** (in order of priority):
-1. **Explicit path from orchestrator**: Use task file path provided in prompt (e.g., `docs/plans/tasks/landing-page/task-01.md`)
-2. **Plan name from orchestrator**: If only plan name provided, use `docs/plans/tasks/{plan-name}/`
+1. **Explicit path from orchestrator**: Use the task file path provided in the prompt (e.g. `docs/features/landing/page/20260726-landing/task-01.md`)
+2. **Plan name from orchestrator**: If only plan name provided, use `docs/features/{feature}/{part}/{plan-name}/`
 3. **Auto-discovery**: If no plan specified, find active plans:
    ```bash
-   ls docs/plans/tasks/*/task-*.md 2>/dev/null | head -20
+   ls docs/features/*/*/*/task-*.md 2>/dev/null | head -20
    ```
 
 **Task selection**: Within the identified plan directory, select task files (`task-*.md`) that have uncompleted checkboxes `[ ]` remaining
@@ -227,7 +227,7 @@ A per-adoption check applied each time an existing component pattern, hook, or d
 3. **Refactor**: Improve code quality (readability, maintainability, React best practices)
 4. **Progress Update [MANDATORY]**: Execute the following in sequence (cannot be omitted)
    4-1. **Task file**: Change completed item from `[ ]` → `[x]`
-   4-2. **Work plan**: Change same item from `[ ]` → `[x]` in corresponding plan in docs/plans/
+   4-2. **Work plan**: Change same item from `[ ]` → `[x]` in corresponding plan in docs/features/{feature}/{part}/
    4-3. **Overall design document**: Update corresponding item in progress section if exists
    ※After each Edit tool execution, proceed to next step
 5. **Test Execution**: Run only created tests and confirm they pass
@@ -246,7 +246,7 @@ For research tasks, includes creating deliverable files specified in metadata "P
 ## Research Task Deliverables
 
 Research/analysis tasks create deliverable files specified in metadata "Provides".
-Examples: `docs/plans/analysis/component-research.md`, `docs/plans/analysis/api-integration.md`
+Examples: `docs/features/{feature}/{part}/{plan-name}/analysis/component-research.md`, `.../analysis/api-integration.md`
 
 ## Structured Response Specification
 

@@ -45,7 +45,7 @@ Execute Skill: documentation-criteria (for task file template in Step 3)
 
 ```bash
 # Verify Design Doc exists
-ls $ARGUMENTS || ls docs/design/*.md | grep -v template | tail -1
+ls $ARGUMENTS || ls docs/features/*/design-*.md | grep -v template | tail -1
 ```
 
 ### Step 2: Skeleton Generation
@@ -59,7 +59,7 @@ Invoke acceptance-test-generator using Task tool:
 
 ### Step 3: Create Task File [GATE]
 
-Create task file at: `docs/plans/tasks/integration-tests-YYYYMMDD/task-01.md`
+Create task file at: `docs/features/{feature}/{part}/{plan-name}/integration-tests-YYYYMMDD/task-01.md`
 
 **Template**:
 ```markdown
@@ -97,7 +97,7 @@ Implement test cases defined in skeleton files.
 Invoke task-executor using Task tool:
 - `subagent_type`: "task-executor"
 - `description`: "Implement integration tests"
-- `prompt`: "Task file: docs/plans/tasks/integration-tests-YYYYMMDD/task-01.md. Implement tests following the task file."
+- `prompt`: "Task file: docs/features/{feature}/{part}/{plan-name}/integration-tests-YYYYMMDD/task-01.md. Implement tests following the task file."
 
 **Expected output**: `status`, `testsAdded`
 

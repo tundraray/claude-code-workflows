@@ -115,7 +115,7 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # First, generate PRD using backend-overture's /reverse-engineer
 # Then, generate frontend Design Docs from existing PRD:
 
-/front-reverse-design "docs/prd/my-feature-prd.md"
+/front-reverse-design "docs/features/my-feature/prd.md"
 
 # What happens:
 # 1. Uses existing PRD as basis

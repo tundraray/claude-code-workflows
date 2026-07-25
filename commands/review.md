@@ -34,7 +34,7 @@ Design Doc (uses most recent if omitted): $ARGUMENTS
 ### Step 1: Prerequisite Check
 ```bash
 # Identify Design Doc
-ls docs/design/*.md | grep -v template | tail -1
+ls docs/features/*/design-*.md | grep -v template | tail -1
 
 # Check implementation files
 git diff --name-only main...HEAD
@@ -86,7 +86,7 @@ Execute Skill: documentation-criteria (for task file template)
 
 ### Step 5: Create Task File
 
-Create task file at `docs/plans/tasks/review-fixes-YYYYMMDD/task-01.md`
+Create task file at `docs/features/{feature}/{part}/{plan-name}/review-fixes-YYYYMMDD/task-01.md`
 
 **Template**:
 ```markdown
@@ -124,7 +124,7 @@ Fix compliance issues identified by code-reviewer.
 Invoke task-executor using Task tool:
 - `subagent_type`: "task-executor"
 - `description`: "Execute review fixes"
-- `prompt`: "Task file: docs/plans/tasks/review-fixes-YYYYMMDD/task-01.md. Apply staged fixes (stops at 5 files)."
+- `prompt`: "Task file: docs/features/{feature}/{part}/{plan-name}/review-fixes-YYYYMMDD/task-01.md. Apply staged fixes (stops at 5 files)."
 
 **Expected output**: `status`, `filesModified`
 
