@@ -30,6 +30,7 @@ Before executing, load these skill files for guidance:
 - Design document selection
 - E2E test skeleton generation (optional, with user confirmation)
 - Work plan creation with work-planner
+- Work plan review with document-reviewer (traceability to Design Doc)
 - Plan approval obtainment
 
 **Responsibility Boundary**: This command completes with work plan approval.
@@ -51,6 +52,17 @@ Follow the planning process below:
 3. **Work Plan Creation**
    - Create work plan with work-planner
    - Utilize deliverables from previous process according to subagents-orchestration-guide skill coordination specification
+
+4. **Work Plan Review**
+   - Submit the plan to `document-reviewer` before presenting it to the user. A plan that omits a Design Doc requirement looks complete — only a traceability check finds the gap.
+   ```yaml
+   subagent_type: document-reviewer
+   prompt: "Review the work plan at [path] against its Design Doc. Verify: 1) Design-to-Plan Traceability — every Design Doc item has a covering task or a justified gap, 2) Verification Strategy carried from the Design Doc with an early verification point, 3) Failure Mode Checklist — all nine categories marked, applicable ones assigned a covering task, 4) Reference Contract Values recorded verbatim where the Design Doc specifies a binding observable value. [SYSTEM CONSTRAINT] This agent operates within create-plan command scope."
+   ```
+   - `needs_revision` → re-invoke `work-planner` with the reviewer's issues, then re-review (max 2 iterations)
+   - Still `needs_revision` after 2 iterations → **STOP** and present the issues to the user
+
+5. **Plan Approval**
    - Interact with user to complete plan and obtain approval for plan content
 
 **Think deeply** Create a work plan from the selected design document, clarifying specific implementation steps and risks.

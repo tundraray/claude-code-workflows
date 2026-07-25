@@ -76,8 +76,10 @@ The following subagents are available:
 12. **design-sync**: Design Doc consistency verification across multiple documents
 13. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
 14. **expert-analyst**: Parallel multi-perspective analysis from expert viewpoint (Security, API Design, Architecture, Performance, Data Modeling, Testability, Error Handling, UX Impact)
-15. **codebase-scanner**: Scans for dead code, orphan files, unused exports, and suspicious areas (read-only)
-16. **cleanup-executor**: Safely removes confirmed dead code with git backup and build verification
+15. **codebase-analyzer**: Read-only pre-design fact gathering — emits `fact_id`-anchored `focusAreas` the designer must address (backend/shared)
+16. **ui-analyzer**: Read-only pre-design UI fact gathering, including external design-resource fetch with per-resource `fetch_status` (frontend)
+17. **codebase-scanner**: Scans for dead code, orphan files, unused exports, and suspicious areas (read-only)
+18. **cleanup-executor**: Safely removes confirmed dead code with git backup and build verification
 
 ## Orchestration Principles
 
@@ -177,7 +179,7 @@ Autonomous execution MUST stop and wait for user input at these points.
 | UXRD | After document-reviewer completes UXRD review (if frontend/UI work) | Approve UXRD |
 | ADR | After document-reviewer completes ADR review (if ADR created) | Approve ADR |
 | Design | After design-sync completes consistency verification | Approve Design Doc |
-| Work Plan | After work-planner creates plan | Batch approval for implementation phase |
+| Work Plan | After document-reviewer completes work plan review | Batch approval for implementation phase |
 
 **After batch approval**: Autonomous execution proceeds without stops until completion or escalation
 
@@ -277,29 +279,35 @@ When `decidingAxis` is anything other than `files`, state it at the confirmation
 5. technical-designer(-frontend) → ADR creation (if architecture changes, new technology, or data flow changes)
 6. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
 7. [Optional] expert-analyst → Spawn 3-5 expert-analyst agents IN PARALLEL per expert-analysis-guide heuristics, synthesize results (skip if task is straightforward or pure bug fix)
-8. technical-designer(-frontend) → Design Doc creation (include expert analysis synthesis if performed)
-9. document-reviewer → Design Doc review
-10. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-11. acceptance-test-generator → Integration and E2E test skeleton generation
+8. codebase-analyzer (and ui-analyzer for frontend/UI work) → Read-only fact gathering → `focusAreas`
+9. technical-designer(-frontend) → Design Doc creation (consume `focusAreas` into the Fact Disposition Table; include expert analysis synthesis if performed)
+10. document-reviewer → Design Doc review
+11. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
+12. acceptance-test-generator → Integration and E2E test skeleton generation
     → Orchestrator: Verify generation, then pass information to work-planner (*1)
-12. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-13. **Start autonomous execution mode**: task-decomposer → Execute all tasks
-14. security-reviewer → Security compliance review (if `blocked` → halt and report; if `needs_revision` → create fix tasks via task-executor + quality-fixer)
-15. Completion report
+13. work-planner → Work plan creation (including integration and E2E test information)
+14. document-reviewer → Work plan review (traceability to Design Doc, Failure Mode Checklist coverage) **[Stop: Batch approval for entire implementation phase]**
+15. **Start autonomous execution mode**: task-decomposer → Execute all tasks
+16. Post-Implementation Verification → code-verifier + security-reviewer IN PARALLEL (pass/fail criteria and 2-cycle fix cap in that section)
+17. Final Cleanup → Delete consumed task files
+18. Completion report
 
 ### Medium Scale
 1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
 2. [Optional] expert-analyst → Spawn 3-5 expert-analyst agents IN PARALLEL per expert-analysis-guide heuristics, synthesize results (skip if task is straightforward or pure bug fix)
 3. ux-designer → UXRD creation (if frontend/UI work) → document-reviewer **[Stop: UXRD Approval]**
-4. technical-designer(-frontend) → Design Doc creation (include expert analysis synthesis if performed)
-5. document-reviewer → Design Doc review
-6. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-7. acceptance-test-generator → Integration and E2E test skeleton generation
+4. codebase-analyzer (and ui-analyzer for frontend/UI work) → Read-only fact gathering → `focusAreas`
+5. technical-designer(-frontend) → Design Doc creation (consume `focusAreas` into the Fact Disposition Table; include expert analysis synthesis if performed)
+6. document-reviewer → Design Doc review
+7. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
+8. acceptance-test-generator → Integration and E2E test skeleton generation
    → Orchestrator: Verify generation, then pass information to work-planner (*1)
-8. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-9. **Start autonomous execution mode**: task-decomposer → Execute all tasks
-10. security-reviewer → Security compliance review (if `blocked` → halt; if `needs_revision` → create fix tasks)
-11. Completion report
+9. work-planner → Work plan creation (including integration and E2E test information)
+10. document-reviewer → Work plan review (traceability to Design Doc, Failure Mode Checklist coverage) **[Stop: Batch approval for entire implementation phase]**
+11. **Start autonomous execution mode**: task-decomposer → Execute all tasks
+12. Post-Implementation Verification → code-verifier + security-reviewer IN PARALLEL (pass/fail criteria and 2-cycle fix cap in that section)
+13. Final Cleanup → Delete consumed task files
+14. Completion report
 
 ### Small Scale
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
