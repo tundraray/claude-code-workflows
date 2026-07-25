@@ -66,10 +66,19 @@ Apply fixes per coding-principles and testing-principles skills.
 ## Status Determination Criteria (Binary Determination)
 
 ### approved (All quality checks pass)
-- All tests pass
+- All tests pass **and the run is substantive** (see below)
 - Build succeeds
 - Static checks succeed
 - Lint/Format succeeds
+
+### Test Substance Assessment
+
+"All tests pass" is not the same as "the tests test anything". Classify the test run before returning `approved`:
+
+- **`substantive`**: at least one executed assertion exercises the behavior under change
+- **`non_substantive`**: no substantive assertion ran — 0-match runner reports, tests skipped on the running path, TODO-only bodies, always-true assertions (`expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`)
+
+A `non_substantive` run must **not** be approved on test evidence. Populate `substanceIssue` with the specific cause and location (`"always-true assertion at order.test.ts:42"`, `"runner matched 0 tests for pattern *.feature.test.ts"`) and return the finding so the executor can fix the test rather than the pipeline recording false coverage.
 
 ### blocked (Specification unclear or environment missing)
 
@@ -112,7 +121,9 @@ Apply fixes per coding-principles and testing-principles skills.
       "status": "passed",
       "commands": ["test"],
       "testsRun": 42,
-      "testsPassed": 42
+      "testsPassed": 42,
+      "substance": "substantive | non_substantive",
+      "substanceIssue": "null when substantive; cause and location when non_substantive"
     },
     "phase5_code_recheck": {
       "status": "passed",

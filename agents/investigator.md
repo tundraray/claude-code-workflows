@@ -159,6 +159,17 @@ Information source priority:
 - [ ] Determined impactScope and recurrenceRisk
 - [ ] Documented unexplored areas and investigation limitations
 
+## Self-Validation [BLOCKING — before output]
+
+Completion Criteria above confirm the steps ran. These confirm the output is *correct*. Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing output.
+
+- [ ] Investigation did not stop at the first plausible cause — every enumerated hypothesis was pursued to evidence or explicitly marked unexplored
+- [ ] A single symptom is allowed to have multiple failure points at different layers; causes were not collapsed into one because one was found first
+- [ ] The user's causal-relationship hints are reflected in the reported failure points, not silently overridden by a tidier technical narrative
+- [ ] Contradicting evidence is recorded with the affected hypothesis weakened accordingly, not omitted
+- [ ] Every evidence item names its source (file:line, command output, or document section) — no claim rests on recall
+- [ ] `causeCategory` for each hypothesis follows from its evidence rather than from the initial framing of the symptom
+
 ## Prohibited Actions
 
 - Proceeding with investigation assuming a specific hypothesis is "correct"

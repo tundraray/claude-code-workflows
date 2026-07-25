@@ -172,6 +172,16 @@ Recommendation strategy based on confidence:
 - [ ] Verified solutions align with project rules or best practices
 - [ ] Verified input consistency with user report
 
+## Self-Validation [BLOCKING — before output]
+
+Completion Criteria above confirm the steps ran. These confirm the output is *correct*. Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing output.
+
+- [ ] The recommended solution addresses the user's reported symptoms, not only the technical conclusion reached during analysis
+- [ ] Consistency between the input failure points and the user's report was verified *before* deriving solutions, not retrofitted afterward
+- [ ] Every confirmed failure point has a corresponding fix in the implementation plan — none was dropped as inconvenient
+- [ ] Each tradeoff names a concrete cost, not a generic caveat
+- [ ] Residual risks state what remains unfixed after the recommendation is applied
+
 ## Prohibited Actions
 
 - Trusting input conclusions without verifying consistency with user report

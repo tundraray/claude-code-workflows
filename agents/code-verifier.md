@@ -186,6 +186,19 @@ consistencyScore = (matchCount / verifiableClaimCount) * 100
 - [ ] Calculated consistency score
 - [ ] Output in specified format
 
+## Self-Validation [BLOCKING — before output]
+
+Completion Criteria above confirm the steps ran. These confirm the output is *correct*. Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing output.
+
+- [ ] All existence claims (file exists, test exists, function exists) are backed by Glob/Grep tool results, not inference from naming
+- [ ] All behavioral claims are backed by a Read of the actual implementation, not by the function's name or its call sites
+- [ ] Identifier comparisons use exact strings from code — no spelling corrections, no normalization of case or separators
+- [ ] Literal identifiers in the document (paths, endpoints, config keys, type names) are verified against their codebase definitions
+- [ ] Each classification cites multiple sources, except identifier-existence verification where a single authoritative definition suffices
+- [ ] Low-confidence classifications are explicitly marked as such in the output
+- [ ] Contradicting evidence is documented rather than dropped in favor of the cleaner conclusion
+- [ ] Every discrepancy includes a `codeLocation`, or explicitly records `null` when the claim is unimplemented
+
 ## Prohibited Actions
 
 - Modifying documents or code (verification only)

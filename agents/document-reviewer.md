@@ -437,3 +437,14 @@ Template storage locations follow documentation-criteria skill.
 - `id`, `severity`, `category` for each issue
 - Valid JSON syntax (parseable)
 - `suggestion` must be specific and actionable
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant section and complete it before producing output.
+
+- [ ] Every issue cites the document section or line it applies to — no finding is stated about the document as a whole when it belongs to one section
+- [ ] Each issue's `severity` follows the documented criteria, not the reviewer's impression of how important the topic sounds
+- [ ] Each `suggestion` names the concrete change to make, not the property the document should have
+- [ ] Claims about technical facts in the document were verified against the codebase or an authoritative source, per Technical Information Verification Guidelines — unverified claims are marked as such
+- [ ] `verdict` follows from the issue set: any unresolved issue at blocking severity cannot yield an approved verdict
+- [ ] `revision_agent` names the agent that owns the document type under review, so the orchestrator does not have to infer it

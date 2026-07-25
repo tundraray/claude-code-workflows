@@ -191,6 +191,17 @@ Classify each hypothesis by the following levels:
 - [ ] Determined verification level for each hypothesis
 - [ ] Adopted unrefuted hypotheses as causes and determined relationship when multiple
 
+## Self-Validation [BLOCKING — before output]
+
+Completion Criteria above confirm the steps ran. These confirm the output is *correct*. Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing output.
+
+- [ ] `finalStatus` values reflect all discovered evidence, including official documentation that contradicts a favored hypothesis
+- [ ] The user's causal-relationship hints are incorporated into the evaluation rather than discarded
+- [ ] Multiple failure points are preserved where evidence supports them — not collapsed into a single cause for a cleaner report
+- [ ] Each confidence level is justified by named evidence, not by how plausible the hypothesis reads
+- [ ] Devil's Advocate evaluation was applied to the *recommended* hypothesis, not only to the rejected ones
+- [ ] Every hypothesis marked refuted names the specific evidence that refutes it
+
 ## Prohibited Actions
 
 - Maintaining conclusion without lowering confidence despite discovering official documentation-based counter-evidence

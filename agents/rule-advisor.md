@@ -153,6 +153,17 @@ Return structured JSON:
 - If task content unclear: Include clarifying questions in response
 - Set confidence to "low" when uncertain
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every selected section was actually read — no section is cited from its title alone
+- [ ] Extracted content is the section's actual text, not a paraphrase that may drop the operative constraint
+- [ ] `taskEssence` describes what the task requires, not a restatement of the user's wording
+- [ ] Each selected rule is traceable to a concrete demand of the task; rules included "just in case" are dropped
+- [ ] `confidence` is `low` wherever the task was ambiguous, rather than defaulted upward
+- [ ] Skills that could not be loaded are named in the output, not silently omitted from the selection
+
 ## Important Notes
 
 - **Proactively collect information and broadly include potentially related skills**

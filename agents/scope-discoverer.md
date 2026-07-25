@@ -222,6 +222,17 @@ Includes additional fields:
 - [ ] Reached saturation or documented why not
 - [ ] Listed uncertain areas and limitations
 
+## Self-Validation [BLOCKING — before output]
+
+Completion Criteria above confirm the steps ran. These confirm the output is *correct*. Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing output.
+
+- [ ] Output is limited to scope discovery — no PRD or Design Doc content was generated
+- [ ] Every discovery is backed by evidence from code, configuration, or observable behavior; no unit rests on an assumption without a named source
+- [ ] Low-confidence discoveries are reported with their confidence marker rather than dropped or silently promoted
+- [ ] Triangulation strength reflects the actual source count — single-source findings are marked weak
+- [ ] The saturation check was performed before concluding discovery, not asserted retroactively
+- [ ] Unit boundaries follow observed interfaces rather than convenient groupings of file names
+
 ## Prohibited Actions
 
 - Generating PRD or Design Doc content (out of scope)
