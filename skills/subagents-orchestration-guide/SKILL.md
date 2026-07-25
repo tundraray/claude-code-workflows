@@ -139,7 +139,7 @@ Autonomous execution MUST stop and wait for user input at these points.
 **After batch approval**: Autonomous execution proceeds without stops until completion or escalation
 
 ## Scale Determination and Document Requirements
-| Scale | File Count | PRD | UXRD | ADR | Design Doc | Work Plan |
+| Scale | Typical file count※5 | PRD | UXRD | ADR | Design Doc | Work Plan |
 |-------|------------|-----|------|-----|------------|-----------|
 | Small | 1-2 | Update※1 | Not needed | Not needed | Not needed | Simplified |
 | Medium | 3-5 | Update※1 | Conditional※4 | Conditional※2 | **Required** | **Required** |
@@ -149,6 +149,7 @@ Autonomous execution MUST stop and wait for user input at these points.
 ※2: When there are architecture changes, new technology introduction, or data flow changes
 ※3: New creation/update existing/reverse PRD (when no existing PRD)
 ※4: When frontend/UI work is involved - UX Requirement Documentation for interaction patterns, accessibility, visual specs
+※5: File count is the typical range, not the rule. Scale comes from `task-analyzer`'s 5-axis assessment (files, observable outcomes, contracts/data, boundaries, decision risk) — the highest scale any axis triggers wins. A 2-file breaking contract change routes as Large.
 
 ## How to Call Subagents
 
@@ -221,7 +222,11 @@ Criteria for timing when to call each agent:
 When receiving new features or change requests, start with requirement-analyzer.
 According to scale determination:
 
-### Large Scale (6+ Files)
+**Scale is not file count alone.** `task-analyzer` evaluates five axes — files, observable outcomes, contracts/data, boundaries, decision risk — and reports the highest scale any axis triggers, along with `scaleRationale.decidingAxis` naming which one decided it. Route on that reported scale, not on a file count you estimate yourself.
+
+When `decidingAxis` is anything other than `files`, state it at the confirmation stop point: "6 files but routed as Large because this is a breaking contract change" is information the user needs in order to approve or override the routing. When the axis is `unknown` and could raise the scale, resolve it before routing rather than defaulting to the lower flow — the lower flow skips documents the higher scale requires.
+
+### Large Scale
 1. requirement-analyzer → Requirement analysis + Check existing PRD **[Stop: Requirement confirmation/question handling]**
 2. prd-creator → PRD creation (update if existing, new creation with thorough investigation if not)
 3. document-reviewer → PRD review **[Stop: PRD Approval]**
@@ -239,7 +244,7 @@ According to scale determination:
 14. security-reviewer → Security compliance review (if `blocked` → halt and report; if `needs_revision` → create fix tasks via task-executor + quality-fixer)
 15. Completion report
 
-### Medium Scale (3-5 Files)
+### Medium Scale
 1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
 2. [Optional] expert-analyst → Spawn 3-5 expert-analyst agents IN PARALLEL per expert-analysis-guide heuristics, synthesize results (skip if task is straightforward or pure bug fix)
 3. ux-designer → UXRD creation (if frontend/UI work) → document-reviewer **[Stop: UXRD Approval]**
@@ -253,7 +258,7 @@ According to scale determination:
 10. security-reviewer → Security compliance review (if `blocked` → halt; if `needs_revision` → create fix tasks)
 11. Completion report
 
-### Small Scale (1-2 Files)
+### Small Scale
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
 2. **Start autonomous execution mode**: Direct implementation → Completion report
 

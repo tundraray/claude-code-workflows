@@ -20,9 +20,21 @@ description: This skill should be used when the user asks to "create a PRD", "wr
 |-----------|-------------------|----------------|
 | New Feature Addition | PRD → [ADR] → Design Doc → Work Plan | After PRD approval |
 | ADR Conditions Met (see below) | ADR → Design Doc → Work Plan | Start immediately |
-| 6+ Files | ADR → Design Doc → Work Plan (Required) | Start immediately |
-| 3-5 Files | Design Doc → Work Plan (Recommended) | Start immediately |
-| 1-2 Files | None | Direct implementation |
+| Large scale | ADR → Design Doc → Work Plan (Required) | Start immediately |
+| Medium scale | Design Doc → Work Plan (Recommended) | Start immediately |
+| Small scale | None | Direct implementation |
+
+**File count is one scale signal, not the deciding rule.** Contract, data, boundary, and decision risk can each raise the scale on their own — a two-file change that breaks a public contract or migrates persisted data is not a small-scale change. Take the scale and its `decidingAxis` from `task-analyzer`'s 5-axis assessment; where no analysis is available, evaluate the axes directly:
+
+| Axis | Small | Medium | Large |
+|------|-------|--------|-------|
+| Estimated files | 1-2 | 3-5 | 6+ |
+| Observable outcomes | One behavior | Multiple related behaviors | Multiple independently verifiable outcomes |
+| Contracts/data | No public contract or persisted-data change | Backward-compatible contract change | Breaking contract, schema migration, or persisted-data migration |
+| Boundaries | One local module/component | Multiple modules in one layer | Cross-layer, cross-service, or external-system boundary |
+| Decision risk | Existing pattern applies directly | One bounded technical decision | Architecture, security, compliance, or irreversible operational decision |
+
+Select the highest scale triggered by any observed axis.
 
 ## ADR Creation Conditions (Required if Any Apply)
 
