@@ -100,9 +100,52 @@ Assign work based on each subagent's responsibilities:
 
 **Important**: Subagents cannot directly call other subagents—all coordination flows through the orchestrator.
 
+### Delegation Boundary: What vs How
+
+Pass **what to accomplish** and **where to work**. Each specialist determines **how to execute** autonomously. Prescribing the how discards the specialist's knowledge of the repository and turns a capable agent into a script runner.
+
+**Pass to specialists** (what / where / constraints):
+- Task file path — executor agents (task-executor, task-decomposer); broader scope requires an explicit user request
+- Target directory or package scope — discovery and review agents (code-verifier, security-reviewer, integration-test-reviewer)
+- Acceptance criteria and hard constraints from the user or design artifacts
+
+**Let specialists determine** (how):
+- Which commands to run — they discover these from project configuration and repo conventions
+- Execution order and tool flags
+- Executor/fixer agents: which files to inspect or modify within the given scope
+- Review/discovery agents: which files to inspect within the given scope
+
+| | Bad (prescribing how) | Good (passing what) |
+|---|---|---|
+| quality-fixer | "Run these checks: 1. lint 2. test" | "Execute all quality checks and fixes" |
+| task-executor | "Edit file X and add handler Y" | "Task file: docs/plans/tasks/feature/task-03.md" |
+
+### Decision Precedence When Outputs Conflict
+
+When two specialists disagree, or a specialist contradicts the orchestrator's expectation, resolve in this order:
+
+1. **User instructions** — explicit requests or constraints
+2. **Task files and design artifacts** — Design Doc, PRD, work plan
+3. **Objective repo state** — git status, file system, project configuration
+4. **Specialist judgment**
+
+Verify against objective repo state (3) rather than picking the more confident-sounding output. Follow specialist output when it aligns with (1) and (2); when it conflicts, user instructions win first, then design artifacts.
+
 ### Orchestrator Never Writes Directly
 
 **All document and code operations MUST go through agents.**
+
+The orchestrator coordinates using only these tools:
+
+| Tool | Purpose |
+|------|---------|
+| Agent / Task | Invoke subagents |
+| AskUserQuestion | User confirmations and questions |
+| TodoWrite, TaskCreate / TaskUpdate | Progress tracking |
+| Bash | Shell operations (git commit, ls, verification commands) |
+| Read | Deliverable documents, for information bridging between subagents |
+
+Edit, Write, and MultiEdit are performed by subagents, never by the orchestrator.
 
 ### File Ownership by Agent
 
