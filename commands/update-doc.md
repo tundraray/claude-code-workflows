@@ -14,11 +14,12 @@ This command orchestrates the update of existing design documents. It NEVER edit
 ### First Action
 Register execution steps to TodoWrite before any execution:
 1. Target document identification
-2. Document type determination
+2. Document type and layer determination
 3. Change clarification (STOP for user input)
-4. Document update via appropriate agent
-5. Review via document-reviewer (STOP for approval)
-6. Consistency verification via design-sync (STOP if Design Doc)
+4. Document update via layer-appropriate agent
+5. Code verification via code-verifier (Design Doc only)
+6. Review via document-reviewer (STOP for approval)
+7. Consistency verification via design-sync (STOP if Design Doc)
 
 ## Requirements
 
@@ -43,15 +44,23 @@ ADR: docs/adr/*.md
 If multiple documents found → present list and **STOP** for user selection.
 If no documents found → report and exit.
 
-### Step 2: Document Type Determination
+### Step 2: Document Type and Layer Determination
 
-Determine the document type from path or content:
+Determine the document type from path or content, then determine the layer to select the correct update agent:
 
 | Path Pattern | Document Type | Update Agent | Review Required |
 |---|---|---|---|
-| `docs/design/*.md` | Design Doc | technical-designer | document-reviewer + design-sync |
+| `docs/design/*.md` | Design Doc | technical-designer or technical-designer-frontend | document-reviewer + design-sync |
 | `docs/prd/*.md` | PRD | prd-creator | document-reviewer |
-| `docs/adr/*.md` | ADR | technical-designer | document-reviewer |
+| `docs/adr/*.md` | ADR | technical-designer or technical-designer-frontend | document-reviewer |
+
+**Layer detection** (Design Doc and ADR only):
+
+Read the document and determine its layer from content signals:
+- **Frontend** (→ `technical-designer-frontend`): title/scope mentions React, components, UI, or frontend; or the file contains a component hierarchy, state management, or UI interaction sections
+- **Backend** (→ `technical-designer`): all other cases (API, data layer, business logic, infrastructure)
+
+Record the resolved agent as `$UPDATE_AGENT` and use it in Step 4.
 
 ### Step 3: Change Clarification
 
@@ -68,7 +77,7 @@ Call the appropriate agent based on document type:
 
 **For Design Doc:**
 ```yaml
-subagent_type: technical-designer
+subagent_type: $UPDATE_AGENT   # technical-designer or technical-designer-frontend, resolved in Step 2
 prompt: "Update the Design Doc at [path]. Required changes: [user's changes from Step 3]. Preserve existing approved content. Only modify sections affected by the changes. [SYSTEM CONSTRAINT] This agent operates within update-doc command scope. Do not create new documents or modify requirements."
 ```
 
@@ -80,7 +89,7 @@ prompt: "Update the PRD at [path]. Required changes: [user's changes from Step 3
 
 **For ADR:**
 ```yaml
-subagent_type: technical-designer
+subagent_type: $UPDATE_AGENT   # technical-designer or technical-designer-frontend, resolved in Step 2
 prompt: "Update the ADR at [path]. For minor changes: update relevant sections. For major changes: consider creating a new ADR that supersedes this one. Required changes: [user's changes from Step 3]. [SYSTEM CONSTRAINT] This agent operates within update-doc command scope."
 ```
 
@@ -93,6 +102,22 @@ prompt: "Update the ADR at [path]. For minor changes: update relevant sections. 
 | Major (decision reversal) | Create new ADR with status "Supersedes ADR-XXX" |
 
 ### Step 5: Document Review
+
+**For Design Doc updates only** — before `document-reviewer`, invoke `code-verifier`:
+
+```yaml
+subagent_type: code-verifier
+prompt: |
+  doc_type: design-doc
+  document_path: [path from Step 1]
+  Verify the updated Design Doc against the current codebase.
+
+  Verification focus: literal identifier referential integrity in the updated
+  sections (paths, endpoints, type names, config keys).
+  [SYSTEM CONSTRAINT] This agent operates within update-doc command scope.
+```
+
+Store output as `$CODE_VERIFICATION_OUTPUT` and pass it to `document-reviewer` below.
 
 **STOP** — Submit updated document for review:
 

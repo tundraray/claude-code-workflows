@@ -27,6 +27,37 @@ Work plan: $ARGUMENTS
 
 ## 📋 Pre-execution Prerequisites
 
+### Work Plan Resolution
+
+Before any task processing, locate the work plan. This recipe is the **frontend** build lane — it routes to `task-executor-frontend` and must never pick up a backend plan.
+
+**When `$ARGUMENTS` is provided**, it is the work plan path supplied by the user. Use it directly without auto-resolution. Extract `{plan-name}` from the filename by stripping the `.md` extension (and any trailing `-plan` suffix when present).
+
+**When `$ARGUMENTS` is empty**, auto-resolve from task files:
+
+1. List task files in `docs/plans/tasks/` matching this recipe's consumable pattern:
+   - `{plan-name}-frontend-task-*.md` (frontend portion of a plan)
+   - `{plan-name}-task-*.md` and `{plan-name}-backend-task-*.md` are **not** consumable here — the unqualified form is reserved for backend by the routing table, and both route to `task-executor`
+2. Exclude files originating from other workflow phases: `*-task-prep-*.md`, `_overview-*.md`, `*-phase*-completion.md`, `review-fixes-*.md`, `integration-tests-*-task-*.md`
+3. For each remaining file, extract `{plan-name}` by stripping the trailing `-frontend-task-{NN}.md` suffix
+4. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix with the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
+5. **When no frontend task files exist but `*-task-*.md` or `*-backend-task-*.md` files do**: stop and report — "Only backend-named task files were found. If you intended the backend build, run `/build`. If the plan is frontend, re-run task-decomposer so it emits frontend-named task files, or pass the work plan path as `$ARGUMENTS`."
+6. When neither matches, fall back to the most-recent-mtime non-template `.md` in `docs/plans/` **only after positively verifying the plan is a frontend plan**. Absence of backend markers is not sufficient — many plan templates use layer-neutral paths (`src/presentation`, `src/app`) matching neither marker set, so a confirmed frontend signal is required.
+
+   **Frontend signals (need at least one)**:
+   - `## Related Documents` references a UI Spec / UXRD (`docs/ui-spec/*`, `docs/uxrd/*`) or a Design Doc whose filename identifies it as frontend (`*-frontend-design.md`, `frontend-*-design.md`)
+   - A `## UI Spec Component → Task Mapping` section is present
+   - Target Files under `## Impact Scope > ### Target Files` match frontend markers exclusively: `**/components/**`, `**/pages/**`, `**/web/**`, `**/*.tsx`, `**/*.jsx`, or the project's frontend-equivalent paths declared in the `technical-spec` skill
+   - Plan title, `## Objective`, or `## Background` explicitly identifies the work as frontend ("React component", "screen", "UI")
+
+   **Backend signals (any one disqualifies, even alongside a frontend signal)**:
+   - Target Files exclusively under `**/api/**`, `**/server/**`, `**/services/**`, `**/backend/**`, `**/handlers/**`, `**/repositories/**`
+   - `## Related Documents` pointing to a backend-named Design Doc
+   - Title or objective mentioning API endpoints, database migrations, or server-side work
+
+   **Decision**: at least one frontend signal AND zero backend signals → proceed. Otherwise stop and report which signals were checked and their results, then ask for an explicit plan path.
+7. When no plan exists in `docs/plans/` at all, stop and report: "No work plan found. Pass a work plan path as `$ARGUMENTS`, or complete the planning phase first."
+
 ### Task File Existence Check
 ```bash
 # Check work plans

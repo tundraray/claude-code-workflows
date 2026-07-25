@@ -201,6 +201,17 @@ Never include sensitive information (password, token, apiKey, secret, creditCard
 - Error Boundary setup mandatory: Catch rendering errors
 - Use try-catch with all async/await in event handlers
 - Always log and re-throw errors or display error state
+- **Effect race/cleanup**: guard `useEffect` data fetches against out-of-order responses and post-unmount state updates — abort or ignore stale results (`AbortController` or a mounted flag), or use a server-state library (React Query/SWR) that cancels and dedupes. `try-catch` alone does not cover this: a settled-but-stale response is not an error, so nothing throws and the newer result gets overwritten by the older one.
+
+```typescript
+useEffect(() => {
+  const controller = new AbortController()
+  fetchUser(id, { signal: controller.signal })
+    .then(setUser)
+    .catch((e) => { if (e.name !== 'AbortError') setError(e) })
+  return () => controller.abort()
+}, [id])
+```
 
 ## Refactoring Techniques
 

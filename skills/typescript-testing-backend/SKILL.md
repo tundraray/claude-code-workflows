@@ -17,23 +17,21 @@ description: This skill provides backend testing rules with Vitest, real DB/API 
 
 ### Quality Requirements
 
-- **Coverage**: Unit test coverage must be 70% or higher (backend standard)
+- **Coverage**: Assert the named acceptance result, public branch, or failure state on critical paths and high-reuse units. Treat coverage as a signal for finding untested areas, not as a target — a target gets gamed into trivial tests. Any enforced numeric threshold is the project's CI/coverage config, not a goal in itself.
 - **Independence**: Each test can run independently without depending on other tests
-- **Reproducibility**: Tests are environment-independent and always return the same results
-- **Readability**: Test code maintains the same quality as production code
+- **Reproducibility**: Control time, randomness, environment values, and external responses so identical inputs produce the same observable result
+- **Readability**: Each test names one behavior, separates arrange/act/assert, and keeps fixtures limited to values used by that behavior
 
-### Coverage Requirements
+### Where to concentrate test rigor
 
-**Mandatory**: Unit test coverage must be 70% or higher
+Cover public branches, error states, and boundary contracts on units whose regression blast radius is widest. Read coverage reports as a map of where to look first, in roughly this order of payoff:
 
-**Layer-specific targets**:
-- Services (Business Logic): 80% or higher
-- Controllers (API Layer): 70% or higher
-- Repositories (Data Access): 60% or higher — focus on custom query methods
-- Utils/Helpers: 80% or higher
-- Guards/Interceptors/Pipes: 70% or higher
+- **Services (business logic)** and **Utils/Helpers** — highest reuse, most branch logic; a gap here is almost always a real finding
+- **Guards/Interceptors/Pipes** — cross-cutting, so a defect reaches every route that uses them
+- **Controllers (API layer)** — thin by design; verify contract shape and error mapping rather than chasing a number
+- **Repositories (data access)** — concentrate on custom query methods; generated CRUD rarely repays unit tests and is better served by integration tests
 
-**Metrics**: Statements, Branches, Functions, Lines
+**Metrics** (what coverage reports break down): Statements, Branches, Functions, Lines
 
 ### Test Types and Scope
 

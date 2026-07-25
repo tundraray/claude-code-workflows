@@ -10,27 +10,24 @@ description: This skill provides frontend testing rules with Vitest, React Testi
 - **React Testing Library**: For component testing
 - **MSW (Mock Service Worker)**: For API mocking
 - Test imports: `import { describe, it, expect, beforeEach, vi } from 'vitest'`
-- Component test imports: `import { render, screen, fireEvent } from '@testing-library/react'`
+- Component test imports: `import { render, screen } from '@testing-library/react'`
+- User interaction: `import userEvent from '@testing-library/user-event'`
 - Mock creation: Use `vi.mock()`
 
 ## Basic Testing Policy
 
 ### Quality Requirements
-- **Coverage**: Unit test coverage must be 60% or higher (Frontend standard 2025)
+- **Coverage**: Assert the named acceptance result, public branch, or failure state on critical paths and high-reuse components. Treat coverage as a signal for finding untested areas, not as a target — a target gets gamed into trivial tests. Any enforced numeric threshold is the project's CI/coverage config, not a goal in itself.
 - **Independence**: Each test can run independently without depending on other tests
-- **Reproducibility**: Tests are environment-independent and always return the same results
-- **Readability**: Test code maintains the same quality as production code
+- **Reproducibility**: Control time, randomness, environment values, network responses, and browser state so identical inputs produce the same observable result
+- **Readability**: Each test names one user-visible behavior, separates setup/action/assertion, and keeps fixtures limited to values used by that behavior
 
-### Coverage Requirements (ADR-0002 Compliant)
-**Mandatory**: Unit test coverage must be 60% or higher
-**Component-specific targets**:
-- Atoms (Button, Text, etc.): 70% or higher
-- Molecules (FormField, etc.): 65% or higher
-- Organisms (Header, Footer, etc.): 60% or higher
-- Custom Hooks: 65% or higher
-- Utils: 70% or higher
+### Where to concentrate test rigor
+For shared components, custom hooks, and utilities reused across features, cover their public branches, error states, and boundary contracts — their regression blast radius is wider. Verify page-level composition through integration/E2E tests when the behavior depends on multiple rendered units.
 
-**Metrics**: Statements, Branches, Functions, Lines
+Read coverage reports as a map of where to look first, in roughly this order of payoff: Utils and Atoms (highest reuse), then Custom Hooks and Molecules, then Organisms (usually better covered by integration tests). A low number on a high-reuse unit is a finding; a low number on a thin composition wrapper often is not.
+
+**Metrics** (what coverage reports break down): Statements, Branches, Functions, Lines
 
 ### Test Types and Scope
 1. **Unit Tests (React Testing Library)**
@@ -139,7 +136,7 @@ src/
 
 **Rationale**:
 - React Testing Library best practice
-- ADR-0002 Co-location principle
+- Co-location: a test lives next to the unit it covers, so a moved or deleted component takes its test with it
 - Easy to find and maintain tests alongside implementation
 
 ### Naming Conventions
@@ -195,12 +192,16 @@ expect(screen.getByText('Submitted')).toBeInTheDocument()
 ### Meaningful Assertions
 Every test must include at least one `expect()` that validates observable behavior.
 ```typescript
-it('displays error message on invalid input', () => {
+it('displays error message on invalid input', async () => {
+  const user = userEvent.setup()
   render(<Form />)
-  fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
-  expect(screen.getByText('Required field')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Submit' }))
+  expect(await screen.findByText('Required field')).toBeInTheDocument()
 })
 ```
+
+### Async UI
+Await async UI with `findBy*` rather than asserting immediately after an interaction. `userEvent` methods return promises and must be awaited — an un-awaited interaction produces assertions that race the render.
 
 ### Appropriate Mock Scope
 Mock only direct external I/O dependencies (API clients, database connections). Internal utilities should use real implementations.
@@ -214,15 +215,20 @@ vi.mock('./lib/database') // External I/O - mock
 
 ### MSW (Mock Service Worker) Setup
 ```typescript
-// ✅ Type-safe MSW handler
-import { rest } from 'msw'
+// ✅ Type-safe MSW handler (MSW v2)
+import { http, HttpResponse } from 'msw'
 
 const handlers = [
-  rest.get('/api/users/:id', (req, res, ctx) => {
-    return res(ctx.json({ id: '1', name: 'John' } satisfies User))
+  http.get('/api/users/:id', () => {
+    return HttpResponse.json({ id: '1', name: 'John' } satisfies User)
   })
 ]
+
+// Error state: override the handler for one test
+server.use(http.get('/api/users', () => new HttpResponse(null, { status: 500 })))
 ```
+
+MSW v2 replaced v1's `rest` / `res(ctx.json(...))` API. Check the installed major version before writing handlers — v1 syntax fails outright on v2.
 
 ### Component Mock Type Safety
 ```typescript
@@ -244,14 +250,16 @@ Limited to verifying existing feature impact when adding new features. Long-term
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Button } from './Button'
 
 describe('Button', () => {
-  it('should call onClick when clicked', () => {
+  it('should call onClick when clicked', async () => {
+    const user = userEvent.setup()
     const onClick = vi.fn()
     render(<Button label="Click me" onClick={onClick} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Click me' }))
+    await user.click(screen.getByRole('button', { name: 'Click me' }))
     expect(onClick).toHaveBeenCalledOnce()
   })
 })
