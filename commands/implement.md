@@ -208,7 +208,24 @@ The per-task quality cycle checks tasks in isolation. It cannot detect drift bet
    - `task-executor` in **Fix Mode** → `quality-fixer` → re-run **only** the failed verifiers
    - No progress in a cycle, or findings remaining after cycle 2 → escalate to user
 
-4. **All passed** → include any `approved_with_notes` security notes in the completion report and proceed.
+4. **All passed** → include any `approved_with_notes` security notes in the completion report and proceed to Final Cleanup.
+
+### Final Cleanup
+
+Before the completion report, delete the implementation task files this run consumed. Their work is committed; `docs/plans/tasks/` is ephemeral working state and is not retained between runs.
+
+This command may drive both layers, so cleanup covers every layer-naming pattern for the `{plan-name}` it executed:
+
+- `docs/plans/tasks/{plan-name}-task-*.md`
+- `docs/plans/tasks/{plan-name}-backend-task-*.md`
+- `docs/plans/tasks/{plan-name}-frontend-task-*.md`
+- `docs/plans/tasks/{plan-name}-phase*-completion.md`
+- `docs/plans/tasks/_overview-{plan-name}.md`
+- The consolidated fix task file from the verification cycle, if one was created
+
+**Preserve** the work plan (`docs/plans/{plan-name}.md`) and all documents under `docs/design/`, `docs/prd/`, `docs/adr/` — those are durable artifacts, not working state.
+
+If deletion fails (filesystem error), report the failure but do not block the completion report.
 
 ### Test Information Communication
 After acceptance-test-generator execution, when calling work-planner, communicate:

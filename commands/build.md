@@ -64,6 +64,15 @@ Before any task processing, locate the work plan. This recipe is the **backend**
    **Decision**: at least one backend signal AND zero frontend signals → proceed. Otherwise stop and report which signals were checked and their results, then ask for an explicit plan path.
 7. When no plan exists in `docs/plans/` at all, stop and report: "No work plan found. Pass a work plan path as `$ARGUMENTS`, or complete the planning phase first."
 
+### Consumed Task Set
+
+Compute the **Consumed Task Set** — the exact files this run owns, executes, and later deletes:
+
+1. List task files in `docs/plans/tasks/` matching `{plan-name}-task-*.md` OR `{plan-name}-backend-task-*.md` for the `{plan-name}` resolved above. `{plan-name}-frontend-task-*.md` is excluded — it is owned by `/front-build`.
+2. Exclude every file matching `*-task-prep-*.md`, `_overview-*.md`, `*-phase*-completion.md`, `review-fixes-*.md`, `integration-tests-*-task-*.md` — these originate from other workflow phases and are not implementation tasks for this run.
+
+Every subsequent reference to "task files" in this command — the decision flow below, the execution cycle, and Final Cleanup — means this set, **not** the unrestricted `docs/plans/tasks/*.md` glob.
+
 ### Task File Existence Check
 ```bash
 # Check work plans
@@ -154,7 +163,18 @@ The per-task quality cycle checks tasks in isolation and cannot detect Design Do
 
 3. **Fix cycle** (any verifier failed, max 2 cycles) — follow the normalization rules, Target Files union, and re-run rule defined in that same skill section. Escalate to the user when a cycle makes no progress or when findings remain after cycle 2.
 
-4. **All passed** → proceed to the completion report.
+4. **All passed** → proceed to Final Cleanup.
+
+## Final Cleanup
+
+Before the completion report, delete the implementation task files this run consumed. Their work is committed; `docs/plans/tasks/` is ephemeral working state and is not retained between runs.
+
+- Delete every file in the Consumed Task Set
+- Delete `docs/plans/tasks/{plan-name}-phase*-completion.md` (per-phase completion files for this `{plan-name}`)
+- Delete `docs/plans/tasks/_overview-{plan-name}.md` if present
+- **Preserve** the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
+
+If deletion fails (filesystem error), report the failure but do not block the completion report.
 
 ## Responsibility Boundary
 
