@@ -156,10 +156,23 @@ Interface Change Matrix:
 
 ## Creation Process
 
-1. **Problem Analysis**: Change scale assessment, ADR condition check
-2. **ADR Option Consideration** (ADR only): Compare 3+ options, specify trade-offs
-3. **Creation**: Use templates, include measurable conditions
-4. **Approval**: "Accepted" after review enables implementation
+Each step names the evidence that must exist before the next step starts. A step without its output evidence has not completed, regardless of elapsed effort.
+
+**1. Problem Analysis** — change scale assessment, ADR condition check
+- *Output evidence*: confirmed scale with its deciding axis named; a named source for each existing document consulted
+- *Transition*: proceed when the scale and every applicable ADR condition have an explicit yes/no
+
+**2. ADR Option Consideration** (ADR only) — compare 3+ options, specify trade-offs
+- *Output evidence*: at least 3 options with trade-offs stated as concrete costs, not generic caveats
+- *Transition*: proceed when the selected option names what the rejected options fail to satisfy
+
+**3. Creation** — use templates, include measurable conditions
+- *Output evidence*: every required template section either filled or explicitly marked N/A with rationale; every acceptance criterion measurable
+- *Transition*: proceed when no section is silently empty — an unanswered question is not the same as an inapplicable one
+
+**4. Approval** — "Accepted" after review enables implementation
+- *Output evidence*: reviewer verdict recorded; every blocking issue resolved or explicitly deferred with justification
+- *Transition*: implementation begins only on an approved verdict
 
 ## Storage Locations
 
