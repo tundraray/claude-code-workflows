@@ -74,7 +74,6 @@
     "./agents/technical-artist.md",
     "./agents/ui-ux-agent.md",
     "./agents/security-reviewer.md",
-    "./agents/ui-spec-designer.md",
     "./agents/game-researcher.md"
   ],
   "skills": [

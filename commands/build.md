@@ -56,8 +56,8 @@ Before any task processing, locate the work plan. This recipe is the **backend**
    - Plan title, `## Objective`, or `## Background` explicitly identifies the work as backend ("API endpoint", "database migration", "server-side")
 
    **Frontend signals (any one disqualifies, even alongside a backend signal)**:
-   - `## Related Documents` pointing to `docs/ui-spec/*` or `docs/uxrd/*`
-   - A `## UI Spec Component → Task Mapping` section
+   - `## Related Documents` pointing to `docs/uxrd/*`
+   - A `## UXRD Component → Task Mapping` section
    - Target Files exclusively under `**/components/**`, `**/pages/**`, `**/web/**`, `**/*.tsx`, `**/*.jsx`
    - Title or objective mentioning React, UI components, screens, or frontend
 

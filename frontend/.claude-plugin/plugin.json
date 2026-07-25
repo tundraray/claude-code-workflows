@@ -67,8 +67,8 @@
     "./agents/ux-designer.md",
     "./agents/verifier.md",
     "./agents/work-planner.md",
-    "./agents/security-reviewer.md",
-    "./agents/ui-spec-designer.md"
+    "./agents/security-reviewer.md"
+
   ],
   "skills": [
     "./skills/ai-development-guide",

@@ -277,6 +277,10 @@ Also add `CHANGELOG.md` (Keep a Changelog format) at repo root — we have none,
 
 Scope decisions taken during implementation are recorded inline below as **rejected** or **resolved**; the rest remain open.
 
+**`ui-spec-designer` removed.** Reviewing whether `ui-analyzer` duplicated an existing agent surfaced that it did not overlap `ux-designer` (one reads, the other writes, and `ux-designer` reads code only in its Playwright-based reverse mode) but did overlap `ui-spec-designer` on state matrices and existing-component discovery. `ui-spec-designer` was invoked by no command or flow, targeted `docs/ui-spec/` for which this repo has no template, and was undocumented — orphaned independently of this work. Deleted and unregistered; the repository now has one reader/writer pair per layer, matching the backend shape.
+
+**Known limitation of `ui-analyzer`.** Its External Resource Discovery/Fetch steps read a `## External Resources` section of `project-context` that does not exist yet — that section is produced by the deferred `/project-inject` work. The agent degrades correctly (records `status: not_recorded` and continues with codebase-only analysis), but its design-system/Figma fetch capability stays dormant until `/project-inject` lands.
+
 **Skill-authoring commands moved out of the plugins.** `/create-skill` and `/refine-skill` now live in this repository's `.claude/commands/` rather than shipping in all four plugins. They are meta-work on the marketplace itself, not something a consuming project needs from `backend-overture`. Their `${CLAUDE_PLUGIN_ROOT}/skills/...` loads were rewritten to repo-relative paths, since that variable resolves only for plugin-scoped commands. `/sync-skills` stays in the plugins — a consuming project genuinely needs it. `skill-optimization` and `rule-editing-guide` stay registered: `rule-advisor` can select them for a project writing its own skills, independently of any command.
 
 Each needs a prerequisite decision or a dependency that does not exist yet.

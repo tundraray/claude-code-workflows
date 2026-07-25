@@ -96,7 +96,7 @@ Use the appropriate run command based on the `packageManager` field in package.j
 
 ### Step4: Core Mechanism Preservation Check (Any YES → Immediate Escalation)
 
-Preserve the core mechanism the task, AC, Design Doc, or UI Spec requires. Implementation details (variable names, internal ordering, local JSX structure) stay free to change; the required mechanism itself stays intact.
+Preserve the core mechanism the task, AC, Design Doc, or UXRD requires. Implementation details (variable names, internal ordering, local JSX structure) stay free to change; the required mechanism itself stays intact.
 
 □ Required core mechanism replaced by a simpler or weaker substitute? (**passing tests do not make a substitute acceptable** — e.g. replacing a required optimistic-update flow with a plain refetch still satisfies a render assertion while losing the specified behavior)
 □ Required core mechanism infeasible as specified?

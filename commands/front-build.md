@@ -45,8 +45,8 @@ Before any task processing, locate the work plan. This recipe is the **frontend*
 6. When neither matches, fall back to the most-recent-mtime non-template `.md` in `docs/plans/` **only after positively verifying the plan is a frontend plan**. Absence of backend markers is not sufficient — many plan templates use layer-neutral paths (`src/presentation`, `src/app`) matching neither marker set, so a confirmed frontend signal is required.
 
    **Frontend signals (need at least one)**:
-   - `## Related Documents` references a UI Spec / UXRD (`docs/ui-spec/*`, `docs/uxrd/*`) or a Design Doc whose filename identifies it as frontend (`*-frontend-design.md`, `frontend-*-design.md`)
-   - A `## UI Spec Component → Task Mapping` section is present
+   - `## Related Documents` references a UXRD (`docs/uxrd/*`) or a Design Doc whose filename identifies it as frontend (`*-frontend-design.md`, `frontend-*-design.md`)
+   - A `## UXRD Component → Task Mapping` section is present
    - Target Files under `## Impact Scope > ### Target Files` match frontend markers exclusively: `**/components/**`, `**/pages/**`, `**/web/**`, `**/*.tsx`, `**/*.jsx`, or the project's frontend-equivalent paths declared in the `technical-spec` skill
    - Plan title, `## Objective`, or `## Background` explicitly identifies the work as frontend ("React component", "screen", "UI")
 
