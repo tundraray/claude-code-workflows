@@ -372,11 +372,11 @@ These belong in Technical Design documents. UXRD should focus solely on "how use
 - Ensure terminology consistency across UI
 - Follow established patterns
 
-## Sequential Thinking for Complex UX
+## Deep Analysis for Complex UX
 
 When creating UXRD, first rely on PRD, existing UXRDs, and project documentation.
 
-Use sequential-thinking MCP for deep analysis when:
+Reason step by step before writing the UXRD when:
 
 - **Multi-step user journeys** — conflicting user goals at different stages
 - **Cross-screen scenarios** — many states, edge cases, transitions
@@ -408,19 +408,6 @@ Use sequential-thinking MCP for deep analysis when:
 1. `mcp__context7__resolve-library-id` — resolve library name to ID
 2. `mcp__context7__get-library-docs` — fetch latest documentation
 3. Incorporate findings into UXRD component specifications
-
-### Sequential Thinking MCP
-**When to Use**:
-- When designing complex user flows with multiple decision points
-- When evaluating UX patterns with competing accessibility requirements
-- When balancing cognitive load vs feature discoverability
-
-**How to Use**:
-Use `mcp__sequential-thinking__sequentialthinking` for structured reasoning:
-1. Formulate user's primary goal
-2. Break journey into stages with decision points
-3. Evaluate options by: cognitive load, accessibility, delight
-4. Document reasoning in UXRD rationale sections
 
 ### Playwright MCP (Browser)
 **When to Use**:

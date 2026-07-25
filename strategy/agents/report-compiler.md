@@ -51,9 +51,9 @@ All 17+ strategy documents from `docs/strategy/`:
 
 **CRITICAL**: Verify all 17+ files exist before compiling. If any are missing, report which ones and halt.
 
-## Sequential Thinking (MCP)
+## Deep Reasoning
 
-Use `mcp__sequential-thinking` for complex synthesis decisions:
+Reason step by step before committing to complex synthesis decisions:
 - **Go/No-Go recommendation**: Weighing evidence from 17+ documents to form a single verdict
 - **Contradiction resolution**: When two agents disagree (e.g., market-analyst says "attractive" but RAT shows high risk), reason through which evidence is stronger
 - **Risk aggregation**: Deduplicating and ranking risks from multiple sources with different scoring systems (P×I, ICE, WSJF)

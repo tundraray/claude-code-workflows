@@ -1,7 +1,7 @@
 {
   "name": "fullstack-overture",
   "version": "0.18.5",
-  "description": "Full-stack development with backend + frontend orchestrated agents, comprehensive skills, and MCP integration (context7, sequential-thinking, playwright)",
+  "description": "Full-stack development with backend + frontend orchestrated agents, comprehensive skills, and MCP integration (context7, playwright)",
   "author": {
     "name": "Mikhail Andreev",
     "url": "https://github.com/tundraray"

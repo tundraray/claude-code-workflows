@@ -66,7 +66,7 @@ Context is a finite resource — be deliberate about what consumes it:
 
 - **Agent descriptions** consume context even when the agent is never invoked. Each registered agent's markdown file is loaded into context at session start.
 - **MCP server tool schemas** cost ~500 tokens each. Every tool from every connected MCP server is described in the system prompt.
-- **Keep MCP servers minimal** — strategy-overture uses only `sequential-thinking` to avoid bloating the context with unused tool schemas.
+- **Keep MCP servers minimal** — strategy-overture registers no MCP servers to avoid bloating the context with unused tool schemas.
 - Use `/cost` to check spending mid-session and adjust model routing accordingly.
 
 ## Sub-Agents Protect Context

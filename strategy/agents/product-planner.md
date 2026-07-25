@@ -55,9 +55,9 @@ Read ALL existing files in `docs/strategy/` before starting:
 - `prioritized-initiatives.md` — ICE/RICE scored actions
 - `strategic-report.md` — Go/No-Go recommendation
 
-## Sequential Thinking (MCP)
+## Deep Reasoning
 
-Use `mcp__sequential-thinking` for complex multi-factor decisions:
+Reason step by step before committing to complex multi-factor decisions:
 - **Opportunity prioritization**: Ranking opportunities by job severity × segment size × solution feasibility
 - **WSJF scoring**: Computing Cost of Delay (User Value + Time Criticality + Risk Reduction) / Duration for each feature
 - **Kano categorization**: Deciding Must-Be vs Performance vs Attractive when evidence is mixed

@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "sequential-thinking": {
-      "command": "npx -y @modelcontextprotocol/server-sequential-thinking@latest",
-      "description": "Sequential thinking for complex reasoning and gray zone analysis"
-    }
-  }
-}

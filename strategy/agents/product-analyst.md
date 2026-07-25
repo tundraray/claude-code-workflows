@@ -46,9 +46,9 @@ This agent produces up to **THREE separate files** depending on the analysis req
 
 When called from `/strategy-report`, ALL THREE files are mandatory.
 
-## Sequential Thinking (MCP)
+## Deep Reasoning
 
-Use `mcp__sequential-thinking` for complex multi-factor decisions:
+Reason step by step before committing to complex multi-factor decisions:
 - **RAT scoring**: Weighing P×I across 5 risk categories, ranking when scores are close
 - **Segment selection**: Narrowing 7-10 hypothetical segments to top 5 by attractiveness (4 parameters × 7-10 segments)
 - **Jobs graph critical path**: Determining which jobs are truly critical vs optional in the sequence

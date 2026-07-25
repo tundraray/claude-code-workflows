@@ -351,14 +351,6 @@ Runs immediately before producing the final JSON response. Re-evaluate here even
 **Use Cases**: React/library API verification, breaking changes check, best practices, latest docs
 **Usage**: `mcp__context7__resolve-library-id` → `mcp__context7__get-library-docs` → apply to implementation
 
-### Sequential Thinking MCP
-**Use Cases**: Gray zone analysis, complex component decisions, escalation boundary determination
-**Usage**: Use `mcp__sequential-thinking__sequentialthinking` when encountering:
-- Unclear escalation boundaries
-- Multiple valid component patterns
-- Unprecedented UI situations
-- Potential conflicts with existing components
-
 ### Playwright MCP
 **Use Cases**: Visual verification, UI testing, screenshot capture, component behavior testing
 **Usage**: `mcp__playwright__browser_navigate` → `mcp__playwright__browser_snapshot` → verify UI
