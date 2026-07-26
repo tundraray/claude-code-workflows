@@ -101,55 +101,46 @@ Analyze existing code to identify:
    - Deviations require documented rationale
 
 ### Existing Code Investigation【Required】
-Must be performed before Design Doc creation:
 
-1. **Implementation File Path Verification**
-   - First grasp overall structure using Glob with detected project patterns
-   - Then identify target files using Grep with appropriate keywords and file types
-   - Record and distinguish between existing implementation locations and planned new locations
+Must be performed before Design Doc creation. A design is a proposal for how new work joins existing work; written without looking, it describes a system that does not exist — correct in isolation, wrong at every seam.
 
-2. **Existing Interface Investigation** (Only when changing existing features)
-   - List major public methods of target service (about 5 important ones if over 10)
-   - Identify call sites using Grep with appropriate search patterns
+**Delegate the sweep.** Spawn `code-explorer` rather than sweeping the repository here: it resolves symbols with LSP before falling back to text search, so a call-site list is what the compiler resolves rather than what a string matched. Within files already in hand, navigate directly per `code-navigation`.
 
-3. **Similar Functionality Search and Decision** (Pattern 5 prevention from ai-development-guide skill)
-   - Search existing code for keywords related to planned functionality
-   - Look for implementations with same domain, responsibilities, or configuration patterns
-   - Decision and action:
-     - Similar functionality found → Use that implementation (do not create new implementation)
-     - Similar functionality is technical debt → Create ADR improvement proposal before implementation
-     - No similar functionality → Proceed with new implementation
+```
+subagent_type: code-explorer
+prompt: "query: how outbound webhooks are registered and dispatched today; breadth: thorough"
+```
 
-4. **Include in Design Doc**
-   - Always include investigation results in "## Existing Codebase Analysis" section
-   - Clearly document similar functionality search results (found implementations or "none")
-   - Record adopted decision (use existing/improvement proposal/new implementation) and rationale
+**1. How does this codebase already do this?**
 
-5. **Code Inspection Evidence** (Required Section)
-   The Design Doc MUST include a "Code Inspection Evidence" section documenting:
+| Question | Ask code-explorer | Feeds |
+|----------|-------------------|-------|
+| Where does comparable functionality already live, and how is it wired in? | `query: existing implementations of <capability>; breadth: thorough` | Implementation Path Mapping |
+| What must know about a new unit for it to run — registration, DI, routes, subscriptions, config? | `query: where <comparable unit> is registered and constructed; breadth: medium` | Integration Point Map |
+| What conventions does this layer follow — error handling, validation placement, transaction boundaries? | `query: how <layer> handles errors and validation; breadth: medium` | Applicable Standards |
+| Is there an abstraction here to extend instead of a new one to introduce? | `query: abstractions over <concept>; breadth: thorough` | Minimal Surface Alternatives |
+| How does data reach and leave this area today? | `query: producers and consumers of <data>; breadth: medium` | Data Flow; Field Propagation Map |
 
-   #### What Was Examined
-   - List of files/modules inspected (with paths)
-   - Specific functions/classes analyzed
-   - Number of files inspected vs total in affected area
+**2. Similar Functionality Search and Decision** (Pattern 5 prevention from ai-development-guide)
 
-   #### Key Findings
-   - Existing patterns that the design must follow
-   - Existing code that will be reused
-   - Existing code that will need modification
-   - Potential conflicts with existing implementation
+Run the search before deciding, and act on what it returns:
 
-   #### How Findings Influence Design
-   - Design decisions driven by existing code patterns
-   - Constraints imposed by current architecture
-   - Opportunities identified from code inspection
+- **Similar functionality found** → use that implementation; do not create a new one
+- **Similar functionality is technical debt** → propose the improvement before building alongside it
+- **None found** → proceed with a new implementation, and record `coverage.searched` as the evidence
 
-   Format:
-   | File Inspected | Key Finding | Design Impact |
-   |---------------|-------------|---------------|
-   | src/auth/handler.ts:45 | Uses middleware pattern | Adopt same pattern for new feature |
+"No existing abstraction fits" is a claim, and the sweep's coverage is what supports it. Without that evidence a second way of doing the same thing enters the codebase by default rather than by decision.
 
-   **Rule**: A Design Doc without Code Inspection Evidence section is considered incomplete and will fail document-reviewer Gate 0.
+**3. Existing Interface Investigation** (when changing existing features)
+
+- List the target unit's public surface — the 5 most significant when there are more than 10
+- Obtain call sites from `findReferences`, not from a name search: `query: every consumer of <symbol>; breadth: thorough`
+
+**4. Include in the Design Doc**
+
+- Record the results in `## Existing Codebase Analysis`
+- State the similar-functionality outcome explicitly — the implementation found, or "none, having searched <coverage>"
+- Carry `code-explorer` counts with their `resolvedBy`: an LSP-resolved consumer list is evidence, a text-matched one is a candidate list, and the Design Doc should not present them as the same thing
 
 ### Integration Point Analysis【Important】
 Clarify integration points with existing systems when adding new features or modifying existing ones:
@@ -237,6 +228,13 @@ Must be performed when creating Design Doc:
    - Verification level for each task (L1/L2/L3 defined in implementation-approach skill)
 
 ### Change Impact Map【Required】
+
+Obtain the impact set from `code-explorer` rather than assuming it — assumed consumers are how a Design Doc ships a breaking change described as backward-compatible:
+
+- Changing an interface, signature, or schema → `query: every consumer of <symbol>; breadth: thorough`
+- Removing or renaming → `query: every reference to <symbol>; breadth: thorough`
+- Writing "No Ripple Effect" → only for what the sweep actually covered; check `coverage.notSearched` before claiming a boundary is unaffected
+
 Must be included when creating Design Doc:
 
 ```yaml
@@ -559,26 +557,4 @@ Research: "Which state management for React?"
 → resolve-library-id("jotai") → get-library-docs
 → Compare in ADR options with latest API info
 ```
-
-## Delegating a Wide Search
-
-A design that changes a contract must know who consumes it. Assumed consumers are how a Design Doc ships a breaking change described as backward-compatible.
-
-Spawn `code-explorer` **before** committing to any of these:
-
-| About to | Ask code-explorer |
-|----------|-------------------|
-| Change an interface, signature, or schema | `query: every consumer of <symbol>; breadth: thorough` |
-| Remove or rename something | `query: every reference to <symbol>; breadth: thorough` |
-| Introduce a pattern claimed to already exist here | `query: existing uses of <pattern>; breadth: medium` — Reference Representativeness needs the count, not an impression |
-| Place code in a layer | `query: what currently lives in <layer> and what depends on it; breadth: medium` |
-
-```
-subagent_type: code-explorer
-prompt: "query: every consumer of the OrderPayload type; breadth: thorough"
-```
-
-Feed the result into the **Change Impact Map** and the **Interface Change Matrix**: `locations` populate the direct-impact list, and a location the search did not reach belongs in "No Ripple Effect" only when the sweep actually covered it — check `coverage.notSearched` before writing that section.
-
-When `codebase-analyzer` already supplied `focusAreas`, use those first; spawn only for what they do not cover. Spawn only `code-explorer` — sequencing belongs to the orchestrator.
 

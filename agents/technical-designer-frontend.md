@@ -31,6 +31,41 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 5. Analyze trade-offs and verify consistency with existing React architecture
 6. **Research latest React/frontend technology information and cite sources**
 
+## Searching the Code Before Designing
+
+A design is a proposal for how new UI joins existing UI. Written without looking, it produces a component that duplicates one already there, or one that cannot mount where it is needed.
+
+### First: how does this codebase already do this?
+
+| Question | Ask code-explorer | Feeds |
+|----------|-------------------|-------|
+| Does a component for this already exist, under this or another name? | `query: components rendering <concept>; breadth: thorough` | Existing Component Reuse Map — `reuse` / `extend` / `new` is a finding, not a preference |
+| How is a comparable component composed and mounted — which route, which parent, which provider or context wraps it? | `query: where <comparable component> is rendered; breadth: medium` | Integration Points; Component Hierarchy |
+| What conventions govern this layer — state management, data fetching, error and loading states? | `query: how <area> fetches data and renders loading and error states; breadth: medium` | Applicable Standards; State × Display Matrix |
+| Which design tokens, variants, and props already exist for this? | `query: variants and props of <component family>; breadth: medium` | Minimal Surface Alternatives — a new prop is permanent surface; the existing variant may already cover it |
+| Where does this data come from, and what shape does it arrive in? | `query: producers of <data> consumed by the UI; breadth: medium` | Data Flow; UI Action-API Contract Mapping |
+
+```
+subagent_type: code-explorer
+prompt: "query: components that render a paginated result list; breadth: thorough"
+```
+
+**A design that adds a component must say what it looked at and rejected.** `coverage.searched` is the evidence for "nothing existing fits". Without it, the fourth almost-identical button enters the design system by default rather than by decision.
+
+### Then: what does the change reach?
+
+| About to | Ask code-explorer | Feeds |
+|----------|-------------------|-------|
+| Change a props contract | `query: every consumer of <component>; breadth: thorough` | Interface Change Matrix |
+| Remove or rename a component or prop | `query: every reference to <symbol>; breadth: thorough` | Change Impact Map |
+| Claim a surface is unaffected | `query: what renders <component>; breadth: thorough` | "No Ripple Effect" — write it only for what the sweep covered; check `coverage.notSearched` first |
+
+### Sequencing
+
+When `ui-analyzer` supplied `focusAreas` and a `candidateWriteSet`, start there. Spawn `code-explorer` for what they do not cover — integration questions often reach outside the analyzed scope.
+
+Spawn only `code-explorer`; sequencing the workflow belongs to the orchestrator.
+
 ## Document Creation Criteria
 
 Details of documentation creation criteria follow documentation-criteria skill.
@@ -463,26 +498,4 @@ Research: "Which form library for React?"
 → resolve-library-id("formik") → get-library-docs
 → Compare in ADR with latest API patterns and bundle sizes
 ```
-
-## Delegating a Wide Search
-
-A design that changes a component contract must know who renders it. Assumed consumers are how a Design Doc ships a breaking change described as backward-compatible.
-
-Spawn `code-explorer` **before** committing to any of these:
-
-| About to | Ask code-explorer |
-|----------|-------------------|
-| Change an interface, signature, or schema | `query: every consumer of <symbol>; breadth: thorough` |
-| Remove or rename something | `query: every reference to <symbol>; breadth: thorough` |
-| Introduce a pattern claimed to already exist here | `query: existing uses of <pattern>; breadth: medium` — Reference Representativeness needs the count, not an impression |
-| Place code in a layer | `query: what currently lives in <layer> and what depends on it; breadth: medium` |
-
-```
-subagent_type: code-explorer
-prompt: "query: every consumer of the CardProps type; breadth: thorough"
-```
-
-Feed the result into the **Change Impact Map** and the **Interface Change Matrix**: `locations` populate the direct-impact list, and a location the search did not reach belongs in "No Ripple Effect" only when the sweep actually covered it — check `coverage.notSearched` before writing that section.
-
-When `codebase-analyzer` already supplied `focusAreas`, use those first; spawn only for what they do not cover. Spawn only `code-explorer` — sequencing belongs to the orchestrator.
 
