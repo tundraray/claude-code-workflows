@@ -8,7 +8,6 @@ overture/
 ├── agents/                     # Shared agents (symlinked by all plugins)
 │   ├── code-reviewer.md
 │   ├── expert-analyst.md       # Multi-expert analysis
-│   ├── codebase-scanner.md     # Dead code detection
 │   ├── cleanup-executor.md     # Safe code removal
 │   ├── investigator.md         # Diagnosis workflow
 │   ├── verifier.md             # Diagnosis workflow

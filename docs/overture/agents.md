@@ -13,7 +13,6 @@ These agents work the same way whether you're building a REST API or a React app
 | **code-reviewer** | Checks your code against design docs to make sure nothing's missing |
 | **document-reviewer** | Reviews single document quality, completeness, and rule compliance |
 | **design-sync** | Verifies consistency across multiple Design Docs and detects conflicts |
-| **codebase-scanner** | Scans for dead code, orphan files, unused exports across 7 categories |
 | **cleanup-executor** | Safely removes confirmed dead code with git branch backup and build verification |
 | **investigator** | Collects evidence, enumerates hypotheses, builds evidence matrix for problem diagnosis |
 | **verifier** | Validates investigation results using ACH and Devil's Advocate methods |
@@ -30,7 +29,7 @@ These agents work the same way whether you're building a REST API or a React app
 | **acceptance-test-generator** | Creates E2E and integration test scaffolds from requirements |
 | **integration-test-reviewer** | Reviews integration/E2E tests for skeleton compliance and quality |
 | **codebase-analyzer** | Read-only fact gathering before design — traces call chains and data models, emits focus areas the designer must address |
-| **code-explorer** | Read-only code search — answers where something is and what touches it, resolving symbols with LSP before text search |
+| **code-explorer** | Read-only code search — where something is and what touches it, or an undirected sweep for unused code across 7 categories; resolves symbols with LSP before text search |
 | **task-executor** | Implements backend features with TDD |
 | **quality-fixer** | Runs tests, fixes type errors, handles linting - everything quality-related |
 | **rule-advisor** | Picks the best coding rules for your current task |

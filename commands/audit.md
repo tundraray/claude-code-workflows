@@ -11,7 +11,7 @@ Target scope: $ARGUMENTS
 **Role**: Orchestrator
 
 **Execution Method**:
-- Scanning → performed by codebase-scanner
+- Scanning → performed by code-explorer (undirected sweep)
 - Cleanup → performed by cleanup-executor
 
 Orchestrator invokes sub-agents and passes structured JSON between them.
@@ -21,7 +21,7 @@ Orchestrator invokes sub-agents and passes structured JSON between them.
 ## Audit Flow Overview
 
 ```
-Scope → codebase-scanner → Interactive Review → Confirm → cleanup-executor → Report
+Scope → code-explorer (sweep) → Interactive Review → Confirm → cleanup-executor → Report
 ```
 
 **Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
@@ -30,11 +30,11 @@ Scope → codebase-scanner → Interactive Review → Confirm → cleanup-execut
 
 Register the following in TodoWrite and execute:
 
-### Step 1: Scan (codebase-scanner)
+### Step 1: Scan (code-explorer)
 
 **Task tool invocation**:
 ```
-subagent_type: codebase-scanner
+subagent_type: code-explorer
 prompt: Scan the codebase for dead code, orphan files, unused exports, and suspicious areas.
 
 Scope: [user-provided scope or "entire project"]
@@ -192,7 +192,7 @@ Present comprehensive report to user:
 
 ## Completion Criteria
 
-- [ ] Executed codebase-scanner and obtained findings
+- [ ] Executed code-explorer as an undirected sweep and obtained findings
 - [ ] Reviewed each finding interactively with user
 - [ ] Obtained explicit confirmation before any deletions
 - [ ] Executed cleanup-executor for approved deletions

@@ -64,7 +64,7 @@ The following subagents are available:
 3. **task-executor**: Individual task execution and structured response
 4. **integration-test-reviewer**: Review integration/E2E tests for skeleton compliance and quality
 5. **security-reviewer**: Security compliance review against Design Doc and coding-principles (read-only)
-6. **code-explorer**: Locates code and reports where things are, LSP first (read-only)
+6. **code-explorer**: Searches the codebase — locates a named thing and what touches it, or sweeps for what is unused (read-only)
 
 ### Document Creation Agents
 1. **requirement-analyzer**: Requirement analysis and work scale determination
@@ -79,7 +79,6 @@ The following subagents are available:
 10. **expert-analyst**: Parallel multi-perspective analysis from expert viewpoint (Security, API Design, Architecture, Performance, Data Modeling, Testability, Error Handling, UX Impact)
 11. **codebase-analyzer**: Read-only pre-design fact gathering — emits `fact_id`-anchored `focusAreas` the designer must address (backend/shared)
 12. **ui-analyzer**: Read-only pre-design UI fact gathering, including external design-resource fetch with per-resource `fetch_status` (frontend)
-13. **codebase-scanner**: Scans for dead code, orphan files, unused exports, and suspicious areas (read-only)
 14. **cleanup-executor**: Safely removes confirmed dead code with git backup and build verification
 
 ## Orchestration Principles
@@ -232,7 +231,7 @@ Each subagent responds in JSON format. Key fields for orchestrator decisions:
 - **integration-test-reviewer**: status (approved/needs_revision/blocked), qualityIssues, requiredFixes, verdict
 - **acceptance-test-generator**: status, generatedFiles, budgetUsage
 - **expert-analyst**: aspect, expertName, codeInvestigation, concerns, options, recommendation, risks, interactionPoints
-- **codebase-scanner**: status, items (id, name, category, suspicionLevel, files, signals, evidence), scanMetrics
+- **code-explorer**: status, answer, locations (directed) or findings (sweep: id, category, files, confidence, signals, ruledOut, notRuledOut), counts, coverage
 - **cleanup-executor**: status, branchName, filesRemoved, importsUpdated, revertedItems, buildVerified, testsVerified
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings, designDocCoverage, blockers, nextSteps
 

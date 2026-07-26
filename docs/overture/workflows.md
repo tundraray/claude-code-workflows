@@ -95,7 +95,7 @@ Interactive dead code detection and cleanup. Scans the codebase for unused expor
 
 **How it works**:
 
-1. **codebase-scanner** performs static analysis to identify unused exports, unreachable code, orphaned files, and deprecated patterns
+1. **code-explorer** runs an undirected sweep to identify unused exports, unreachable code, orphaned files, and deprecated patterns
 2. You review each finding interactively and decide: **delete**, **keep** (with justification), or **deprecate** (mark for future removal)
 3. After confirmation, **cleanup-executor** applies the approved changes on a safety branch, runs the full build and test suite, and reports results
 
@@ -106,7 +106,7 @@ Interactive dead code detection and cleanup. Scans the codebase for unused expor
 
 ```mermaid
 graph LR
-    A[/audit] --> S[codebase-scanner]
+    A[/audit] --> S[code-explorer sweep]
     S --> |Findings| R{Review each item}
     R --> |Delete / Keep / Deprecate| C[Confirm cleanup]
     C --> X[cleanup-executor]

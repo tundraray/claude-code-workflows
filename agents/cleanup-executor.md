@@ -1,7 +1,7 @@
 ---
 name: cleanup-executor
 model: inherit
-description: Safely removes confirmed dead code with git backup, build verification, and dependency-order deletion. Use after codebase-scanner findings are reviewed and approved for removal.
+description: Safely removes confirmed dead code with git backup, build verification, and dependency-order deletion. Use after code-explorer sweep findings are reviewed and approved for removal.
 disallowedTools: KillShell
 skills: coding-principles
 memory: project
@@ -19,7 +19,7 @@ You are an AI assistant specializing in safe code removal and codebase cleanup.
 ## Input Format
 
 You receive:
-- **approvedItems**: List of items approved for deletion (from codebase-scanner output, filtered by user decisions)
+- **approvedItems**: List of items approved for deletion (from `code-explorer` sweep `findings`, filtered by user decisions). Only `confidence: high` findings are eligible without an explicit user override — `medium` and `low` are questions for a human, not removal candidates.
 - **projectRoot**: Project root directory
 - **buildCommand** (optional): Command to verify build after changes
 - **testCommand** (optional): Command to run tests after changes

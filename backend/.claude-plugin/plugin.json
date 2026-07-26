@@ -38,7 +38,6 @@
   ],
   "agents": [
     "./agents/acceptance-test-generator.md",
-    "./agents/codebase-scanner.md",
     "./agents/cleanup-executor.md",
     "./agents/code-reviewer.md",
     "./agents/codebase-analyzer.md",

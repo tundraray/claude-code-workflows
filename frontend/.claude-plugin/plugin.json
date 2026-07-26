@@ -45,7 +45,6 @@
 
   ],
   "agents": [
-    "./agents/codebase-scanner.md",
     "./agents/cleanup-executor.md",
     "./agents/code-reviewer.md",
     "./agents/codebase-analyzer.md",

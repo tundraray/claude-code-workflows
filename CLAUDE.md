@@ -115,7 +115,7 @@ All three plugins symlink to shared agents/commands/skills:
 
 **Implementation**: task-executor, task-executor-frontend, quality-fixer, quality-fixer-frontend
 
-**Analysis & Review**: code-reviewer, document-reviewer, design-sync, integration-test-reviewer, code-verifier, code-explorer
+**Analysis & Review**: code-reviewer, document-reviewer, design-sync, integration-test-reviewer, code-verifier, code-explorer, codebase-analyzer
 
 **Specialized Workflows**: task-decomposer, investigator, verifier, solver, scope-discoverer, rule-advisor
 
