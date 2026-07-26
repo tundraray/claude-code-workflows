@@ -100,5 +100,6 @@
     "./skills/workflow-technical",
     "./skills/game-analysis-criteria"
   ],
+  "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }

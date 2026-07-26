@@ -166,6 +166,19 @@ Edit, Write, and MultiEdit are performed by subagents, never by the orchestrator
 | `src/**/*`, `tests/**/*` (code) | task-executor(-frontend) |
 | Any file (quality fixes) | quality-fixer(-frontend) |
 
+**Enforced by hook.** `hooks/document-guard.mjs` runs on every `Write`/`Edit` and reads `agent_type` from the hook input:
+
+| Role | Write | Edit |
+|------|-------|------|
+| Owning agent | allowed | allowed |
+| Progress updater (`task-executor`) | denied | allowed |
+| Any other agent | denied | denied |
+| Main conversation (no `agent_type`) | asks the user | asks the user |
+
+The Write/Edit split is the load-bearing part: a `Write` replaces the file, which is authorship, while an `Edit` is the targeted change an executor makes when ticking a progress checkbox in someone else's plan.
+
+Hooks load at session start, so a change to the guard takes effect only after restarting Claude Code — `/reload-plugins` does not pick it up.
+
 **Rules**:
 - Create/edit files only through the owner agent
 - For revisions after review: call owner agent with `mode: update`

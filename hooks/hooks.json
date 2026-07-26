@@ -1,0 +1,18 @@
+{
+  "description": "Enforces the File Ownership by Agent table: only the owning agent may author a governed document, and non-owners with a legitimate progress-update need may edit but not replace.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/document-guard.mjs"],
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

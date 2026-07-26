@@ -100,6 +100,14 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 
 ### Added
 
+- **Document ownership is now enforced by a hook, not only documented.** `hooks/document-guard.mjs` runs on every `Write`/`Edit`/`MultiEdit` and reads `agent_type` from the PreToolUse input, so the File Ownership table becomes a gate rather than guidance. A Design Doc rewritten by an executor mid-task is, after the fact, indistinguishable from one the designer wrote.
+
+  Access has two levels rather than one, because a single owner-only rule would break the flow: `task-executor` legitimately updates progress checkboxes in the work plan and Design Doc it does not own. Owners may `Write` and `Edit`; progress updaters may `Edit` only. The distinction is load-bearing — a `Write` replaces the file, which is authorship, while an `Edit` is the surgical change a checkbox needs.
+
+  A call with no `agent_type` — the main conversation — is answered with `ask`, not `deny`. The orchestrator is not supposed to write documents directly, but a person editing their own repository is not a policy violation; `ask` makes the rule visible without blocking manual work. The guard fails open on unparseable input: one that can wedge a session is worse than none.
+
+  Two behaviours needed for this are undocumented — whether explicitly listing components in `plugin.json` disables hook auto-discovery, and how `${CLAUDE_PLUGIN_ROOT}` resolves when `hooks/` is a symlink. Rather than rely on inference, the manifests declare `"hooks": "./hooks/hooks.json"` explicitly and the command uses exec form (`node` plus `args`), which invokes no shell. **Hooks load at session start, so the guard is inactive until Claude Code is restarted.**
+
 - **Every agent now returns a JSON response, and every agent has a blocking self-check.** An audit of all 42 agents against the conventions CLAUDE.md states found both rules widely unmet.
 
   The JSON rule was itself wrong for document-producing agents, and they had quietly opted out: `prd-creator`, `technical-designer`, `work-planner` and others wrote a file and returned nothing structured at all. That breaks the orchestrator in two places — its revision loops key on `status`, its handoffs key on a document path. CLAUDE.md now defines two response shapes rather than one, both mandatory: findings-returning agents carry `findings`, document-producing agents carry `documents[].path`. The document goes to disk; the response carries its path, never its contents.

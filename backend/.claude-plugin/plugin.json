@@ -84,5 +84,6 @@
     "./skills/llm-friendly-context",
     "./skills/rule-editing-guide"
   ],
+  "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }
