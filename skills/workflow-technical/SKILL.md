@@ -1,55 +1,50 @@
 ---
 name: workflow-technical
-description: This skill governs the technical design phase — ADR, codebase fact gathering, Design Doc, consistency verification, test skeletons, and the work plan, ending at batch approval. Automatically loaded when creating an ADR or Design Doc, planning implementation, or when "technical design", "architecture decision", "design doc", "work plan", or "batch approval" are mentioned.
+description: This skill governs the technical design phase — codebase fact gathering, Design Doc, consistency verification, a conditional ADR, and test skeletons, ending at Design Doc approval. Automatically loaded when creating a Design Doc or ADR, or when "technical design", "architecture decision", "design doc", or "fact gathering" are mentioned.
 ---
 
 # Technical Design Phase
 
-The technical phase answers **how to build it**. It begins with agreed requirements and ends at batch approval, where authority passes to autonomous execution.
+The technical phase answers **how to build it**. It begins with agreed requirements and ends when the design is approved — before anyone schedules the work.
 
-Mechanics common to every phase — how to invoke subagents, response contracts, delegation boundaries, file ownership, TodoWrite — live in `workflow-orchestration`. Requirements arrive from `workflow-product`. Once batch approval is granted, `workflow-execution` takes over.
+Mechanics common to every phase — how to invoke subagents, response contracts, delegation boundaries, file ownership, TodoWrite — live in `workflow-orchestration`. Requirements arrive from `workflow-product`. Planning, decomposition, and everything after belong to `workflow-execution`.
 
-This phase is identical for every domain. Only the planner agent varies.
+## Domain Independence
 
-## Planner Parameter
-
-| Domain | Planner |
-|--------|---------|
-| Default (backend, frontend, fullstack) | `work-planner` |
-| Game development | `gamedev-work-planner` |
-
-Everywhere this skill says **`{planner}`**, substitute the agent for the active domain. Nothing else in the phase changes by domain — a game feature and a service endpoint need the same design rigour, the same fact gathering, and the same verification.
+This phase is identical for every domain — a game feature and a service endpoint need the same fact gathering, the same design rigour, and the same consistency verification. Planning is where the domain difference appears, and planning belongs to `workflow-execution`.
 
 Layer selection between `technical-designer` and `technical-designer-frontend`, and between `codebase-analyzer` and `ui-analyzer`, follows the work itself, not the domain.
 
 ## Flow
 
-### Large scale
+### Large and medium scale
 
-1. **technical-designer(-frontend)** → ADR (when there are architecture changes, new technology, or data flow changes)
-2. **document-reviewer** → ADR review
-   **[Stop: ADR approval]** — only when an ADR was created
-3. *[Optional]* **expert-analyst** ×3-5 **in parallel** per the `expert-analysis-guide` heuristics, then synthesize. Skip for straightforward work or a pure bug fix.
-4. **codebase-analyzer** (and **ui-analyzer** when the work has a UI surface) → read-only fact gathering → `focusAreas[]`
-5. **technical-designer(-frontend)** → Design Doc, consuming `focusAreas` into the **Fact Disposition Table** and including the expert synthesis when one was produced
-6. **document-reviewer** → Design Doc review
-7. **design-sync** → consistency across PRD, ADR, UXRD, Design Doc
+1. *[Optional]* **expert-analyst** ×3-5 **in parallel** per the `expert-analysis-guide` heuristics, then synthesize. Skip for straightforward work or a pure bug fix.
+2. **codebase-analyzer** (and **ui-analyzer** when the work has a UI surface) → read-only fact gathering → `focusAreas[]`
+3. **technical-designer(-frontend)** → Design Doc, consuming `focusAreas` into the **Fact Disposition Table** and including the expert synthesis when one was produced
+4. **document-reviewer** → Design Doc review
+5. **design-sync** → consistency across PRD, UXRD, existing ADRs, and the Design Doc
    **[Stop: Design Doc approval]**
+6. *[Conditional]* **technical-designer(-frontend)** → ADR, when a decision the design made passes the three-part test in `documentation-criteria`
+7. **document-reviewer** → ADR review
+   **[Stop: ADR approval]** — only when an ADR was written
 8. **acceptance-test-generator** → integration and E2E test skeletons
-   → orchestrator verifies generation, then passes the paths to `{planner}`
-9. **`{planner}`** → work plan, including the generated test information
-10. **document-reviewer** → work plan review: traceability to the Design Doc, Failure Mode Checklist coverage, Verification Strategy carried across, Reference Contract Values recorded verbatim
-    **[Stop: batch approval for the entire implementation phase]**
 
-→ hand off to `workflow-execution`
-
-### Medium scale
-
-Same as above without the ADR steps, unless an ADR condition applies. Steps 3-10 run unchanged.
+→ hand off to `workflow-execution`, which plans and decomposes the work
 
 ### Small scale
 
-Create a simplified plan. **[Stop: batch approval]** → `workflow-execution`.
+No technical documents. → `workflow-execution`.
+
+## Why the ADR Comes After the Design
+
+Writing the ADR first means deciding before understanding. Which choices are genuinely architecture-binding — costly to reverse, constraining work beyond this feature, taken against real alternatives — is only visible once the design exists.
+
+So the design surfaces the decision and the ADR **extracts** it, so it outlives the feature that produced it. The Design Doc records the full reasoning; the ADR records the part future unrelated work must comply with.
+
+This means the Design Doc references **existing** ADRs as prerequisites, and any ADR written in step 6 records a decision this design made. The plan's ADR Bindings table then binds tasks to both.
+
+**Most features produce no ADR.** A decision record written for every change stops being read.
 
 ## Why Fact Gathering Precedes Design
 
@@ -61,32 +56,31 @@ Run them **after** any expert analysis and **before** the designer, so the desig
 
 ## Document Requirements by Scale
 
-| Scale | ADR | Design Doc | Work Plan |
-|-------|-----|------------|-----------|
-| Small | Not needed | Not needed | Simplified |
-| Medium | Conditional※ | **Required** | **Required** |
-| Large | Conditional※ | **Required** | **Required** |
+| Scale | Design Doc | ADR |
+|-------|------------|-----|
+| Small | Not needed | Not needed |
+| Medium | **Required** | Rare※ |
+| Large | **Required** | Rare※ |
 
-※ When there are architecture changes, new technology introduction, or data flow changes — see the ADR creation conditions in `documentation-criteria`.
+※ Only when a decision the design made passes all three parts of the test in `documentation-criteria`: costly to reverse, binding beyond this feature, and taken against real alternatives. Most features produce none.
 
-Scale comes from `task-analyzer`'s five-axis assessment, not file count alone.
+Scale comes from `task-analyzer`'s five-axis assessment, not file count alone. Work plans are produced in `workflow-execution`.
 
 ## Stop Points
 
 | Stop | After | What the user decides |
 |------|-------|----------------------|
-| ADR approval | document-reviewer completes ADR review | Whether the decision and its rejected alternatives are right |
 | Design Doc approval | design-sync completes consistency verification | Whether the technical approach is right |
-| Batch approval | document-reviewer completes work plan review | Whether to delegate implementation authority |
+| ADR approval | document-reviewer completes ADR review | Whether the decision and its rejected alternatives are right — only when an ADR was written |
 
-**Batch approval is the authority boundary.** Everything before it is reviewed by a human; everything after runs autonomously until completion or escalation. Do not reach it with an unresolved question — after it, no one is asked again.
+Batch approval, the authority boundary into autonomous work, belongs to `workflow-execution` — it gates the plan, and the plan is produced there.
 
 ## Revision Loop
 
 When `document-reviewer` returns `needs_revision`:
 
 1. Extract the issues from the reviewer output
-2. Call the agent named in `revision_agent` with `mode: update` — `technical-designer(-frontend)` for an ADR or Design Doc, `{planner}` for a work plan
+2. Call the agent named in `revision_agent` with `mode: update` — `technical-designer(-frontend)` for an ADR or Design Doc
 3. Re-run `document-reviewer`
 4. Repeat, maximum 2 iterations; still failing → stop and present the issues to the user
 
@@ -100,9 +94,11 @@ Parts are the mechanism: a backend part and a frontend part each get their own `
 
 ## Handoff to Execution
 
-Autonomous execution needs:
+Planning needs, as concrete paths rather than a summary:
 
-- The approved work plan path, with `status: active` in its frontmatter
-- The Design Doc path it traces to
-- The selected commit strategy (asked before implementation begins — see `workflow-execution`)
-- Generated test skeleton paths, so the executor extends rather than recreates them
+- The approved Design Doc (`docs/features/{feature}/design-{part}.md`)
+- Any ADR written in step 6, plus the existing ADRs the design treats as prerequisites — the plan binds tasks to them
+- Generated test skeleton paths, so the plan schedules extending them rather than recreating them
+- The approved PRD and UXRD, for traceability
+
+A design item omitted from the handoff cannot appear in the plan's traceability table, and a requirement that reaches neither is how work silently disappears between phases.

@@ -422,13 +422,14 @@ skills:
 
   workflow-execution:
     skill: "workflow-execution"
-    tags: [autonomous-execution, task-cycle, commit-strategy, auto-stop, post-implementation-verification, fix-mode, escalation, error-handling]
-    typical-use: "Entering autonomous mode, running the implementation loop, selecting a commit strategy, whole-implementation verification, auto-stop enforcement"
+    tags: [work-plan, task-decomposition, batch-approval, autonomous-execution, task-cycle, commit-strategy, auto-stop, post-implementation-verification, fix-mode, escalation]
+    typical-use: "Work plan creation and review, task decomposition, batch approval, running the implementation loop, whole-implementation verification, auto-stop enforcement"
     size: medium
     key-references:
       - "Delegated Authority"
       - "5 Whys - Toyota Production System"
     sections:
+      - "Planning"
       - "Entry Conditions"
       - "Commit Strategy Selection"
       - "The Per-Task Cycle"
@@ -456,15 +457,16 @@ skills:
 
   workflow-technical:
     skill: "workflow-technical"
-    tags: [technical-design, adr, design-doc, work-plan, batch-approval, fact-gathering, design-sync, test-skeletons]
-    typical-use: "ADR and Design Doc creation, codebase fact gathering, consistency verification, work plan creation and review up to batch approval"
+    tags: [technical-design, adr, design-doc, fact-gathering, design-sync, test-skeletons]
+    typical-use: "Codebase fact gathering, Design Doc creation, consistency verification, and a conditional ADR, up to Design Doc approval"
     size: medium
     key-references:
       - "Fact Disposition"
       - "Authority Boundary"
     sections:
-      - "Planner Parameter"
+      - "Domain Independence"
       - "Flow"
+      - "Why the ADR Comes After the Design"
       - "Why Fact Gathering Precedes Design"
       - "Document Requirements by Scale"
       - "Stop Points"

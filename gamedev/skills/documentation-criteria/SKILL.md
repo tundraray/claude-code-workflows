@@ -24,40 +24,27 @@ description: This skill should be used when the user asks to "create a PRD", "wr
 
 | Condition | Required Documents | Creation Order |
 |-----------|-------------------|----------------|
-| New Feature Addition | PRD → [ADR] → Design Doc → Work Plan | After PRD approval |
-| ADR Conditions Met (see below) | ADR → Design Doc → Work Plan | Start immediately |
-| Large scale | ADR → Design Doc → Work Plan (Required) | Start immediately |
-| Medium scale | Design Doc → Work Plan (Recommended) | Start immediately |
+| New Feature Addition | PRD → [UXRD] → Design Doc → [ADR] → Work Plan | After PRD approval |
+| Large scale | PRD → Design Doc → [ADR] → Work Plan | Start immediately |
+| Medium scale | Design Doc → [ADR] → Work Plan | Start immediately |
 | Small scale | None | Direct implementation |
+
+**The ADR follows the Design Doc**, and is written only when a decision the design made passes all three parts of the test below. Most features produce none. Documents in `[brackets]` are conditional.
 | New Game Project | GDD → Market Analysis → [ADR] → Design Doc → Work Plan | After GDD approval |
 | New Game Feature | Feature Spec → [GDD Update] → Design Doc → Work Plan | After Feature Spec approval |
 | Art/Visual Change | Art Direction → Design Doc | After Art Direction approval |
 
-## ADR Creation Conditions (Required if Any Apply)
+## ADR Creation Conditions
 
-### 1. Contract System Changes
-- **Adding nested contracts with 3+ levels**: `Contract A { Contract B { Contract C { field: T } } }`
-  - Rationale: Deep nesting has high complexity and wide impact scope
-- **Changing/deleting contracts used in 3+ locations**
-  - Rationale: Multiple location impacts require careful consideration
-- **Contract responsibility changes** (e.g., DTO→Entity, Request→Domain)
-  - Rationale: Conceptual model changes affect design philosophy
+**An ADR is written after the Design Doc, not before it**, and only when a decision the design made passes all three parts of the test:
 
-### 2. Data Flow Changes
-- **Storage location changes** (DB→File, Memory→Cache)
-- **Processing order changes with 3+ steps**
-  - Example: "Input→Validation→Save" to "Input→Save→Async Validation"
-- **Data passing method changes** (parameter passing→shared state, direct reference→event-based communication)
+1. **Costly to reverse** — undoing it later means migrating data, breaking consumers, or coordinated changes across repositories
+2. **Binds beyond this feature** — future unrelated work must comply with it
+3. **Had real alternatives** — a genuine choice existed and one was taken
 
-### 3. Architecture Changes
-- Layer addition, responsibility changes, component relocation
+Fail any one → no ADR; record the reasoning in the Design Doc.
 
-### 4. External Dependency Changes
-- Library/framework/external API introduction or replacement
-
-### 5. Complex Implementation Logic (Regardless of Scale)
-- Managing 3+ states
-- Coordinating 5+ asynchronous processes
+Game-specific decisions that commonly meet all three: save-file format, netcode authority model, the engine or renderer target, and the analytics event schema other tools consume. Ordinary mechanics tuning, adding a state to an existing machine, or picking a tween library do not.
 
 ## Detailed Document Definitions
 

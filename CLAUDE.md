@@ -124,8 +124,8 @@ All three plugins symlink to shared agents/commands/skills:
 Skills contain structured guidance used by agents:
 - **workflow-orchestration**: Shared mechanics — agent invocation, response contracts, delegation boundary, conflict precedence, file ownership, TodoWrite
 - **workflow-product**: Product phase — requirement analysis, PRD, UXRD, ending at UXRD approval
-- **workflow-technical**: Technical phase — ADR, codebase fact gathering, Design Doc, test skeletons, work plan, ending at batch approval. Parameterized by planner agent.
-- **workflow-execution**: Autonomous execution after batch approval — per-task cycle, commit strategies, post-implementation verification, auto-stop triggers
+- **workflow-technical**: Technical phase — codebase fact gathering, Design Doc, conditional ADR, test skeletons, ending at Design Doc approval
+- **workflow-execution**: Planning and execution — work plan, review, batch approval, decomposition, per-task cycle, commit strategies, post-implementation verification, auto-stop triggers. Parameterized by planner agent.
 - **workflow-gamedev** (gamedev only): Replaces workflow-product — scenario detection, development modes, GDD, game design disciplines. Reuses workflow-technical unchanged.
 - **documentation-criteria**: PRD/ADR/Design Doc/Plan/Task templates and creation decision matrices
 - **coding-principles**: Language-agnostic code quality standards

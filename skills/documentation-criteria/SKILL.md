@@ -18,11 +18,12 @@ description: This skill should be used when the user asks to "create a PRD", "wr
 
 | Condition | Required Documents | Creation Order |
 |-----------|-------------------|----------------|
-| New Feature Addition | PRD → [ADR] → Design Doc → Work Plan | After PRD approval |
-| ADR Conditions Met (see below) | ADR → Design Doc → Work Plan | Start immediately |
-| Large scale | ADR → Design Doc → Work Plan (Required) | Start immediately |
-| Medium scale | Design Doc → Work Plan (Recommended) | Start immediately |
+| New Feature Addition | PRD → [UXRD] → Design Doc → [ADR] → Work Plan | After PRD approval |
+| Large scale | PRD → Design Doc → [ADR] → Work Plan | Start immediately |
+| Medium scale | Design Doc → [ADR] → Work Plan | Start immediately |
 | Small scale | None | Direct implementation |
+
+**The ADR follows the Design Doc**, and is written only when a decision the design made passes all three parts of the test below. Most features produce none. Documents in `[brackets]` are conditional.
 
 **File count is one scale signal, not the deciding rule.** Contract, data, boundary, and decision risk can each raise the scale on their own — a two-file change that breaks a public contract or migrates persisted data is not a small-scale change. Take the scale and its `decidingAxis` from `task-analyzer`'s 5-axis assessment; where no analysis is available, evaluate the axes directly:
 
@@ -36,31 +37,35 @@ description: This skill should be used when the user asks to "create a PRD", "wr
 
 Select the highest scale triggered by any observed axis.
 
-## ADR Creation Conditions (Required if Any Apply)
+## ADR Creation Conditions
 
-### 1. Contract System Changes
-- **Adding nested contracts with 3+ levels**: `Contract A { Contract B { Contract C { field: T } } }`
-  - Rationale: Deep nesting has high complexity and wide impact scope
-- **Changing/deleting contracts used in 3+ locations**
-  - Rationale: Multiple location impacts require careful consideration
-- **Contract responsibility changes** (e.g., DTO→Entity, Request→Domain)
-  - Rationale: Conceptual model changes affect design philosophy
+**An ADR is written after the Design Doc, not before it.** Which decisions are genuinely architecture-binding is only visible once the design exists; writing the ADR first means committing before understanding. The ADR extracts a decision the design made, so it outlives the feature that produced it.
 
-### 2. Data Flow Changes
-- **Storage location changes** (DB→File, Memory→Cache)
-- **Processing order changes with 3+ steps**
-  - Example: "Input→Validation→Save" to "Input→Save→Async Validation"
-- **Data passing method changes** (parameter passing→shared state, direct reference→event-based communication)
+**ADRs are rare by design.** A record that gets written for every change stops being read — and a decision log nobody reads is worse than none, because it looks like governance while providing none.
 
-### 3. Architecture Changes
-- Layer addition, responsibility changes, component relocation
+### The test
 
-### 4. External Dependency Changes
-- Library/framework/external API introduction or replacement
+Write an ADR only when **all three** hold:
 
-### 5. Complex Implementation Logic (Regardless of Scale)
-- Managing 3+ states
-- Coordinating 5+ asynchronous processes
+1. **Costly to reverse** — undoing it later means migrating data, breaking consumers, or coordinated changes across repositories. If a future developer can simply change it, it belongs in the Design Doc.
+2. **Binds beyond this feature** — future unrelated work must comply with it. A choice that constrains only the code in this change is a design detail, not an architecture decision.
+3. **Had real alternatives** — a genuine choice existed and one was taken. When only one option was viable, there is no decision to record; state the constraint in the Design Doc instead.
+
+Fail any one → no ADR. Record the reasoning in the Design Doc, where it belongs.
+
+### Signals worth applying the test to
+
+These commonly — not always — meet all three. Treat them as prompts to run the test, not as automatic triggers:
+
+- **Persistence and data flow**: storage medium changes, a new persisted format, a change in where the system of record lives
+- **Contract shape crossing a boundary**: a schema or API shape other teams or services consume
+- **Dependency direction**: a new layer, an inverted dependency, a module boundary moved
+- **Foundational external dependency**: a framework or platform choice future code will be written against — *not* every library addition
+- **Security or compliance posture**: an authentication model, a data residency or retention decision
+
+### Signals that usually fail the test
+
+Deep nesting, a function used in several places, adding a state to an existing machine, coordinating a few async calls, or adopting a utility library are ordinary design work. They belong in the Design Doc's Minimal Surface Alternatives, which already records what was compared and why.
 
 ## Detailed Document Definitions
 

@@ -1,17 +1,56 @@
 ---
 name: workflow-execution
-description: This skill governs autonomous execution — what must be true before it starts, the per-task cycle, commit strategies, whole-implementation verification, and the conditions that force a stop. Automatically loaded when entering autonomous mode, running an implementation loop, selecting a commit strategy, or when "autonomous execution", "task cycle", "auto-stop", "commit strategy", or "post-implementation verification" are mentioned.
+description: This skill governs planning and execution — work plan creation, task decomposition, batch approval, the per-task cycle, commit strategies, whole-implementation verification, and the conditions that force a stop. Automatically loaded when creating a work plan, decomposing tasks, entering autonomous mode, or when "work plan", "task decomposition", "batch approval", "autonomous execution", "task cycle", or "commit strategy" are mentioned.
 ---
 
 # Autonomous Execution Workflows
 
-Coordination — which subagent runs when, and which documents gate each phase — belongs to the `workflow-orchestration` skill. This skill governs what happens **after** batch approval: the loop that runs without asking permission, and every rule that constrains it.
+Coordination mechanics belong to `workflow-orchestration`; the approved design arrives from `workflow-technical`. This skill covers everything from "we know what to build" to "it is built": planning the work, decomposing it, obtaining batch approval, and then running the loop that proceeds without asking permission.
+
+Planning lives here rather than with design because a plan is a schedule for doing the work, not a statement of what the work is. It also carries the only domain difference in this half of the workflow — the planner agent.
 
 Autonomy is delegated authority, not absence of limits. Every rule below exists because unbounded execution fails in a specific, observed way: it edits far more than intended, retries a broken approach indefinitely, or reports success on work it never verified.
 
+## Planning
+
+Planning turns an approved design into a schedule the executor can follow, and ends at the authority boundary.
+
+### Planner agent
+
+| Domain | Planner |
+|--------|---------|
+| Default (backend, frontend, fullstack) | `work-planner` |
+| Game development | `gamedev-work-planner` |
+
+Substitute the domain's agent wherever this skill says **`{planner}`**. Nothing else varies by domain.
+
+### Flow
+
+1. **`{planner}`** → work plan at `docs/features/{feature}/{part}/{plan-name}.md`, carrying the frontmatter that positions it within its part (`plan: N of M`, `status`, `depends-on`) and incorporating the generated test skeleton paths
+2. **document-reviewer** → work plan review, checking:
+   - **Design-to-Plan Traceability** — every Design Doc item has a covering task or a justified gap
+   - **Failure Mode Checklist** — all nine categories marked, applicable ones assigned a covering task
+   - **Verification Strategy** carried across from the Design Doc, with an early verification point
+   - **Reference Contract Values** recorded verbatim where the design specifies a binding observable value
+   - **ADR Bindings** present for every ADR the design treats as prerequisite or produced
+   `needs_revision` → re-invoke `{planner}` with the issues, then re-review; maximum 2 iterations
+3. **Commit strategy selection** — ask the user (see below)
+
+   **[Stop: batch approval for the entire implementation phase]**
+
+4. **task-decomposer** → task files in `docs/features/{feature}/{part}/{plan-name}/`, one per single-commit unit, plus `_overview.md` and any phase-completion files
+
+Decomposition runs **after** batch approval: it produces working state, not a document under review, and re-decomposing is cheap while re-approving is not.
+
+### Batch approval is the authority boundary
+
+Everything before it is reviewed by a human; everything after runs autonomously until completion or escalation. Do not reach it with an unresolved question — after it, no one is asked again.
+
+Small scale skips the plan review: create a simplified plan, take batch approval, and proceed.
+
 ## Entry Conditions
 
-Autonomous mode starts only after **batch approval for the entire implementation phase**. Before entering, verify the environment supports what the loop assumes.
+Autonomous mode starts after batch approval and decomposition. Before entering the loop, verify the environment supports what it assumes.
 
 ### Pre-Execution Environment Check
 
@@ -38,7 +77,7 @@ The orchestrator itself gains no write authority: it still coordinates only.
 
 ## Commit Strategy Selection
 
-**Ask the user at workflow start** — after requirement-analyzer, before implementation begins.
+**Ask before batch approval**, so the user approves the plan and its commit granularity together.
 
 | Strategy | When to Commit | Best For |
 |----------|----------------|----------|
@@ -193,11 +232,16 @@ When an error appears during implementation, follow this protocol **instead of**
 
 ```mermaid
 graph TD
-    START[Batch approval for implementation phase] --> ENV{Environment check}
+    DESIGN[Approved Design Doc] --> PLAN[planner: work plan]
+    PLAN --> PREVIEW[document-reviewer: plan review]
+    PREVIEW -->|needs_revision| PLAN
+    PREVIEW -->|approved| STRATEGY[Ask commit strategy]
+    STRATEGY --> START[Batch approval]
+    START --> DECOMP[task-decomposer]
+    DECOMP --> ENV{Environment check}
     ENV -->|Missing critical component| ESC0[Escalate before entering]
     ENV -->|OK| AUTO[Start autonomous execution]
-    AUTO --> TD[task-decomposer]
-    TD --> LOOP[Task execution loop]
+    AUTO --> LOOP[Task execution loop]
     LOOP --> TE[task-executor]
     TE --> JUDGE{Escalation judgment}
     JUDGE -->|escalation_needed / blocked| USERESC[Escalate to user]

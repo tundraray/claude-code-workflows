@@ -174,12 +174,14 @@ Autonomous execution MUST stop and wait for user input at these points.
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
-| Requirements | After requirement-analyzer completes | Confirm requirements / Answer questions |
-| PRD | After document-reviewer completes PRD review | Approve PRD |
-| UXRD | After document-reviewer completes UXRD review (if frontend/UI work) | Approve UXRD |
-| ADR | After document-reviewer completes ADR review (if ADR created) | Approve ADR |
-| Design | After design-sync completes consistency verification | Approve Design Doc |
-| Work Plan | After document-reviewer completes work plan review | Batch approval for implementation phase |
+| Product | After requirement-analyzer completes | Confirm requirements / answer questions |
+| Product | After document-reviewer completes PRD review | Approve PRD |
+| Product | After document-reviewer completes UXRD review (frontend/UI work) | Approve UXRD |
+| Technical | After design-sync completes consistency verification | Approve Design Doc |
+| Technical | After document-reviewer completes ADR review (only when an ADR was written) | Approve ADR |
+| Execution | After document-reviewer completes work plan review | Batch approval for the implementation phase |
+
+The ADR stop follows the Design Doc stop: which decisions are architecture-binding is only visible once the design exists, and most features produce no ADR at all.
 
 **After batch approval**: Autonomous execution proceeds without stops until completion or escalation
 
@@ -269,8 +271,10 @@ This skill holds the mechanics shared by every phase. The phases themselves live
 | Phase | Skill | Answers | Ends at |
 |-------|-------|---------|---------|
 | Product | `workflow-product` | What to build and why | UXRD approval |
-| Technical | `workflow-technical` | How to build it | Batch approval |
-| Execution | `workflow-execution` | Doing it without asking | Completion report |
+| Technical | `workflow-technical` | How to build it | Design Doc approval |
+| Execution | `workflow-execution` | Scheduling it, then doing it | Completion report |
+
+Planning and decomposition belong to execution, not to technical design: a plan is a schedule for doing the work rather than a statement of what the work is, and batch approval — the authority boundary — gates the plan.
 
 Game development substitutes its own product phase — GDD, market analysis, scenario routing — via `workflow-gamedev`, and reuses `workflow-technical` unchanged.
 

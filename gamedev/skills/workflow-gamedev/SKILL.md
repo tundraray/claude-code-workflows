@@ -5,7 +5,7 @@ description: This skill governs the product phase for game development — scena
 
 # Game Development Product Phase
 
-This skill replaces `workflow-product` for game development. Everything after it is unchanged: the technical phase is `workflow-technical` (substituting `gamedev-work-planner` for the planner), and autonomous execution is `workflow-execution`. Shared mechanics — invoking agents, response contracts, delegation boundaries, file ownership, TodoWrite — are in `workflow-orchestration`.
+This skill replaces `workflow-product` for game development. Everything after it is unchanged: the technical phase is `workflow-technical`, and planning plus execution is `workflow-execution` (substituting `gamedev-work-planner` for the planner). Shared mechanics — invoking agents, response contracts, delegation boundaries, file ownership, TodoWrite — are in `workflow-orchestration`.
 
 A game feature and a service endpoint need the same design rigour, the same codebase fact gathering, and the same verification. What differs is upstream: what "the product" is, who defines it, and how a project starts.
 
@@ -13,7 +13,7 @@ A game feature and a service endpoint need the same design rigour, the same code
 
 **In scope**: scenario detection, development-mode routing, market analysis, GDD, feature specs, mechanics and game-feel specification, art direction, game UI/UX, analytics design, and the stop points gating each.
 
-**Out of scope**: ADR, Design Doc, codebase fact gathering, test skeletons, work plan, batch approval — all `workflow-technical`, used unchanged.
+**Out of scope**: codebase fact gathering, Design Doc, ADR, and test skeletons — all `workflow-technical`, used unchanged. Work plan, batch approval, and decomposition — all `workflow-execution`.
 
 ## Gamedev Agents
 
@@ -87,7 +87,7 @@ Detected by `requirement-analyzer` from the user's request. Confirm the detected
 
 **Design Only mode stops here** — deliver the design package.
 
-→ hand off to `workflow-technical` (planner: `gamedev-work-planner`)
+→ hand off to `workflow-technical`
 
 ### Scenario B — Large Feature in an existing project
 
@@ -99,7 +99,7 @@ Detected by `requirement-analyzer` from the user's request. Confirm the detected
 4. **mechanics-developer** → mechanics architecture for the feature
 5. *[Conditional, by feature type]* **game-feel-developer**, **sr-game-artist**, **ui-ux-agent**, **data-scientist**
 
-→ hand off to `workflow-technical` (planner: `gamedev-work-planner`)
+→ hand off to `workflow-technical`
 
 ### Medium scale
 
@@ -110,7 +110,7 @@ Detected by `requirement-analyzer` from the user's request. Confirm the detected
 3. **mechanics-developer** → mechanics architecture (when new systems are involved)
 4. *[Conditional]* **ui-ux-agent** (UI work), **game-feel-developer** (polish work)
 
-→ hand off to `workflow-technical` (planner: `gamedev-work-planner`)
+→ hand off to `workflow-technical`
 
 ### Small scale
 
@@ -124,7 +124,7 @@ Requirement analysis only, then a simplified plan → `workflow-execution`.
 | Go/No-Go | market-analyst | Whether the project proceeds at all (Scenario A) |
 | GDD approval | document-reviewer completes GDD review | Whether the vision, pillars, and core loop are right |
 
-The technical phase adds its own stops — ADR approval, Design Doc approval, and batch approval — see `workflow-technical`.
+The technical phase adds Design Doc approval and, when one is written, ADR approval. Batch approval belongs to `workflow-execution`.
 
 ## Phase Note for Execution
 
