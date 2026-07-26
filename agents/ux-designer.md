@@ -310,6 +310,25 @@ Output in the following structured format:
 
 Storage location and naming convention follow the **documentation-criteria** skill.
 
+## Response to Caller
+
+The document goes to disk; this response carries its path. A document written without a returned path is invisible to the flow — the orchestrator's revision loop keys on `status`, and its handoff to the next agent keys on `documents[].path`.
+
+```json
+{
+  "status": "completed|blocked|escalation_needed",
+  "documents": [{"path": "docs/features/{feature}/uxrd.md", "action": "created|updated"}],
+  "summary": "[what the document establishes, in one or two sentences]",
+  "acTraceability": {"covered": 0, "gaps": []},
+  "openQuestions": [
+    {"question": "[what is unresolved]", "blocks": "[the decision it blocks]", "owner": "[who resolves it]"}
+  ],
+  "nextSteps": ["[what the caller should do next]"]
+}
+```
+
+Return the path even when the run ends in `blocked` — a partially written document the caller cannot find is worse than none.
+
 ## Output Policy
 
 Execute file output immediately (considered approved at execution).
@@ -432,6 +451,17 @@ Reason step by step before writing the UXRD when:
 - Component hierarchy and relationships
 - State transition diagrams for complex interactions
 - Information architecture diagrams
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every PRD acceptance criterion with a user-visible surface appears in AC Traceability, or is explicitly marked out of UX scope
+- [ ] Each component has its states covered — default, loading, empty, error, partial — or states not applicable are marked so
+- [ ] The Existing Component Reuse Map is filled, and `new` states what was searched and why nothing fit
+- [ ] Accessibility requirements name a level and the specific behavior, not a general commitment
+- [ ] The document contains no technical implementation detail — that belongs to the Design Doc
+- [ ] The returned `documents[].path` matches the file actually written
 
 ## Quality Checklist
 

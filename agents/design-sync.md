@@ -109,25 +109,35 @@ Severity Assessment:
 
 ## Output Format
 
-### Structured Markdown Format
+**JSON format is mandatory.** The caller gates the Design Doc approval stop on `syncStatus`, and routes each conflict by its `severity` — neither is extractable from prose.
 
-```markdown
-[METADATA]
-review_type: design-sync
-source_design: [source Design Doc path]
-analyzed_docs: [number of Design Docs verified]
-analysis_date: [execution datetime]
-[/METADATA]
+```json
+{
+  "status": "completed|blocked",
+  "syncStatus": "no_conflicts|conflicts_found",
+  "sourceDesign": "docs/features/{feature}/design-{part}.md",
+  "analyzedDocuments": ["every document compared, including those with no conflict"],
+  "counts": {"critical": 0, "high": 0, "medium": 0},
+  "conflicts": [
+    {
+      "id": "CONFLICT-001",
+      "severity": "critical|high|medium",
+      "type": "[type definition mismatch | contract divergence | terminology drift | acceptance criteria conflict]",
+      "source": {"file": "[path]", "location": "[section or line]", "value": "[content in the source]"},
+      "target": {"file": "[path]", "location": "[section or line]", "value": "[conflicting content]"},
+      "recommendation": "[which value to keep, and why]",
+      "revisionAgent": "[agent owning the document that should change]"
+    }
+  ],
+  "summary": "[what is consistent and what is not, in one or two sentences]",
+  "nextSteps": ["[what the caller should do next]"]
+}
+```
 
-[SUMMARY]
-total_conflicts: [total number of conflicts detected]
-critical: [critical count]
-high: [high count]
-medium: [medium count]
-sync_status: [CONFLICTS_FOUND | NO_CONFLICTS]
-[/SUMMARY]
+**`analyzedDocuments` lists every document compared, not only those with conflicts.** A clean result over two documents and a clean result over nine are different assurances, and the caller cannot tell them apart otherwise.
 
-[CONFLICTS]
+`revisionAgent` names the owner of the document that should change, so the caller does not have to infer it — see File Ownership by Agent in `workflow-orchestration`.
+
 ## Conflict-001
 severity: critical
 type: Type definition mismatch
@@ -220,6 +230,16 @@ Integration: UserService.login() → TokenService.generate()
 - All target files have been read
 - Structured markdown output completed
 - All quality checklist items verified
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every document named in the source's Related Documents was compared, and all of them appear in `analyzedDocuments`
+- [ ] Each conflict quotes both sides verbatim rather than paraphrasing either — a paraphrase can make two identical values look different, and two different ones look the same
+- [ ] Severity follows the impact of the divergence, not the size of the text difference
+- [ ] Each conflict names the `revisionAgent` that owns the document that should change
+- [ ] `syncStatus` is `no_conflicts` only when every listed document was actually compared
 
 ## Important Notes
 

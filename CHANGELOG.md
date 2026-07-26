@@ -90,6 +90,12 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 
 ### Added
 
+- **Every agent now returns a JSON response, and every agent has a blocking self-check.** An audit of all 42 agents against the conventions CLAUDE.md states found both rules widely unmet.
+
+  The JSON rule was itself wrong for document-producing agents, and they had quietly opted out: `prd-creator`, `technical-designer`, `work-planner` and others wrote a file and returned nothing structured at all. That breaks the orchestrator in two places — its revision loops key on `status`, its handoffs key on a document path. CLAUDE.md now defines two response shapes rather than one, both mandatory: findings-returning agents carry `findings`, document-producing agents carry `documents[].path`. The document goes to disk; the response carries its path, never its contents.
+
+  Self-Validation `[BLOCKING]` went from 13 agents to all 29 shared ones (`task-executor` and `task-executor-frontend` satisfy it through their Exit Gate). Each checklist is written against that agent's own output contract — a copied generic list asserts nothing. They encode the failure specific to each role: a scanner calling an export dead without considering reflection or cross-package use, a cleanup agent removing on balance of probability, a test generator emitting skeletons that pass on day one, a design-sync reporting "no conflicts" over documents it never compared.
+
 - **Corrected: subagents can spawn subagents.** `workflow-orchestration` stated "Subagents cannot directly call other subagents", which is wrong. Claude Code supports nesting up to three layers below the main conversation by default, configurable via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. A second fact had gone unnoticed: agents here declare only `disallowedTools:`, so they **inherit** `Agent` unless it is explicitly denied — every agent already had the capability, unaudited.
 
   The orchestration skill now states only what is orchestration: that nesting exists, that which agents use it is declared per agent, and that siblings still cannot coordinate — a result reaches a peer only by returning to whoever spawned them, so sequencing stays the orchestrator's regardless. Who spawns what lives in each agent's own definition.

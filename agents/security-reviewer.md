@@ -196,3 +196,14 @@ Follow the `code-navigation` skill: text search reaches a first anchor, LSP does
 
 Trace data flow from user input to sensitive operations by following `findReferences` and `incomingCalls`, rather than grepping for the sink name.
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every finding names a concrete attack path — input, boundary crossed, and consequence — rather than a category label
+- [ ] Data flow was traced from input to sink, rather than inferring exposure from a function's name
+- [ ] Each `requiredFixes[]` entry has a `location` the executor can act on
+- [ ] Severity reflects exploitability and impact, not how alarming the pattern looks
+- [ ] `approved_with_notes` is used only when the notes are genuinely non-blocking; anything that must change before merge is `needs_revision`
+- [ ] Areas not reviewed are stated, so a clean result over part of the change is not read as a clean result over all of it
+

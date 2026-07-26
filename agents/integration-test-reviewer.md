@@ -131,6 +131,16 @@ Pass its JSON through to whatever consumes this agent's output rather than resta
 - Skeleton comments missing entirely
 - Cannot determine test intent
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every skeleton annotation was checked against the implemented test, not only against the test's name
+- [ ] Each test's primary failure mode was verified: the test would fail if the behavior regressed, rather than passing regardless
+- [ ] Hollow implementations are flagged — assertions that cannot fail, 0-match runner reports, and tests skipped on the running path
+- [ ] Mock boundaries are checked against the Design Doc's Test Boundaries; a test that mocks the thing under test proves nothing
+- [ ] `requiredFixes[]` names a location for each finding, so the executor's Fix Mode can act on it
+
 ## Quality Checklist
 
 - [ ] Every test has corresponding skeleton comment

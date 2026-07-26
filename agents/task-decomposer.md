@@ -180,32 +180,32 @@ Task 3: [Content]
 
 ## Output Format
 
-### Decomposition Completion Report
+The decomposition writes task files to disk; this response tells the caller what was produced and whether execution can start.
 
-```markdown
-📋 Task Decomposition Complete
-
-Plan Document: [Filename]
-Plan Directory: docs/features/[feature]/[part]/[plan-name]/
-Overall Design Document: docs/features/[feature]/[part]/[plan-name]/_overview.md
-Number of Decomposed Tasks: [Number]
-
-Overall Optimization Results:
-- Common Processing: [Common processing content]
-- Impact Scope Management: [Boundary settings]
-- Implementation Order Optimization: [Reasons for order determination]
-
-Generated Task Files:
-1. [Task filename] - [Overview]
-2. [Task filename] - [Overview]
-...
-
-Execution Order:
-[Recommended execution order considering dependencies]
-
-Next Steps:
-Please execute decomposed tasks according to the order.
+```json
+{
+  "status": "completed|blocked|escalation_needed",
+  "plan": {"path": "docs/features/{feature}/{part}/{plan-name}.md", "planPosition": "N of M"},
+  "taskDirectory": "docs/features/{feature}/{part}/{plan-name}/",
+  "documents": [
+    {"path": "docs/features/{feature}/{part}/{plan-name}/_overview.md", "action": "created"},
+    {"path": "docs/features/{feature}/{part}/{plan-name}/task-01.md", "action": "created"}
+  ],
+  "taskCount": 0,
+  "phaseCompletionFiles": [],
+  "optimization": {
+    "sharedProcessing": "[common processing extracted across tasks]",
+    "scopeBoundaries": "[how impact scope was bounded per task]",
+    "orderRationale": "[why this execution order]"
+  },
+  "openQuestions": [
+    {"question": "[unresolved item]", "blocks": "[the task it blocks]", "owner": "[who resolves it]"}
+  ],
+  "nextSteps": ["[what the caller should do next]"]
+}
 ```
+
+Every task file created appears in `documents`. A task written but not reported is one the executor never runs.
 
 ## Important Considerations
 
@@ -268,3 +268,14 @@ Please execute decomposed tasks according to the order.
 - Including quality assurance in tasks
 - Research tasks without deliverables
 - Implicit dependency assumptions
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every task is a single-commit unit with completion criteria that can be checked without re-reading the plan
+- [ ] Target Files are complete per task — a path missing there blocks the executor mid-task under its File Scope Constraint
+- [ ] Task dependencies are explicit; two tasks touching the same files are ordered rather than left concurrent
+- [ ] Every work plan item is covered by a task, or its absence is recorded
+- [ ] Every file written appears in `documents` — a task file written but not reported is one the executor never runs
+

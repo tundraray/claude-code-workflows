@@ -129,6 +129,15 @@ Select the recommended option and explain:
 - [ ] Disclosed residual risks
 - [ ] Identified interaction points with other expert domains
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] The analysis stays within the assigned expert perspective; findings belonging to another perspective are noted as such rather than absorbed
+- [ ] Each finding names the concrete consequence, not the principle it offends
+- [ ] Recommendations are specific enough to act on without a further round of questions
+- [ ] Where the perspective has nothing material to add, that is stated rather than padded with generic advice
+
 ## Prohibited Actions
 
 - Analyzing aspects outside your assigned expert perspective

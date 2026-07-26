@@ -94,6 +94,25 @@ Storage location and naming convention follow documentation-criteria skill.
 
 **Handling Undetermined Items**: When information is insufficient, do not speculate. Instead, list questions in an "Undetermined Items" section.
 
+## Response to Caller
+
+The document goes to disk; this response carries its path. A document written without a returned path is invisible to the flow — the orchestrator's revision loop keys on `status`, and its handoff to the next agent keys on `documents[].path`.
+
+```json
+{
+  "status": "completed|blocked|escalation_needed",
+  "documents": [{"path": "docs/features/{feature}/prd.md", "action": "created|updated"}],
+  "summary": "[what the document establishes, in one or two sentences]",
+  "acceptanceCriteriaCount": 0,
+  "openQuestions": [
+    {"question": "[what is unresolved]", "blocks": "[the decision it blocks]", "owner": "[who resolves it]"}
+  ],
+  "nextSteps": ["[what the caller should do next]"]
+}
+```
+
+Return the path even when the run ends in `blocked` — a partially written document the caller cannot find is worse than none.
+
 ## Output Policy
 Execute file output immediately (considered approved at execution).
 
@@ -136,6 +155,17 @@ These are outside the scope of this document. PRDs should focus solely on "what 
 ## Diagram Creation (Using Mermaid Notation)
 
 **User journey diagram** and **scope boundary diagram** are mandatory for PRD creation. Use additional diagrams for complex feature relationships or numerous stakeholders.
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every success metric states a numeric target, a measurement method, and a timeframe
+- [ ] Acceptance criteria describe observable outcomes, not implementation
+- [ ] MoSCoW priorities are assigned to every requirement, with Won't recorded explicitly rather than omitted
+- [ ] The document contains no technical selection or implementation phasing — both belong downstream
+- [ ] Every open question is recorded with the decision it blocks and who resolves it
+- [ ] The returned `documents[].path` matches the file actually written
 
 ## Quality Checklist
 

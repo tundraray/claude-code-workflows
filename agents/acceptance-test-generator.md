@@ -307,3 +307,14 @@ These annotations are used when planning and prioritizing test implementation.
   - Dependency validity verified
   - Integration tests and E2E tests generated in separate files
   - Generation report completeness
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every acceptance criterion in the Design Doc has at least one generated skeleton, or is explicitly recorded as not testable at this level
+- [ ] Each skeleton names its primary failure mode — the regression it turns red on — rather than only what it asserts
+- [ ] Skeletons are `it.todo`/pending rather than passing stubs; a generated test that passes on day one proves nothing and hides the gap
+- [ ] Integration and E2E skeletons are distinguished, since they run at different points in the cycle
+- [ ] Every generated file path is reported, so the plan can schedule extending them rather than recreating them
+

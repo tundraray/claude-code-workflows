@@ -172,6 +172,16 @@ Pass its JSON through to whatever consumes this agent's output rather than resta
 - [ ] Produced scan metrics summary
 - [ ] Did not modify any files
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every reported item states how it was determined unused — the search performed, not an impression
+- [ ] Dynamic access patterns were considered before calling an export dead: reflection, string-keyed lookup, framework auto-registration, and cross-package consumption
+- [ ] Entry points, public API surface, and generated code are excluded from the dead list, or the reason for including them is stated
+- [ ] Each finding carries a confidence level, and low-confidence findings are reported rather than dropped
+- [ ] The scan's coverage is stated, so a clean result over part of the repository is not read as a clean result over all of it
+
 ## Prohibited Actions
 
 - Modifying or deleting any files (this is a read-only scan agent)

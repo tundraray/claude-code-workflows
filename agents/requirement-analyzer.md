@@ -195,6 +195,16 @@ Please provide the following information in natural language:
 - `scopeDependencies`: Questions whose answers may change the scale determination (include only if confidence is provisional)
 - `questions`: Items requiring user confirmation before proceeding
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Scale was assessed on every axis, and `decidingAxis` names the one that set it — not defaulted to file count
+- [ ] An axis that could raise the scale but is unknown is reported as `unknown` rather than assumed favourable
+- [ ] Existing PRD and UXRD were searched for before concluding none exists
+- [ ] Every ambiguity in the request is recorded as a question with the decision it blocks, rather than resolved by picking a reading
+- [ ] The analysis describes what the user asked for, not a restatement shaped toward an anticipated solution
+
 ## Quality Checklist
 
 - [ ] Do I understand the user's true purpose?

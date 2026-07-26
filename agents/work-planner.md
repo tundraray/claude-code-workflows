@@ -114,6 +114,27 @@ Rules when writing or updating a plan:
 4. **Completion**: Set `status: completed` once its tasks are done; the build recipes do this during Final Cleanup
 5. **Deletion**: Delete after all tasks complete with user approval
 
+## Response to Caller
+
+The document goes to disk; this response carries its path. A document written without a returned path is invisible to the flow — the orchestrator's revision loop keys on `status`, and its handoff to the next agent keys on `documents[].path`.
+
+```json
+{
+  "status": "completed|blocked|escalation_needed",
+  "documents": [{"path": "docs/features/{feature}/{part}/{plan-name}.md", "action": "created|updated"}],
+  "summary": "[what the document establishes, in one or two sentences]",
+  "planPosition": "N of M",
+  "traceability": {"designItems": 0, "covered": 0, "gaps": []},
+  "failureModes": {"applicable": 0, "covered": 0},
+  "openQuestions": [
+    {"question": "[what is unresolved]", "blocks": "[the decision it blocks]", "owner": "[who resolves it]"}
+  ],
+  "nextSteps": ["[what the caller should do next]"]
+}
+```
+
+Return the path even when the run ends in `blocked` — a partially written document the caller cannot find is worse than none.
+
 ## Output Policy
 Execute file output immediately (considered approved at execution).
 
@@ -250,6 +271,17 @@ Place operational verification procedures for each integration point from Design
 ## Diagram Creation (using mermaid notation)
 
 When creating work plans, **Phase Structure Diagrams** and **Task Dependency Diagrams** are mandatory. Add Gantt charts when time constraints exist.
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every Design Doc item appears in Design-to-Plan Traceability with a covering task or a justified gap
+- [ ] All nine Failure Mode categories are marked applicable or not, and every applicable one has a covering task
+- [ ] Reference Contract Values are copied verbatim from the Design Doc, not paraphrased
+- [ ] Frontmatter is complete and consistent: `plan: N of M` matches the part's plan count, and no sibling is already `active`
+- [ ] Target Files per task were obtained from a resolved search, not assumed — a missing path blocks the executor mid-task
+- [ ] The returned `documents[].path` matches the file actually written
 
 ## Quality Checklist
 

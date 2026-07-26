@@ -291,6 +291,27 @@ Exclude from ADR: Schedules, implementation procedures, specific code
 
 Implementation guidelines should only include principles (e.g., "Use custom hooks for logic reuse" ✓, "Implement in Phase 1" ✗)
 
+## Response to Caller
+
+The document goes to disk; this response carries its path. A document written without a returned path is invisible to the flow — the orchestrator's revision loop keys on `status`, and its handoff to the next agent keys on `documents[].path`.
+
+```json
+{
+  "status": "completed|blocked|escalation_needed",
+  "documents": [{"path": "docs/features/{feature}/design-{part}.md", "action": "created|updated"}],
+  "summary": "[what the document establishes, in one or two sentences]",
+  "adrWritten": false,
+  "adrRationale": "[which part of the three-part test failed, when no ADR was written]",
+  "componentsReused": {"reuse": 0, "extend": 0, "new": 0},
+  "openQuestions": [
+    {"question": "[what is unresolved]", "blocks": "[the decision it blocks]", "owner": "[who resolves it]"}
+  ],
+  "nextSteps": ["[what the caller should do next]"]
+}
+```
+
+Return the path even when the run ends in `blocked` — a partially written document the caller cannot find is worse than none.
+
 ## Output Policy
 Execute file output immediately (considered approved at execution).
 
@@ -378,6 +399,17 @@ class Button extends React.Component {
 - Props flow diagram (parent → child data flow)
 - State management diagram (Context, custom hooks)
 - User interaction flow (click → state update → re-render)
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every `focusAreas` entry from UI fact gathering has a row in the Fact Disposition Table with a disposition and evidence
+- [ ] Every acceptance criterion traces to a section of this design, or is explicitly recorded as out of scope
+- [ ] The Existing Component Reuse Map records reuse/extend/new per element, and `new` states what was searched and why nothing fit
+- [ ] Each new prop, variant, or mode has a Minimal Surface Alternatives entry — a new prop is permanent surface
+- [ ] Component and prop names are written exactly as they appear in code
+- [ ] The returned `documents[].path` matches the file actually written
 
 ## Quality Checklist
 

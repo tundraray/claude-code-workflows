@@ -136,17 +136,38 @@ Skills contain structured guidance used by agents:
 
 ## Critical Conventions
 
-### Mandatory JSON Output Format
+### Mandatory JSON Response
 
-All agents must output structured JSON:
+**Every agent returns a JSON object to its caller.** The caller is a program deciding what to do next — whether to advance, retry, or stop — and it cannot make that decision from prose.
+
+This holds regardless of what the agent produces. What varies is what goes *in* the response, not whether there is one:
+
+**Agents that return findings** — reviewers, verifiers, analyzers, searchers:
+
 ```json
 {
-  "status": "completed|blocked|escalated",
+  "status": "completed|blocked|escalation_needed",
   "summary": "...",
   "findings": {...},
   "nextSteps": [...]
 }
 ```
+
+**Agents that produce documents** — prd-creator, technical-designer, work-planner, ux-designer, task-decomposer:
+
+```json
+{
+  "status": "completed|blocked|escalation_needed",
+  "documents": [{"path": "docs/features/auth/prd.md", "action": "created|updated"}],
+  "summary": "...",
+  "openQuestions": [...],
+  "nextSteps": [...]
+}
+```
+
+The document goes to disk; the response carries its **path**, not its contents. A caller that receives the document inline pays for it twice — once when the agent wrote it, again in its own context — and still has no path to hand to the next agent.
+
+**A document written without a returned path is invisible to the flow.** The orchestrator's revision loops key on `status`, and its handoffs key on `documents[].path`; an agent that writes a file and returns prose breaks both.
 
 ### TodoWrite Integration
 

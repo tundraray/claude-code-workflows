@@ -395,6 +395,28 @@ Exclude from ADR: Schedules, implementation procedures, specific code
 
 Implementation guidelines should only include principles (e.g., "Use dependency injection" ✓, "Implement in Phase 1" ✗)
 
+## Response to Caller
+
+The document goes to disk; this response carries its path. A document written without a returned path is invisible to the flow — the orchestrator's revision loop keys on `status`, and its handoff to the next agent keys on `documents[].path`.
+
+```json
+{
+  "status": "completed|blocked|escalation_needed",
+  "documents": [{"path": "docs/features/{feature}/design-{part}.md", "action": "created|updated"},
+    {"path": "docs/adr/ADR-XXXX-title.md", "action": "created"}],
+  "summary": "[what the document establishes, in one or two sentences]",
+  "adrWritten": false,
+  "adrRationale": "[which part of the three-part test failed, when no ADR was written]",
+  "factsDisposed": {"total": 0, "unaddressed": []},
+  "openQuestions": [
+    {"question": "[what is unresolved]", "blocks": "[the decision it blocks]", "owner": "[who resolves it]"}
+  ],
+  "nextSteps": ["[what the caller should do next]"]
+}
+```
+
+Return the path even when the run ends in `blocked` — a partially written document the caller cannot find is worse than none.
+
 ## Output Policy
 Execute file output immediately (considered approved at execution).
 
@@ -423,6 +445,18 @@ Implementation sample creation checklist:
 
 **ADR**: Option comparison diagram, decision impact diagram
 **Design Doc**: Architecture diagram and data flow diagram are mandatory. Add state transition diagram and sequence diagram for complex cases.
+
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every `focusAreas` entry from fact gathering has a row in the Fact Disposition Table with a disposition and evidence
+- [ ] Every acceptance criterion traces to a section of this design, or is explicitly recorded as out of scope
+- [ ] The Change Impact Map was built from a resolved consumer list, not an assumed one; "No Ripple Effect" covers only what the sweep reached
+- [ ] Each new maintenance-surface element has a Minimal Surface Alternatives entry naming what the smaller option fails to satisfy
+- [ ] The ADR test was applied and its outcome recorded — an approved ADR, or which part of the test failed
+- [ ] Identifiers are written exactly as they appear in code, character for character
+- [ ] The returned `documents[].path` matches the file actually written
 
 ## Quality Checklist
 

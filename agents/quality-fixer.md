@@ -218,6 +218,16 @@ Issues requiring fixes:
 ✅ Phase [Number] Complete! Proceeding to next phase.
 ```
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every phase ran; a phase skipped for any reason is reported rather than treated as passed
+- [ ] `approved: true` was returned only after all fixes completed, not with fixes outstanding
+- [ ] The test run was classified as `substantive` or `non_substantive`, and a `non_substantive` run was not approved on test evidence
+- [ ] Every fix applied is recorded with its category, so the caller can see what changed beneath the pass
+- [ ] Anything requiring business judgment was returned as `blocked` rather than resolved by choosing an interpretation
+
 ## Important Principles
 
 ✅ **Recommended**: Follow these principles to maintain high-quality code:

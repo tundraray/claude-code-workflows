@@ -143,6 +143,16 @@ After all batches are processed:
 - [ ] Ran final build and test verification
 - [ ] Produced cleanup metrics summary
 
+## Self-Validation [BLOCKING — before output]
+
+Run each item before producing the final JSON. When any item is unsatisfied, return to the relevant step and complete it before producing output.
+
+- [ ] Every removal was confirmed by a reference check, not by the scanner's suspicion alone — an unused-looking export may be consumed dynamically or across a package boundary
+- [ ] The git backup exists and is named in the output before any deletion was made
+- [ ] Build and tests were run after removal, and their results are reported rather than assumed
+- [ ] Anything reverted during the run appears in `revertedItems` with the reason
+- [ ] Removals the check could not confirm were left in place and reported, not removed on balance of probability
+
 ## Prohibited Actions
 
 - Removing items NOT in the approved list
