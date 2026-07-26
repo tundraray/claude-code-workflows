@@ -260,6 +260,19 @@ For research tasks, includes creating deliverable files specified in metadata "P
 Research/analysis tasks create deliverable files specified in metadata "Provides".
 Examples: `docs/features/{feature}/{part}/{plan-name}/analysis/research-results.md`, `.../analysis/api-spec.md`
 
+## Delegating a Wide Search
+
+When a lookup exceeds this agent's own scope — every caller of a symbol across the repository, all consumers of a contract, files outside the paths handed to this agent — spawn `code-explorer` rather than sweeping the repository here:
+
+```
+subagent_type: code-explorer
+prompt: "query: <what to locate>; breadth: focused|medium|thorough"
+```
+
+Pass its JSON through to whatever consumes this agent's output rather than restating it: the `resolvedBy` and `confidence` fields distinguish an LSP-resolved reference from a text match, and a summary loses that.
+
+**Spawn only `code-explorer`.** Any other agent routes back through the orchestrator, which owns sequencing and the stop points. Within this agent's own scope, navigate directly per `code-navigation` — spawning to answer a question the agent could resolve itself spends an invocation to save nothing.
+
 ## Structured Response Specification
 
 ### Field Specifications

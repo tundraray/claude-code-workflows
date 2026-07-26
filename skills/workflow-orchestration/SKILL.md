@@ -130,7 +130,29 @@ Assign work based on each subagent's responsibilities:
 
 ## Constraints Between Subagents
 
-**Important**: Subagents cannot directly call other subagents—all coordination flows through the orchestrator.
+### Subagent Nesting
+
+A subagent **can** spawn subagents — up to three layers below the main conversation by default, configurable via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. At the limit Claude Code removes the `Agent` tool, so the deepest agent finishes its own work and returns.
+
+Nesting is granted by including `Agent` in an agent's `tools:` allowlist. Agents in this repository declare only `disallowedTools:`, so they **inherit** `Agent` unless it is explicitly denied — the capability exists whether or not an agent's body mentions it.
+
+**Depth budget for these flows:**
+
+```
+main conversation           depth 0   the /implement orchestrator runs here
+  └─ technical agent        depth 1   task-executor, code-verifier, technical-designer …
+       └─ code-explorer     depth 2   leaf: denied Agent, cannot spawn further
+                                      depth 3 remains as headroom
+```
+
+**Policy**
+
+- **Spawn one level, for search only.** A code-touching agent may spawn `code-explorer` when a lookup exceeds its own scope. Anything else — another executor, a reviewer, a designer — routes back through the orchestrator, which owns sequencing and the stop points.
+- **Leaf agents deny `Agent`.** `code-explorer` cannot spawn, which is what bounds the chain regardless of the configured depth.
+- **The orchestrator still owns the flow.** Nesting is a way for an agent to answer its own question, not a way to run a phase from inside another agent. An agent that spawns a designer has taken over sequencing it cannot see the stop points for.
+- **Prefer the pre-run when the caller already knows the search is needed.** Passing `exploration` in costs one invocation; letting the agent discover the need and spawn costs the same, one layer deeper. Pre-run when predictable, spawn when discovered mid-work.
+
+Subagents still cannot coordinate with each other: there is no channel between siblings, and results reach a peer only by returning to whoever spawned them.
 
 ### Delegation Boundary: What vs How
 

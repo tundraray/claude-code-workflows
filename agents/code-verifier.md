@@ -120,6 +120,19 @@ For each claim with collected evidence:
 2. **Implementation Coverage**: What percentage of specs are implemented?
 3. List undocumented features and unimplemented specs
 
+## Delegating a Wide Search
+
+When a lookup exceeds this agent's own scope — every caller of a symbol across the repository, all consumers of a contract, files outside the paths handed to this agent — spawn `code-explorer` rather than sweeping the repository here:
+
+```
+subagent_type: code-explorer
+prompt: "query: <what to locate>; breadth: focused|medium|thorough"
+```
+
+Pass its JSON through to whatever consumes this agent's output rather than restating it: the `resolvedBy` and `confidence` fields distinguish an LSP-resolved reference from a text match, and a summary loses that.
+
+**Spawn only `code-explorer`.** Any other agent routes back through the orchestrator, which owns sequencing and the stop points. Within this agent's own scope, navigate directly per `code-navigation` — spawning to answer a question the agent could resolve itself spends an invocation to save nothing.
+
 ## Output Format
 
 **JSON format is mandatory.**

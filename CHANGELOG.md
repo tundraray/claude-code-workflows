@@ -90,6 +90,12 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 
 ### Added
 
+- **Corrected: subagents can spawn subagents.** `workflow-orchestration` stated "Subagents cannot directly call other subagents", which is wrong. Claude Code supports nesting up to three layers below the main conversation by default, configurable via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`; at the limit the `Agent` tool is removed so the deepest agent finishes and returns. The claim has been replaced with the depth budget for these flows and a policy for using it.
+
+  A second consequence had gone unnoticed: agents here declare only `disallowedTools:`, so they **inherit** `Agent` unless it is explicitly denied. Every agent already had the capability, unaudited and undocumented.
+
+  The 18 code-touching agents now carry an explicit rule: spawn `code-explorer` when a lookup exceeds their own scope, and spawn nothing else — any other agent routes back through the orchestrator, which owns sequencing and the stop points. `code-explorer` denies `Agent`, making it a leaf, which bounds the chain regardless of the configured depth.
+
 - **Every code-touching agent now navigates LSP-first.** All 18 agents that read or write code load `code-navigation` — the 6 that previously carried ad-hoc LSP bullet lists plus 12 that had no guidance at all (`technical-designer`, `code-verifier`, `verifier`, `quality-fixer`, `codebase-analyzer`, `ui-analyzer`, and the rest).
 
   Subagents cannot invoke subagents, so an agent cannot call `code-explorer` itself. Where an agent needs a sweep wider than its own scope, the orchestration guide documents the framework-native alternative: the orchestrator pre-runs `code-explorer` and passes its JSON in as an `exploration` input — the JSON rather than a summary, since rewriting it drops the `resolvedBy` and `confidence` fields and a receiving agent that cannot tell an LSP-resolved reference from a grep match treats both as facts.

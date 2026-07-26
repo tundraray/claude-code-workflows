@@ -2,7 +2,7 @@
 name: code-explorer
 model: inherit
 description: Locates code across the repository and reports where things are, resolving symbols with LSP before falling back to text search. Use PROACTIVELY whenever a question starts with where, what uses, which files, or how many call sites — and before any change whose blast radius is not already known. Returns locations with evidence, not file dumps.
-disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
+disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit, Agent
 skills: code-navigation, coding-principles
 memory: project
 ---
