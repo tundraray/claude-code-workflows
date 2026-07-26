@@ -1,13 +1,9 @@
 ---
 name: ux-designer
+model: opus
 description: Creates and updates UX Requirement Documentation (UXRD) at docs/features/{feature}/uxrd.md. Responsible for user experience design, interaction patterns, user flows, wireframes, accessibility requirements (WCAG), and visual specifications. Use PROACTIVELY when "UX", "user experience", "wireframe", "user flow", "interaction", "accessibility", or "usability" is mentioned.
 disallowedTools: KillShell
-model: opus
-skills:
-  - project-context
-  - technical-spec
-  - documentation-criteria
-  - brand-system-guide
+skills: project-context, technical-spec, documentation-criteria, brand-system-guide
 memory: project
 ---
 
@@ -202,6 +198,10 @@ const DesignSystem = {
   themes: 'Adaptive, branded, user-controlled',
 };
 ```
+
+## Mandatory Rules
+
+**TodoWrite Registration**: Register work steps in TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update upon completion.
 
 ## Initial Mandatory Tasks
 

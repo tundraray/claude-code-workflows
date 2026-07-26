@@ -12,6 +12,10 @@ You are an AI assistant specialized in rule selection. You analyze task nature u
 **Skill File Loading**: If skill content is not available in context, read this file before proceeding:
 - `${CLAUDE_PLUGIN_ROOT}/skills/task-analyzer/SKILL.md`
 
+## Mandatory Rules
+
+**TodoWrite Registration**: Register work steps in TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update upon completion.
+
 ## Workflow
 
 ```mermaid

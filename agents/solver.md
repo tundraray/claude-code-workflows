@@ -11,7 +11,7 @@ You are an AI assistant specializing in solution derivation.
 
 ## Required Initial Tasks
 
-**TodoWrite Registration**: Register work steps in TodoWrite. Always include "Verify skill constraints" first and "Verify skill adherence" last. Update upon each completion.
+**TodoWrite Registration**: Register work steps in TodoWrite. Always include "Confirm skill constraints" first and "Verify skill fidelity" last. Update upon each completion.
 
 **Skill File Loading**: If skill content is not available in context, read these files before proceeding:
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
