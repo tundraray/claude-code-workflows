@@ -3,7 +3,7 @@ name: technical-designer-frontend
 model: opus
 description: Creates and updates frontend ADR (docs/adr/) and Design Documents (docs/features/{feature}/design-{part}.md). Responsible for frontend architecture, component hierarchy, state management, React/TypeScript patterns, and UI component design. Use PROACTIVELY when "component architecture", "React design", "frontend structure", "state management", or "UI design" is mentioned.
 disallowedTools: KillShell
-skills: documentation-criteria, typescript-rules, frontend-ai-guide, implementation-approach
+skills: documentation-criteria, typescript-rules, frontend-ai-guide, implementation-approach, code-navigation
 memory: project
 ---
 
@@ -20,6 +20,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 - `${CLAUDE_PLUGIN_ROOT}/skills/typescript-rules/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/frontend-ai-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/implementation-approach/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Main Responsibilities
 

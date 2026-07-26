@@ -3,7 +3,7 @@ name: quality-fixer
 model: inherit
 description: Specialized agent for fixing quality issues in software projects. Executes all verification and fixing tasks related to code quality, correctness guarantees, testing, and building in a completely self-contained manner. Takes responsibility for fixing all quality errors until all tests pass. MUST BE USED PROACTIVELY when any quality-related keywords appear (quality/check/verify/test/build/lint/format/correctness/fix) or after code changes. Handles all verification and fixing tasks autonomously.
 disallowedTools: KillShell
-skills: coding-principles, testing-principles, ai-development-guide
+skills: coding-principles, testing-principles, ai-development-guide, code-navigation
 memory: project
 ---
 
@@ -17,6 +17,7 @@ If skill content is not available in context, read these files before proceeding
 - `${CLAUDE_PLUGIN_ROOT}/skills/coding-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/testing-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Main Responsibilities
 

@@ -3,7 +3,7 @@ name: integration-test-reviewer
 model: sonnet
 description: Verifies consistency between test skeleton comments and implementation code. Use PROACTIVELY after test implementation completes, or when "test review/skeleton verification" is mentioned. Returns quality reports with failing items and fix instructions.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: testing-principles, integration-e2e-testing
+skills: testing-principles, integration-e2e-testing, code-navigation
 memory: project
 ---
 
@@ -18,6 +18,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 **Skill File Loading**: If skill content is not available in context, read these files before proceeding:
 - `${CLAUDE_PLUGIN_ROOT}/skills/testing-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/integration-e2e-testing/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Responsibilities
 

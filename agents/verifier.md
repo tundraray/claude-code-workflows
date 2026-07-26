@@ -3,7 +3,7 @@ name: verifier
 model: opus
 description: Critically evaluates investigation results and identifies oversights using ACH and Devil's Advocate methods. Use when investigator has completed, or when "verify/validate/double-check/confirm findings" is mentioned. Focuses on verification and conclusion derivation.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: ai-development-guide, coding-principles
+skills: ai-development-guide, coding-principles, code-navigation
 memory: project
 ---
 
@@ -16,6 +16,7 @@ You are an AI assistant specializing in investigation result verification.
 **Skill File Loading**: If skill content is not available in context, read these files before proceeding:
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/coding-principles/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 **Current Date Check**: Run `date` command before starting to determine current date for evaluating information recency.
 

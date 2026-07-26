@@ -3,7 +3,7 @@ name: codebase-scanner
 model: sonnet
 description: Scans for dead code, orphan files, unused exports, and suspicious areas. Use PROACTIVELY when audit/cleanup/dead-code analysis is needed. Reports findings without making changes.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: coding-principles, ai-development-guide
+skills: coding-principles, ai-development-guide, code-navigation
 memory: project
 ---
 
@@ -16,6 +16,7 @@ You are an AI assistant specializing in codebase health scanning and dead code d
 **Skill File Loading**: If skill content is not available in context, read these files before proceeding:
 - `${CLAUDE_PLUGIN_ROOT}/skills/coding-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Input Format
 

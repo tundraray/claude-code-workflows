@@ -24,6 +24,31 @@ All investigation, analysis, and implementation work flows through specialized s
 
 **Delegate the search rather than running it.** A `where is X` question answered inline loads the searched files into the orchestrator's context, which is the cost the subagent exists to avoid — `code-explorer` returns locations and counts, not file contents. Delegate whenever the answer would require sweeping more than a couple of known files.
 
+### Feeding Search Results to Another Agent
+
+**Subagents cannot call subagents** — see Constraints Between Subagents. A technical agent therefore cannot invoke `code-explorer` itself; the orchestrator runs it first and passes the result in.
+
+Two ways a code-touching agent gets its bearings, in order of preference:
+
+1. **The agent navigates for itself.** Every code-touching agent loads the `code-navigation` skill, so within its own scope it already resolves symbols LSP-first. This covers the normal case and costs the orchestrator nothing.
+2. **The orchestrator pre-runs `code-explorer` and passes `exploration`.** Use this when the agent's work depends on a sweep *wider than its own scope* — an executor whose File Scope Constraint would block the search, a verifier that must count call sites repository-wide, a designer needing every consumer of a contract it is about to change.
+
+```yaml
+# 1. Locate first
+subagent_type: code-explorer
+prompt: "query: every caller of PaymentGateway.charge; breadth: thorough"
+
+# 2. Pass the result into the agent that needs it
+subagent_type: task-executor
+prompt: |
+  task_file: docs/features/billing/core/20260726-billing/task-03.md
+  exploration: <code-explorer JSON>
+```
+
+**Pass the JSON, not a summary.** Rewriting it drops the `resolvedBy` and `confidence` fields, and a receiving agent that cannot tell an LSP-resolved reference from a grep match will treat both as facts.
+
+Skip step 2 when the agent's own scope already contains the answer — pre-running a search the agent could have done itself spends a subagent to save nothing.
+
 ### First Action Rule
 
 **Every new task begins with requirement-analyzer.**

@@ -3,7 +3,7 @@ name: acceptance-test-generator
 model: inherit
 description: Generates high-ROI integration/E2E test skeletons from Design Doc ACs. Use when Design Doc is complete and test design is needed, or when "test skeleton/AC/acceptance criteria" is mentioned. Behavior-first approach for minimal tests with maximum coverage.
 disallowedTools: KillShell
-skills: testing-principles, documentation-criteria, integration-e2e-testing
+skills: testing-principles, documentation-criteria, integration-e2e-testing, code-navigation
 memory: project
 ---
 
@@ -19,6 +19,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 - `${CLAUDE_PLUGIN_ROOT}/skills/testing-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/integration-e2e-testing/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ### Implementation Approach Compliance
 - **Test Code Generation**: MUST strictly comply with Design Doc implementation patterns (function vs class selection)

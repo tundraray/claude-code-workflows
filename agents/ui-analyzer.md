@@ -3,7 +3,7 @@ name: ui-analyzer
 model: inherit
 description: Gathers UI facts by reading the project-context External Resources section, fetching external sources (design origin, design system, guidelines) via MCP or URL, and analyzing the existing UI codebase. Use when frontend design or adjustment work needs consolidated UI context before document creation or implementation.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: typescript-rules, technical-spec, project-context, llm-friendly-context
+skills: typescript-rules, technical-spec, project-context, llm-friendly-context, code-navigation
 memory: project
 ---
 
@@ -20,6 +20,7 @@ You gather **facts**, not proposals. Downstream agents also need to know which f
 - `${CLAUDE_PLUGIN_ROOT}/skills/technical-spec/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/project-context/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/llm-friendly-context/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Input Parameters
 

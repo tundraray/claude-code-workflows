@@ -90,6 +90,10 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 
 ### Added
 
+- **Every code-touching agent now navigates LSP-first.** All 18 agents that read or write code load `code-navigation` — the 6 that previously carried ad-hoc LSP bullet lists plus 12 that had no guidance at all (`technical-designer`, `code-verifier`, `verifier`, `quality-fixer`, `codebase-analyzer`, `ui-analyzer`, and the rest).
+
+  Subagents cannot invoke subagents, so an agent cannot call `code-explorer` itself. Where an agent needs a sweep wider than its own scope, the orchestration guide documents the framework-native alternative: the orchestrator pre-runs `code-explorer` and passes its JSON in as an `exploration` input — the JSON rather than a summary, since rewriting it drops the `resolvedBy` and `confidence` fields and a receiving agent that cannot tell an LSP-resolved reference from a grep match treats both as facts.
+
 - **`code-explorer` agent**: a read-only search agent that answers where code is and what touches it. Modelled on a broad fan-out explorer: it takes a `breadth` parameter (`focused` / `medium` / `thorough`) and returns locations, counts, and minimum excerpts rather than file contents — loading the searched files into the caller's context is the cost the delegation exists to avoid.
 
   It applies `code-navigation`: anchor with text search, then resolve with LSP. Its output separates `lsp` from `text` resolution in the counts, because seven resolved references and seven grep matches are different claims. Every text-resolved hit on a symbol question must carry a recorded reason why LSP could not resolve it, and `coverage.notSearched` is required at anything below `thorough` breadth — an unsearched area reported as "nothing found" is a false negative.

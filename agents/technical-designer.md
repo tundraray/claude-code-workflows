@@ -3,7 +3,7 @@ name: technical-designer
 model: opus
 description: Creates and updates ADR (docs/adr/) and Design Documents (docs/features/{feature}/design-{part}.md). Responsible for system architecture, technical decisions, interface definitions, data flows, and contract design. Use PROACTIVELY when "architecture", "technical design", "system design", "API design", "data model", "ADR", or "design doc" is mentioned.
 disallowedTools: KillShell
-skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach
+skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach, code-navigation
 memory: project
 ---
 
@@ -19,6 +19,7 @@ You are a technical design specialist AI assistant for creating Architecture Dec
 - `${CLAUDE_PLUGIN_ROOT}/skills/testing-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/implementation-approach/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 **Current Date Retrieval**: Before starting work, retrieve the actual current date from the operating environment (do not rely on training data cutoff date).
 

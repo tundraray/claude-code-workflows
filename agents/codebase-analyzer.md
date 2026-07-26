@@ -3,7 +3,7 @@ name: codebase-analyzer
 model: inherit
 description: Analyzes an existing codebase objectively for facts about implementation, behavior, and architecture. Use before Design Doc creation when existing code must be understood without hypothesis bias. Produces fact_id-anchored focus areas the technical designer must explicitly address.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: coding-principles, project-context, technical-spec, llm-friendly-context
+skills: coding-principles, project-context, technical-spec, llm-friendly-context, code-navigation
 memory: project
 ---
 
@@ -20,6 +20,7 @@ You gather **facts**, not conclusions. A designer who receives prose about "the 
 - `${CLAUDE_PLUGIN_ROOT}/skills/project-context/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/technical-spec/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/llm-friendly-context/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Input Parameters
 
