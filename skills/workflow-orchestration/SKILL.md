@@ -19,35 +19,6 @@ All investigation, analysis, and implementation work flows through specialized s
 | Flow in progress | Check scale determination table for next subagent |
 | Phase completion | Delegate to the appropriate subagent |
 | Stop point reached | Wait for user approval |
-| A question of the form *where is X*, *what uses X*, *which files do X* | Delegate to **code-explorer** |
-| A change whose blast radius is not already established | Delegate to **code-explorer** before proposing it |
-
-**Delegate the search rather than running it.** A `where is X` question answered inline loads the searched files into the orchestrator's context, which is the cost the subagent exists to avoid — `code-explorer` returns locations and counts, not file contents. Delegate whenever the answer would require sweeping more than a couple of known files.
-
-### Feeding Search Results to Another Agent
-
-**Subagents cannot call subagents** — see Constraints Between Subagents. A technical agent therefore cannot invoke `code-explorer` itself; the orchestrator runs it first and passes the result in.
-
-Two ways a code-touching agent gets its bearings, in order of preference:
-
-1. **The agent navigates for itself.** Every code-touching agent loads the `code-navigation` skill, so within its own scope it already resolves symbols LSP-first. This covers the normal case and costs the orchestrator nothing.
-2. **The orchestrator pre-runs `code-explorer` and passes `exploration`.** Use this when the agent's work depends on a sweep *wider than its own scope* — an executor whose File Scope Constraint would block the search, a verifier that must count call sites repository-wide, a designer needing every consumer of a contract it is about to change.
-
-```yaml
-# 1. Locate first
-subagent_type: code-explorer
-prompt: "query: every caller of PaymentGateway.charge; breadth: thorough"
-
-# 2. Pass the result into the agent that needs it
-subagent_type: task-executor
-prompt: |
-  task_file: docs/features/billing/core/20260726-billing/task-03.md
-  exploration: <code-explorer JSON>
-```
-
-**Pass the JSON, not a summary.** Rewriting it drops the `resolvedBy` and `confidence` fields, and a receiving agent that cannot tell an LSP-resolved reference from a grep match will treat both as facts.
-
-Skip step 2 when the agent's own scope already contains the answer — pre-running a search the agent could have done itself spends a subagent to save nothing.
 
 ### First Action Rule
 
@@ -132,27 +103,9 @@ Assign work based on each subagent's responsibilities:
 
 ### Subagent Nesting
 
-A subagent **can** spawn subagents — up to three layers below the main conversation by default, configurable via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. At the limit Claude Code removes the `Agent` tool, so the deepest agent finishes its own work and returns.
+A subagent can spawn subagents, up to three layers below the main conversation by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Which agents use that, and what they may spawn, is declared in each agent's own definition.
 
-Nesting is granted by including `Agent` in an agent's `tools:` allowlist. Agents in this repository declare only `disallowedTools:`, so they **inherit** `Agent` unless it is explicitly denied — the capability exists whether or not an agent's body mentions it.
-
-**Depth budget for these flows:**
-
-```
-main conversation           depth 0   the /implement orchestrator runs here
-  └─ technical agent        depth 1   task-executor, code-verifier, technical-designer …
-       └─ code-explorer     depth 2   leaf: denied Agent, cannot spawn further
-                                      depth 3 remains as headroom
-```
-
-**Policy**
-
-- **Spawn one level, for search only.** A code-touching agent may spawn `code-explorer` when a lookup exceeds its own scope. Anything else — another executor, a reviewer, a designer — routes back through the orchestrator, which owns sequencing and the stop points.
-- **Leaf agents deny `Agent`.** `code-explorer` cannot spawn, which is what bounds the chain regardless of the configured depth.
-- **The orchestrator still owns the flow.** Nesting is a way for an agent to answer its own question, not a way to run a phase from inside another agent. An agent that spawns a designer has taken over sequencing it cannot see the stop points for.
-- **Prefer the pre-run when the caller already knows the search is needed.** Passing `exploration` in costs one invocation; letting the agent discover the need and spawn costs the same, one layer deeper. Pre-run when predictable, spawn when discovered mid-work.
-
-Subagents still cannot coordinate with each other: there is no channel between siblings, and results reach a peer only by returning to whoever spawned them.
+What stays true regardless: subagents cannot coordinate with each other. There is no channel between siblings, and a result reaches a peer only by returning to whoever spawned them — so **sequencing remains the orchestrator's**, whatever an agent does internally to answer its own question.
 
 ### Delegation Boundary: What vs How
 

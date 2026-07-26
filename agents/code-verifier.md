@@ -122,16 +122,23 @@ For each claim with collected evidence:
 
 ## Delegating a Wide Search
 
-When a lookup exceeds this agent's own scope — every caller of a symbol across the repository, all consumers of a contract, files outside the paths handed to this agent — spawn `code-explorer` rather than sweeping the repository here:
+Verification claims are existence and count claims, and both are wrong when answered by text matching. Spawn `code-explorer` rather than grepping when checking:
+
+| Claim in the document | Ask code-explorer |
+|-----------------------|-------------------|
+| "`X` exists" — a path, endpoint, type name, config key | `query: definition of X; breadth: focused` |
+| "`X` is used by Y" | `query: all callers of X; breadth: medium` |
+| "`X` is no longer referenced" | `query: every reference to X; breadth: thorough` — an absence claim needs the widest sweep, since a single missed usage falsifies it |
+| Identifier referential integrity across a document | `query: <each literal identifier>; breadth: focused` — batch related ones into one fan-out |
 
 ```
 subagent_type: code-explorer
-prompt: "query: <what to locate>; breadth: focused|medium|thorough"
+prompt: "query: every reference to OrderService.charge; breadth: thorough"
 ```
 
-Pass its JSON through to whatever consumes this agent's output rather than restating it: the `resolvedBy` and `confidence` fields distinguish an LSP-resolved reference from a text match, and a summary loses that.
+**Use `counts.resolvedBy` to set the discrepancy's confidence.** A claim confirmed by `lsp` resolution is evidence; the same claim confirmed by `text` matches is a candidate, and `discrepancies[]` must say which. Carry the `code-explorer` JSON into your evidence rather than restating its numbers.
 
-**Spawn only `code-explorer`.** Any other agent routes back through the orchestrator, which owns sequencing and the stop points. Within this agent's own scope, navigate directly per `code-navigation` — spawning to answer a question the agent could resolve itself spends an invocation to save nothing.
+Spawn only `code-explorer`. Within the files handed to this agent, navigate directly per `code-navigation`.
 
 ## Output Format
 

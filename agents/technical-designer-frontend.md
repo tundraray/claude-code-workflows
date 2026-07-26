@@ -466,14 +466,23 @@ Research: "Which form library for React?"
 
 ## Delegating a Wide Search
 
-When a lookup exceeds this agent's own scope — every caller of a symbol across the repository, all consumers of a contract, files outside the paths handed to this agent — spawn `code-explorer` rather than sweeping the repository here:
+A design that changes a component contract must know who renders it. Assumed consumers are how a Design Doc ships a breaking change described as backward-compatible.
+
+Spawn `code-explorer` **before** committing to any of these:
+
+| About to | Ask code-explorer |
+|----------|-------------------|
+| Change an interface, signature, or schema | `query: every consumer of <symbol>; breadth: thorough` |
+| Remove or rename something | `query: every reference to <symbol>; breadth: thorough` |
+| Introduce a pattern claimed to already exist here | `query: existing uses of <pattern>; breadth: medium` — Reference Representativeness needs the count, not an impression |
+| Place code in a layer | `query: what currently lives in <layer> and what depends on it; breadth: medium` |
 
 ```
 subagent_type: code-explorer
-prompt: "query: <what to locate>; breadth: focused|medium|thorough"
+prompt: "query: every consumer of the CardProps type; breadth: thorough"
 ```
 
-Pass its JSON through to whatever consumes this agent's output rather than restating it: the `resolvedBy` and `confidence` fields distinguish an LSP-resolved reference from a text match, and a summary loses that.
+Feed the result into the **Change Impact Map** and the **Interface Change Matrix**: `locations` populate the direct-impact list, and a location the search did not reach belongs in "No Ripple Effect" only when the sweep actually covered it — check `coverage.notSearched` before writing that section.
 
-**Spawn only `code-explorer`.** Any other agent routes back through the orchestrator, which owns sequencing and the stop points. Within this agent's own scope, navigate directly per `code-navigation` — spawning to answer a question the agent could resolve itself spends an invocation to save nothing.
+When `codebase-analyzer` already supplied `focusAreas`, use those first; spawn only for what they do not cover. Spawn only `code-explorer` — sequencing belongs to the orchestrator.
 
