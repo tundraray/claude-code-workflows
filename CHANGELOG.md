@@ -90,6 +90,12 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 
 ### Added
 
+- **`code-explorer` agent**: a read-only search agent that answers where code is and what touches it. Modelled on a broad fan-out explorer: it takes a `breadth` parameter (`focused` / `medium` / `thorough`) and returns locations, counts, and minimum excerpts rather than file contents — loading the searched files into the caller's context is the cost the delegation exists to avoid.
+
+  It applies `code-navigation`: anchor with text search, then resolve with LSP. Its output separates `lsp` from `text` resolution in the counts, because seven resolved references and seven grep matches are different claims. Every text-resolved hit on a symbol question must carry a recorded reason why LSP could not resolve it, and `coverage.notSearched` is required at anything below `thorough` breadth — an unsearched area reported as "nothing found" is a false negative.
+
+  Registered as a proactive delegation target: the orchestration guide now routes *where is X*, *what uses X*, and any change whose blast radius is not established to it. A boundary table separates it from `codebase-analyzer` (pre-design facts), `scope-discoverer` (unit boundaries), and `codebase-scanner` (dead code).
+
 - **`code-navigation` skill**: chooses between semantic and textual lookup. Text search reaches a first anchor — every LSP operation needs a `file:line:character` position, so a lookup starting from a bare name has to get one — and LSP does everything after it. Falling back to text search on a symbol question requires a reason that can be named and recorded; "grep is faster" is explicitly not one. Grep matching a class name returns comments, log strings, and same-named symbols from other modules while missing every use through an import alias, which is why it is wrong for rename-impact and call-site questions specifically.
 
   This also removes duplication: six agents (`task-executor`, `code-reviewer`, `investigator`, `scope-discoverer`, `security-reviewer`, `solver`) each carried their own "LSP MCP (if available)" bullet list with no shared source. Each now references the skill and keeps only its agent-specific instruction — where the finding goes in that agent's output contract.

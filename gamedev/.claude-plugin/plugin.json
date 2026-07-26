@@ -45,6 +45,7 @@
     "./agents/cleanup-executor.md",
     "./agents/code-reviewer.md",
     "./agents/codebase-analyzer.md",
+    "./agents/code-explorer.md",
     "./agents/ui-analyzer.md",
     "./agents/code-verifier.md",
     "./agents/design-sync.md",

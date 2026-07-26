@@ -19,6 +19,10 @@ All investigation, analysis, and implementation work flows through specialized s
 | Flow in progress | Check scale determination table for next subagent |
 | Phase completion | Delegate to the appropriate subagent |
 | Stop point reached | Wait for user approval |
+| A question of the form *where is X*, *what uses X*, *which files do X* | Delegate to **code-explorer** |
+| A change whose blast radius is not already established | Delegate to **code-explorer** before proposing it |
+
+**Delegate the search rather than running it.** A `where is X` question answered inline loads the searched files into the orchestrator's context, which is the cost the subagent exists to avoid — `code-explorer` returns locations and counts, not file contents. Delegate whenever the answer would require sweeping more than a couple of known files.
 
 ### First Action Rule
 
@@ -64,22 +68,23 @@ The following subagents are available:
 3. **task-executor**: Individual task execution and structured response
 4. **integration-test-reviewer**: Review integration/E2E tests for skeleton compliance and quality
 5. **security-reviewer**: Security compliance review against Design Doc and coding-principles (read-only)
+6. **code-explorer**: Locates code and reports where things are, LSP first (read-only)
 
 ### Document Creation Agents
-5. **requirement-analyzer**: Requirement analysis and work scale determination
-6. **prd-creator**: Product Requirements Document creation
-7. **ux-designer**: UX Requirement Documentation (UXRD) creation - UI/UX design, interaction patterns, accessibility specs (frontend)
-8. **technical-designer**: ADR/Design Doc creation for backend
-9. **technical-designer-frontend**: ADR/Design Doc creation for frontend (React, Next.js)
-10. **work-planner**: Work plan creation from Design Doc and test skeletons
-11. **document-reviewer**: Single document quality and rule compliance check
-12. **design-sync**: Design Doc consistency verification across multiple documents
-13. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
-14. **expert-analyst**: Parallel multi-perspective analysis from expert viewpoint (Security, API Design, Architecture, Performance, Data Modeling, Testability, Error Handling, UX Impact)
-15. **codebase-analyzer**: Read-only pre-design fact gathering — emits `fact_id`-anchored `focusAreas` the designer must address (backend/shared)
-16. **ui-analyzer**: Read-only pre-design UI fact gathering, including external design-resource fetch with per-resource `fetch_status` (frontend)
-17. **codebase-scanner**: Scans for dead code, orphan files, unused exports, and suspicious areas (read-only)
-18. **cleanup-executor**: Safely removes confirmed dead code with git backup and build verification
+1. **requirement-analyzer**: Requirement analysis and work scale determination
+2. **prd-creator**: Product Requirements Document creation
+3. **ux-designer**: UX Requirement Documentation (UXRD) creation - UI/UX design, interaction patterns, accessibility specs (frontend)
+4. **technical-designer**: ADR/Design Doc creation for backend
+5. **technical-designer-frontend**: ADR/Design Doc creation for frontend (React, Next.js)
+6. **work-planner**: Work plan creation from Design Doc and test skeletons
+7. **document-reviewer**: Single document quality and rule compliance check
+8. **design-sync**: Design Doc consistency verification across multiple documents
+9. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
+10. **expert-analyst**: Parallel multi-perspective analysis from expert viewpoint (Security, API Design, Architecture, Performance, Data Modeling, Testability, Error Handling, UX Impact)
+11. **codebase-analyzer**: Read-only pre-design fact gathering — emits `fact_id`-anchored `focusAreas` the designer must address (backend/shared)
+12. **ui-analyzer**: Read-only pre-design UI fact gathering, including external design-resource fetch with per-resource `fetch_status` (frontend)
+13. **codebase-scanner**: Scans for dead code, orphan files, unused exports, and suspicious areas (read-only)
+14. **cleanup-executor**: Safely removes confirmed dead code with git backup and build verification
 
 ## Orchestration Principles
 
