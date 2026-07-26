@@ -1,11 +1,11 @@
 ---
-name: workflows
+name: workflow-execution
 description: This skill governs autonomous execution — what must be true before it starts, the per-task cycle, commit strategies, whole-implementation verification, and the conditions that force a stop. Automatically loaded when entering autonomous mode, running an implementation loop, selecting a commit strategy, or when "autonomous execution", "task cycle", "auto-stop", "commit strategy", or "post-implementation verification" are mentioned.
 ---
 
 # Autonomous Execution Workflows
 
-Coordination — which subagent runs when, and which documents gate each phase — belongs to the `subagents-orchestration-guide` skill. This skill governs what happens **after** batch approval: the loop that runs without asking permission, and every rule that constrains it.
+Coordination — which subagent runs when, and which documents gate each phase — belongs to the `workflow-orchestration` skill. This skill governs what happens **after** batch approval: the loop that runs without asking permission, and every rule that constrains it.
 
 Autonomy is delegated authority, not absence of limits. Every rule below exists because unbounded execution fails in a specific, observed way: it edits far more than intended, retries a broken approach indefinitely, or reports success on work it never verified.
 

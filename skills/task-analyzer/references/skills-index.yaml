@@ -137,8 +137,8 @@ skills:
       - "Review Criteria"
       - "Quality Standards"
 
-  subagents-orchestration-guide:
-    skill: "subagents-orchestration-guide"
+  workflow-orchestration:
+    skill: "workflow-orchestration"
     tags: [orchestration, workflow, subagents, autonomous-execution, scale-determination, stop-points, commit-strategy]
     typical-use: "Orchestrating subagents through implementation workflows, scale determination, stop points, autonomous execution mode"
     size: large
@@ -420,8 +420,8 @@ skills:
       - "Testing Type Safety"
       - "Risks and Mitigations"
 
-  workflows:
-    skill: "workflows"
+  workflow-execution:
+    skill: "workflow-execution"
     tags: [autonomous-execution, task-cycle, commit-strategy, auto-stop, post-implementation-verification, fix-mode, escalation, error-handling]
     typical-use: "Entering autonomous mode, running the implementation loop, selecting a commit strategy, whole-implementation verification, auto-stop enforcement"
     size: medium

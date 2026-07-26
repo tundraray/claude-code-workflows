@@ -85,7 +85,7 @@
     "./skills/implementation-approach",
     "./skills/integration-e2e-testing",
     "./skills/project-context",
-    "./skills/subagents-gamedev-orchestration",
+    "./skills/workflow-gamedev",
     "./skills/task-analyzer",
     "./skills/technical-spec",
     "./skills/testing-principles",
@@ -94,7 +94,7 @@
     "./skills/skill-optimization",
     "./skills/llm-friendly-context",
     "./skills/rule-editing-guide",
-    "./skills/workflows",
+    "./skills/workflow-execution",
     "./skills/game-analysis-criteria"
   ],
   "mcpServers": "./.mcp.json"

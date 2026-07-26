@@ -8,23 +8,23 @@ argument-hint: <game feature or project description>
 
 ## Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-gamedev-orchestration skill)
+**Core Identity**: "I am not a worker. I am an orchestrator." (see workflow-gamedev skill)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (orchestrator role only, no direct implementation)
-2. **Follow subagents-gamedev-orchestration skill flows exactly**:
+2. **Follow workflow-gamedev skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
-**CRITICAL**: Execute all steps, sub-agents, and stopping points defined in subagents-gamedev-orchestration skill flows.
+**CRITICAL**: Execute all steps, sub-agents, and stopping points defined in workflow-gamedev skill flows.
 
 ## Required Skills
 
 Before executing, load these skill files for guidance:
-- `${CLAUDE_PLUGIN_ROOT}/skills/subagents-gamedev-orchestration/SKILL.md`
-- `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-gamedev/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-execution/SKILL.md`
 
 ## Execution Decision Flow
 
@@ -36,7 +36,7 @@ Instruction Content: $ARGUMENTS
 | Situation Pattern | Decision Criteria | Next Action |
 |------------------|------------------|-------------|
 | New Requirements | No existing work, new game feature/project request | Start with requirement-analyzer |
-| Flow Continuation | Existing docs/tasks present, continuation directive | Identify next step in subagents-gamedev-orchestration flow |
+| Flow Continuation | Existing docs/tasks present, continuation directive | Identify next step in workflow-gamedev flow |
 | Quality Errors | Error detection, test failures, build errors | Execute quality-fixer |
 | Ambiguous | Intent unclear, multiple interpretations possible | Confirm with user |
 
@@ -45,7 +45,7 @@ Instruction Content: $ARGUMENTS
 When continuing existing flow, verify:
 - Latest artifacts (PRD/GDD/ADR/Design Doc/Work Plan/Tasks)
 - Current phase position (Requirements/Market Analysis/Game Design/Technical Design/Planning/Implementation/QA)
-- Identify next step in subagents-gamedev-orchestration skill corresponding flow
+- Identify next step in workflow-gamedev skill corresponding flow
 
 ### Development Mode Detection
 
@@ -188,7 +188,7 @@ scopeDependencies:
 
 ### 4. Next Action Execution
 
-**MANDATORY subagents-gamedev-orchestration skill reference**:
+**MANDATORY workflow-gamedev skill reference**:
 - Verify scale-based flow (Large/Medium/Small scale)
 - Confirm autonomous execution mode conditions
 - Recognize mandatory stopping points
@@ -205,7 +205,7 @@ scopeDependencies:
 ## Subagents Orchestration Guide Compliance Execution
 
 **Pre-execution Checklist (MANDATORY)**:
-- [ ] Confirmed relevant subagents-gamedev-orchestration skill flow
+- [ ] Confirmed relevant workflow-gamedev skill flow
 - [ ] Identified current progress position
 - [ ] Clarified next step
 - [ ] Recognized stopping points
@@ -258,7 +258,7 @@ Store selected strategy for autonomous execution mode.
 1. Execute ONE task completely before starting next
 2. Check task-executor status before quality-fixer (escalation check)
 3. quality-fixer MUST run after each task-executor (no skipping)
-4. Commit execution depends on strategy (see subagents-gamedev-orchestration)
+4. Commit execution depends on strategy (see workflow-gamedev)
 
 **Step 2 branch conditions**:
 - `status: escalation_needed` or `status: blocked` → escalate to user
@@ -321,4 +321,4 @@ After acceptance-test-generator execution, when calling work-planner, communicat
 ## Execution Method
 
 All work is executed through sub-agents.
-Sub-agent selection follows subagents-gamedev-orchestration skill.
+Sub-agent selection follows workflow-gamedev skill.

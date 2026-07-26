@@ -8,11 +8,11 @@ argument-hint: <design doc name or path>
 
 ## Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**Core Identity**: "I am not a worker. I am an orchestrator." (see workflow-orchestration skill)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (NEVER create plans yourself)
-2. **Follow subagents-orchestration-guide skill planning flow exactly**:
+2. **Follow workflow-orchestration skill planning flow exactly**:
    - Execute steps defined below
    - **Stop and obtain approval** for plan content before completion
 3. **Scope**: Complete when work plan receives approval
@@ -22,7 +22,7 @@ argument-hint: <design doc name or path>
 ## Required Skills
 
 Before executing, load these skill files for guidance:
-- `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
 
 ## Scope Boundaries
 
@@ -47,11 +47,11 @@ Follow the planning process below:
 2. **E2E Test Skeleton Generation Confirmation**
    - Confirm with user whether to generate E2E test skeleton first
    - If user wants generation: Generate test skeleton with acceptance-test-generator
-   - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
+   - Pass generation results to next process according to workflow-orchestration skill coordination specification
 
 3. **Work Plan Creation**
    - Create work plan with work-planner
-   - Utilize deliverables from previous process according to subagents-orchestration-guide skill coordination specification
+   - Utilize deliverables from previous process according to workflow-orchestration skill coordination specification
 
 4. **Work Plan Review**
    - Submit the plan to `document-reviewer` before presenting it to the user. A plan that omits a Design Doc requirement looks complete — only a traceability check finds the gap.

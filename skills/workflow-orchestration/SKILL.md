@@ -1,5 +1,5 @@
 ---
-name: subagents-orchestration-guide
+name: workflow-orchestration
 description: This skill guides subagent coordination through implementation workflows. Automatically loaded when orchestrating multiple agents, managing workflow phases, determining autonomous execution mode, or when "orchestration", "workflow phases", "scale determination", "stop points", or "autonomous mode" are mentioned.
 ---
 
@@ -317,9 +317,9 @@ When `decidingAxis` is anything other than `files`, state it at the confirmation
 
 Everything that happens after batch approval — entry conditions, the per-task cycle, commit strategies, post-implementation verification, final cleanup, auto-stop triggers, and the error-fixing protocol — is governed by the **`workflows`** skill.
 
-Load `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md` before entering autonomous mode.
+Load `${CLAUDE_PLUGIN_ROOT}/skills/workflow-execution/SKILL.md` before entering autonomous mode.
 
-This guide stops at the batch-approval gate: it decides *which* subagent runs *when* and which documents gate each phase. The `workflows` skill decides how the loop behaves once no one is asked for permission any more.
+This guide stops at the batch-approval gate: it decides *which* subagent runs *when* and which documents gate each phase. The `workflow-execution` skill decides how the loop behaves once no one is asked for permission any more.
 
 ## Metacognitive TodoWrite Integration
 

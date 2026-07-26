@@ -8,21 +8,21 @@ argument-hint: <UX feature or interaction description>
 
 ## Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**Core Identity**: "I am not a worker. I am an orchestrator." (see workflow-orchestration skill)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (NEVER investigate/analyze yourself)
-2. **Follow subagents-orchestration-guide skill design flow exactly**:
+2. **Follow workflow-orchestration skill design flow exactly**:
    - Execute: requirement-analyzer → ux-designer → document-reviewer → design-sync (if Design Doc exists)
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when UXRD receives approval
 
-**CRITICAL**: NEVER skip document-reviewer, design-sync (when applicable), or stopping points defined in subagents-orchestration-guide skill flows.
+**CRITICAL**: NEVER skip document-reviewer, design-sync (when applicable), or stopping points defined in workflow-orchestration skill flows.
 
 ## Required Skills
 
 Before executing, load these skill files for guidance:
-- `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
 
 ## Workflow Overview
 

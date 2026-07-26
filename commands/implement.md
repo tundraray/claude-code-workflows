@@ -8,23 +8,23 @@ argument-hint: <feature description>
 
 ## Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**Core Identity**: "I am not a worker. I am an orchestrator." (see workflow-orchestration skill)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (orchestrator role only, no direct implementation)
-2. **Follow subagents-orchestration-guide skill flows exactly**:
+2. **Follow workflow-orchestration skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
-**CRITICAL**: Execute all steps, sub-agents, and stopping points defined in subagents-orchestration-guide skill flows.
+**CRITICAL**: Execute all steps, sub-agents, and stopping points defined in workflow-orchestration skill flows.
 
 ## Required Skills
 
 Before executing, load these skill files for guidance:
-- `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/SKILL.md`
-- `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-execution/SKILL.md`
 
 ## Execution Decision Flow
 
@@ -45,7 +45,7 @@ Instruction Content: $ARGUMENTS
 When continuing existing flow, verify:
 - Latest artifacts (PRD/ADR/Design Doc/Work Plan/Tasks)
 - Current phase position (Requirements/Design/Planning/Implementation/QA)
-- Identify next step in subagents-orchestration-guide skill corresponding flow
+- Identify next step in workflow-orchestration skill corresponding flow
 
 ### Scope Change Detection
 
@@ -99,7 +99,7 @@ scopeDependencies:
 
 ### 4. Next Action Execution
 
-**MANDATORY subagents-orchestration-guide skill reference**:
+**MANDATORY workflow-orchestration skill reference**:
 - Verify scale-based flow (Large/Medium/Small scale)
 - Confirm autonomous execution mode conditions
 - Recognize mandatory stopping points
@@ -116,7 +116,7 @@ scopeDependencies:
 ## Subagents Orchestration Guide Compliance Execution
 
 **Pre-execution Checklist (MANDATORY)**:
-- [ ] Confirmed relevant subagents-orchestration-guide skill flow
+- [ ] Confirmed relevant workflow-orchestration skill flow
 - [ ] Identified current progress position
 - [ ] Clarified next step
 - [ ] Recognized stopping points
@@ -167,7 +167,7 @@ Store selected strategy for autonomous execution mode.
 1. Execute ONE task completely before starting next
 2. Check task-executor status before quality-fixer (escalation check)
 3. quality-fixer MUST run after each task-executor (no skipping)
-4. Commit execution depends on strategy (see the `workflows` skill)
+4. Commit execution depends on strategy (see the `workflow-execution` skill)
 
 **Step 2 branch conditions**:
 - `status: escalation_needed` or `status: blocked` → escalate to user
@@ -198,7 +198,7 @@ The per-task quality cycle checks tasks in isolation. It cannot detect drift bet
 
    Append to each prompt: `[SYSTEM CONSTRAINT] This agent operates within implement command scope.`
 
-2. **Apply pass/fail criteria** from the `workflows` skill, "Post-Implementation Verification" section:
+2. **Apply pass/fail criteria** from the `workflow-execution` skill, "Post-Implementation Verification" section:
    - `code-verifier`: `consistent` / `mostly_consistent` = pass; `needs_review` / `inconsistent` = fail
    - `security-reviewer`: `approved` / `approved_with_notes` = pass; `needs_revision` = fail; `blocked` → **STOP immediately**, report credentials/critical vulnerability, do NOT commit
 
@@ -232,4 +232,4 @@ After acceptance-test-generator execution, when calling work-planner, communicat
 ## Execution Method
 
 All work is executed through sub-agents.
-Sub-agent selection follows subagents-orchestration-guide skill.
+Sub-agent selection follows workflow-orchestration skill.

@@ -1,5 +1,5 @@
 ---
-name: subagents-gamedev-orchestration
+name: workflow-gamedev
 description: This skill guides subagent coordination through game development workflows. Automatically loaded when orchestrating multiple agents, managing workflow phases, determining autonomous execution mode, or when "orchestration", "workflow phases", "scale determination", "stop points", or "autonomous mode" are mentioned.
 ---
 
@@ -381,9 +381,9 @@ According to scale determination and scenario detection:
 
 Everything after batch approval — entry conditions, the per-task cycle, commit strategies, post-implementation verification, final cleanup, auto-stop triggers, and the error-fixing protocol — is governed by the **`workflows`** skill.
 
-Load `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md` before entering autonomous mode.
+Load `${CLAUDE_PLUGIN_ROOT}/skills/workflow-execution/SKILL.md` before entering autonomous mode.
 
-This guide stops at the batch-approval gate: it decides which subagent runs when across the game development phases, and which documents gate each one. The `workflows` skill decides how the loop behaves once no one is asked for permission any more.
+This guide stops at the batch-approval gate: it decides which subagent runs when across the game development phases, and which documents gate each one. The `workflow-execution` skill decides how the loop behaves once no one is asked for permission any more.
 
 **Game-specific note**: the 6 development phases (Core Mechanics, Game Feel, Art, UI, Analytics, QA) are phases *within* one plan, so `per-phase` commit strategy groups commits by those phases.
 

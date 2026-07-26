@@ -82,7 +82,7 @@ overture/
 │   │   └── ... (19 shared symlinks)
 │   ├── commands/               # 14 symlinks + 1 local (implement.md)
 │   ├── skills/                 # 11 symlinks + 2 local
-│   │   ├── subagents-gamedev-orchestration/  # Gamedev flows
+│   │   ├── workflow-gamedev/  # Gamedev flows
 │   │   └── documentation-criteria/           # Extended with game templates
 │   └── .claude-plugin/
 │       └── plugin.json

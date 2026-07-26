@@ -19,7 +19,7 @@ The framework implements an **agentic orchestration pattern** where specialized 
 
 Commands like `/implement` act as orchestrators:
 - Delegate ALL work to specialized sub-agents
-- Follow deterministic flow rules in `subagents-orchestration-guide` skill
+- Follow deterministic flow rules in `workflow-orchestration` skill
 - Never perform work directly—only coordinate
 - Must include constraint suffix on sub-agent prompts: `[SYSTEM CONSTRAINT] This agent operates within [command] command scope...`
 
@@ -122,7 +122,9 @@ All three plugins symlink to shared agents/commands/skills:
 ### Skills (Knowledge Base)
 
 Skills contain structured guidance used by agents:
-- **subagents-orchestration-guide**: Orchestration rules, stop points, agent coordination, scale determination
+- **workflow-orchestration**: Orchestration rules, stop points, agent coordination, scale determination — up to the batch-approval gate
+- **workflow-execution**: Autonomous execution after batch approval — per-task cycle, commit strategies, post-implementation verification, auto-stop triggers
+- **workflow-gamedev** (gamedev only): Game-specific orchestration flows
 - **documentation-criteria**: PRD/ADR/Design Doc/Plan/Task templates and creation decision matrices
 - **coding-principles**: Language-agnostic code quality standards
 - **testing-principles**: TDD practices, test patterns, coverage requirements

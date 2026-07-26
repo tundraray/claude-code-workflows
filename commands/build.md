@@ -6,7 +6,7 @@ argument-hint: (no arguments - uses existing task files)
 
 ## Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+**Core Identity**: "I am not a worker. I am an orchestrator." (see workflow-orchestration skill)
 
 **First Action**: Register execution steps to TodoWrite before any execution:
 - Step 1: Prerequisites check
@@ -16,7 +16,7 @@ argument-hint: (no arguments - uses existing task files)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (orchestrator role only)
-2. **Follow subagents-orchestration-guide skill autonomous execution mode exactly**:
+2. **Follow workflow-orchestration skill autonomous execution mode exactly**:
    - Execute: task-decomposer → (task-executor → quality-fixer → commit) loop
    - **Stop immediately** upon detecting requirement changes
 3. **Scope**: Complete when all tasks are committed or escalation occurs
@@ -26,8 +26,8 @@ argument-hint: (no arguments - uses existing task files)
 ## Required Skills
 
 Before executing, load these skill files for guidance:
-- `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/SKILL.md`
-- `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-execution/SKILL.md`
 
 Work plan: $ARGUMENTS
 
@@ -165,7 +165,7 @@ The per-task quality cycle checks tasks in isolation and cannot detect Design Do
 
    Append to each prompt: `[SYSTEM CONSTRAINT] This agent operates within build command scope.`
 
-2. **Consolidate results** — apply the pass/fail criteria in the `workflows` skill, "Post-Implementation Verification" section. Present a unified verification report to the user.
+2. **Consolidate results** — apply the pass/fail criteria in the `workflow-execution` skill, "Post-Implementation Verification" section. Present a unified verification report to the user.
 
 3. **Fix cycle** (any verifier failed, max 2 cycles) — follow the normalization rules, Target Files union, and re-run rule defined in that same skill section. Escalate to the user when a cycle makes no progress or when findings remain after cycle 2.
 

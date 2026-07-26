@@ -24,7 +24,7 @@ Not portable — solve problems specific to an npm-distributed project scaffolde
 Do not overwrite these while porting adjacent sections:
 
 - `commands/implement.md` — Scope Change Detection (`scopeDependencies` table with impact/confidence scoring); explicit commit-strategy selection block
-- `skills/subagents-orchestration-guide` — quantitative Auto-Stop Triggers (5+ files, same error 3×, 5 cumulative edits); Error-Fixing Impulse Control Protocol; Session Initialization Protocol; File Ownership by Agent table
+- `skills/workflow-orchestration` — quantitative Auto-Stop Triggers (5+ files, same error 3×, 5 cumulative edits); Error-Fixing Impulse Control Protocol; Session Initialization Protocol; File Ownership by Agent table
 - `commands/task.md` — `rule-advisor` delegation (upstream uses a static checklist)
 - `commands/refine-skill.md` — 3-pass review (addition → critical reduction → diff evaluation)
 - `skills/implementation-approach` — per-phase completion-evidence/transition gates and Decision Gate Checklist
@@ -96,7 +96,7 @@ Also port into `commands/implement.md` from upstream's version:
 - **`requiresTestReview` wiring** — when a task reports `requiresTestReview: true`, run `integration-test-reviewer` between `task-executor` and `quality-fixer`, with a fix-mode loop back to the executor. `integration-test-reviewer` exists in `agents/` and is currently invoked from nowhere in `implement.md`
 - **`stub_detected` handling** — explicit loop back to task-executor Fix Mode with `incompleteImplementations[]`
 
-Record the pass/fail criteria and the 2-cycle cap in `skills/subagents-orchestration-guide` so all three commands reference one source.
+Record the pass/fail criteria and the 2-cycle cap in `skills/workflow-orchestration` so all three commands reference one source.
 
 ---
 
@@ -157,7 +157,7 @@ Add to `agents/code-reviewer.md`, `agents/quality-fixer.md`, `agents/quality-fix
 
 ## Commit 6 — Document templates
 
-Largest single content gap, and it strengthens the design → plan → task chain that `subagents-orchestration-guide` already assumes exists.
+Largest single content gap, and it strengthens the design → plan → task chain that `workflow-orchestration` already assumes exists.
 
 ### `skills/documentation-criteria/references/design-template.md`
 
@@ -185,17 +185,17 @@ Add per-step **Output evidence / Transition** gates to the 4-step Creation Proce
 
 ## Commit 7 — Risk-based scale routing
 
-`skills/subagents-orchestration-guide` promises scale escalation on risk, but nothing upstream of it produces a risk signal — `task-analyzer` and `documentation-criteria` both key scale purely off file count (1-2 / 3-5 / 6+).
+`skills/workflow-orchestration` promises scale escalation on risk, but nothing upstream of it produces a risk signal — `task-analyzer` and `documentation-criteria` both key scale purely off file count (1-2 / 3-5 / 6+).
 
 - **`skills/task-analyzer/SKILL.md`**: adopt upstream's 5-axis scale table (files / observable outcomes / contracts-data / boundaries / decision risk) and emit `scaleRationale.decidingAxis`. Add upstream's Process Gates (Intent / Scale / Selection) with escalation language. Expand task types from our 5 to upstream's 11 (adds migration, operations, security, skill, investigation, each with its own question-focus row).
 - **`skills/documentation-criteria/SKILL.md`**: mirror the same axis table — "File count is one scale signal; contract, data, boundary, and decision risk can raise the scale."
-- **`skills/subagents-orchestration-guide/SKILL.md`**: consume `decidingAxis` explicitly so the existing escalation language becomes operative.
+- **`skills/workflow-orchestration/SKILL.md`**: consume `decidingAxis` explicitly so the existing escalation language becomes operative.
 
 ---
 
 ## Commit 8 — Orchestration guide additions
 
-Port into `skills/subagents-orchestration-guide/SKILL.md`, preserving everything listed under *Preserve* above:
+Port into `skills/workflow-orchestration/SKILL.md`, preserving everything listed under *Preserve* above:
 
 - **Delegation Boundary: What vs How** — Bad/Good table (Bad: "Run these checks: 1. lint 2. test"; Good: "Execute all quality checks and fixes"), reducing orchestrator micromanagement
 - **Decision precedence** when subagent outputs conflict: (1) user instructions, (2) task files / design artifacts, (3) objective repo state, (4) specialist judgment. We currently have no deterministic conflict-resolution rule.
@@ -215,7 +215,7 @@ Small, self-contained, cross-cutting. Governs clarity of LLM-facing output — p
 - Mandatory shape for blocking unresolved items: `Unresolved: <decision> — required input: <x> — escalation: <condition>`
 - Handoff Checklist + Generated Artifact Checklist
 
-Consumers: `prd-creator`, `technical-designer(-frontend)`, `work-planner`, `document-reviewer`, and orchestrator commands when constructing subagent prompts — this is what `subagents-orchestration-guide` currently restates informally as its Prompt Construction Rule.
+Consumers: `prd-creator`, `technical-designer(-frontend)`, `work-planner`, `document-reviewer`, and orchestrator commands when constructing subagent prompts — this is what `workflow-orchestration` currently restates informally as its Prompt Construction Rule.
 
 Register in `skills/task-analyzer/references/skills-index.yaml` and the four affected `plugin.json` files.
 
@@ -233,7 +233,7 @@ Output contract: `focusAreas`, `dataModel`, `dataTransformationPipelines`, `qual
 
 Note: `ui-analyzer`'s external-resource step is only fully useful once `project-context` carries a real External Resources section — see Deferred below. Port the agent with graceful degradation when that section is absent.
 
-Insert both into the orchestration flow before `technical-designer` in `skills/subagents-orchestration-guide` and the relevant commands. Register in the four `plugin.json` files and create symlinks per `CLAUDE.md`'s symlink procedure (`cmd //c "mklink ..."` via a generated `.bat` — Git Bash `ln -s` produces file copies on Windows).
+Insert both into the orchestration flow before `technical-designer` in `skills/workflow-orchestration` and the relevant commands. Register in the four `plugin.json` files and create symlinks per `CLAUDE.md`'s symlink procedure (`cmd //c "mklink ..."` via a generated `.bat` — Git Bash `ln -s` produces file copies on Windows).
 
 ---
 

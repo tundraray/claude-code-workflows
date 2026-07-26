@@ -13,7 +13,7 @@ Skills are knowledge modules that agents load automatically when relevant.
 | **implementation-approach** | Design decisions and trade-offs |
 | **integration-e2e-testing** | Integration and E2E test patterns |
 | **project-context** | Project-specific context (customizable via `/setup-context`) |
-| **subagents-orchestration-guide** | Agent coordination rules |
+| **workflow-orchestration** | Agent coordination rules |
 | **task-analyzer** | Task complexity analysis |
 | **technical-spec** | Technical design rules and build/testing commands |
 | **testing-principles** | TDD, coverage, test patterns |
@@ -35,7 +35,7 @@ All shared skills from backend-overture (except typescript-rules-backend, typesc
 
 | Skill | Description |
 |-------|-------------|
-| **subagents-gamedev-orchestration** | Gamedev-specific agent coordination with 4 flows, scenario detection, development modes |
+| **workflow-gamedev** | Gamedev-specific agent coordination with 4 flows, scenario detection, development modes |
 | **documentation-criteria** | Extended with GDD, market analysis, feature spec templates and game doc types |
 | **brand-system-guide** | Visual design system and brand guidelines |
 | **type-safety-standards** | Type safety patterns and standards |
