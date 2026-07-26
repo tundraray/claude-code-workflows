@@ -79,6 +79,10 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 
 ### Fixed
 
+- **`codebase-scanner` determined "unused" by grepping for a name.** Its Unused Exports, Orphan Files, and Dead Routes categories, and its import-graph step, all matched text — which misses `import { X as Y }` and every use through the alias, so a live export is reported dead. This agent feeds `cleanup-executor`, making a false positive a deletion rather than a wrong number. The categories now resolve references, delegating repository-wide sweeps to `code-explorer`, and a text-resolved finding is marked low confidence and named a candidate.
+
+  The agent had also become self-contradictory: it received the `code-navigation` skill and a delegation block while its own method section still said to use Grep. Fixed rather than layered.
+
 - `typescript-testing`: removed citations of ADR-0002, which does not exist in this repository
 - `typescript-testing`: migrated MSW v1 syntax (`rest` / `res(ctx.json)`) to v2 (`http` / `HttpResponse.json`); the v1 API was removed upstream, so agents following the skill generated code against a deleted API
 - `typescript-testing`: replaced `fireEvent` with `userEvent` and `findBy*` async queries
