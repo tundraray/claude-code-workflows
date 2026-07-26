@@ -11,6 +11,18 @@ Planning lives here rather than with design because a plan is a schedule for doi
 
 Autonomy is delegated authority, not absence of limits. Every rule below exists because unbounded execution fails in a specific, observed way: it edits far more than intended, retries a broken approach indefinitely, or reports success on work it never verified.
 
+## Entry Gate [BLOCKING]
+
+Run before planning begins.
+
+☐ Design Doc path received and approved (`workflow-technical` exit gate passed)
+☐ ADR paths received, or an explicit "none passed the test"
+☐ Test skeleton paths received
+☐ PRD and UXRD paths carried through, for plan traceability
+☐ The part's plan state is unambiguous: at most one plan is `status: active`, the plan file count matches `M` in `plan: N of M`, and every `depends-on` resolves
+
+**ENFORCEMENT**: when an item is unchecked, stop and name the missing input and the phase that produces it. An ambiguous plan state in particular must never be resolved by picking one — see "Planning" below.
+
 ## Planning
 
 Planning turns an approved design into a schedule the executor can follow, and ends at the authority boundary.
@@ -227,6 +239,19 @@ When an error appears during implementation, follow this protocol **instead of**
 - Expected test failures during Red-Green-Refactor (the TDD red phase)
 - Linting warnings quality-fixer can auto-fix
 - Known, documented environment issues
+
+## Exit Gate [BLOCKING]
+
+Run before the completion report.
+
+☐ Every task in the Consumed Task Set is committed, or explicitly escalated and reported
+☐ Post-implementation verification passed, or its remaining findings were escalated after cycle 2
+☐ No `quality-fixer` result was accepted on `non_substantive` test evidence
+☐ Final Cleanup ran: the task directory is deleted and the plan's `status` is `completed`
+☐ When the part has a further plan in the chain, its `depends-on` is now satisfied and it is reported as the next step
+☐ The completion report states what was built, what was verified, and anything left escalated
+
+**ENFORCEMENT**: an unchecked item means the run is not finished. Reporting completion with an unverified item is worse than reporting the gap, because it removes the reader's reason to look.
 
 ## Execution Flow
 

@@ -280,6 +280,25 @@ Game development substitutes its own product phase — GDD, market analysis, sce
 
 **Load the phase skill for the phase you are in.** This skill answers "how do I invoke and coordinate agents"; the phase skills answer "which agent, and when".
 
+### Phase Gates
+
+Each phase opens with an **Entry Gate** and closes with an **Exit Gate**, both `[BLOCKING]`. A phase's exit gate and the next phase's entry gate check the same handoff from both sides: the producer confirms it was produced, the consumer confirms it arrived. Checking once from one side is how a missing artifact gets noticed three steps later.
+
+```
+workflow-product ──exit──▶──entry── workflow-technical ──exit──▶──entry── workflow-execution ──exit──▶ done
+   (workflow-gamedev substitutes here)
+```
+
+| Boundary | Producer confirms | Consumer confirms |
+|----------|-------------------|-------------------|
+| Product → Technical | Requirements confirmed; PRD and UXRD approved or explicitly not required; scale with `decidingAxis`; open questions written down | The same, plus: no open question blocks a decision this phase must make |
+| Technical → Execution | Design Doc approved; every `focusAreas` entry disposed of; ADR test applied and outcome recorded; test skeletons generated | The same, plus: the part's plan state is unambiguous |
+| Execution → done | All tasks committed; post-implementation verification passed; cleanup done; plan `status: completed` | — |
+
+**A gate failure is not a delay to work around.** Report the unmet item and the phase that produces it, then stop. Substituting a plausible assumption for a missing input is how a design encodes something nobody agreed to — and by the time it surfaces, it is in committed code.
+
+Gates are distinct from **stop points**: a stop point asks the user to decide, a gate checks that work is complete. A phase can pass every stop point and still fail its exit gate — approval of a document is not the same as having produced everything the next phase needs.
+
 ## Autonomous Execution Mode
 
 Everything after batch approval — entry conditions, the per-task cycle, commit strategies, post-implementation verification, final cleanup, auto-stop triggers, and the error-fixing protocol — is governed by `workflow-execution`.

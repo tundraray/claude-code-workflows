@@ -17,6 +17,16 @@ Keeping the phases separate is what stops a solution from being chosen before th
 
 **Out of scope**: architecture decisions, interface definitions, data models, implementation planning — all `workflow-technical`. When a product question can only be settled by a technical fact ("is this even feasible?"), record it as an open question and resolve it in the technical phase rather than pre-deciding the design here.
 
+## Entry Gate [BLOCKING]
+
+This is the first phase, so its entry gate checks the session rather than a predecessor.
+
+☐ The request is stated in the user's own terms, not already restated as a solution
+☐ `rule-advisor` has run and its selected rules are registered in TodoWrite
+☐ Any existing PRD or UXRD for this feature has been located (glob `docs/features/*/prd.md`, `docs/features/*/uxrd.md`) — an existing document is updated, not silently duplicated
+
+**ENFORCEMENT**: when an item is unchecked, complete it before invoking any agent. Starting on an unlocated existing PRD produces a second one, and neither is then authoritative.
+
 ## Flow
 
 ### Large scale
@@ -90,13 +100,24 @@ When `document-reviewer` returns `needs_revision`:
 
 The orchestrator never edits a document itself — see `workflow-orchestration`, "File Ownership by Agent".
 
-## Handoff to Technical
+## Exit Gate [BLOCKING]
 
-The technical phase needs, as concrete paths rather than a summary:
+Run before handing off to `workflow-technical`. When any item is unsatisfied, stay in this phase — the technical phase cannot recover a missing product decision, it can only guess at one.
 
-- The approved PRD (`docs/features/{feature}/prd.md`) when one exists
-- The approved UXRD (`docs/features/{feature}/uxrd.md`) when one exists
-- The confirmed scale and its `decidingAxis`
-- Any open question recorded during requirement analysis, with the decision it blocks
+☐ The user has confirmed the requirements at the requirement stop
+☐ Scale is recorded with its `decidingAxis`, and a non-`files` deciding axis was stated to the user
+☐ PRD exists and is approved, **or** the scale does not require one and that is recorded
+☐ UXRD exists and is approved, **or** the work has no UI surface and that is recorded
+☐ Every open question is written down with the decision it blocks and who resolves it — not carried forward in conversation
+☐ No `document-reviewer` verdict is left at `needs_revision`
 
-A question left implicit at handoff becomes an assumption in the Design Doc.
+**Handoff payload** — concrete paths, not a summary:
+
+| Item | Form |
+|------|------|
+| PRD | `docs/features/{feature}/prd.md`, or "not required at {scale}" |
+| UXRD | `docs/features/{feature}/uxrd.md`, or "no UI surface" |
+| Scale | `{small\|medium\|large}` plus `decidingAxis` |
+| Open questions | List of `question → decision it blocks → owner` |
+
+**ENFORCEMENT**: an unchecked item means the phase is not finished. Report which item is unmet and what would satisfy it; do not proceed to technical design.

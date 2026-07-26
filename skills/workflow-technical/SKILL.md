@@ -15,6 +15,18 @@ This phase is identical for every domain — a game feature and a service endpoi
 
 Layer selection between `technical-designer` and `technical-designer-frontend`, and between `codebase-analyzer` and `ui-analyzer`, follows the work itself, not the domain.
 
+## Entry Gate [BLOCKING]
+
+Run before invoking any agent in this phase. These are the product phase's outputs; a missing one means design would proceed on an assumption.
+
+☐ Requirements are user-confirmed (`workflow-product` or `workflow-gamedev` exit gate passed)
+☐ PRD path received, or an explicit "not required at {scale}"
+☐ UXRD path received, or an explicit "no UI surface"
+☐ Scale and `decidingAxis` received
+☐ Open questions received, and none of them blocks a decision this phase must make — when one does, return to the product phase rather than deciding it here
+
+**ENFORCEMENT**: when an item is unchecked, stop and name the missing input and the phase that produces it. Do not substitute a plausible assumption for a product decision — that is how a design encodes something nobody agreed to.
+
 ## Flow
 
 ### Large and medium scale
@@ -92,13 +104,25 @@ When a feature spans layers, run the backend design to approval **before** the f
 
 Parts are the mechanism: a backend part and a frontend part each get their own `design-{part}.md` and their own plan, sequenced by that dependency. See `documentation-criteria` for the layout.
 
-## Handoff to Execution
+## Exit Gate [BLOCKING]
 
-Planning needs, as concrete paths rather than a summary:
+Run before handing off to `workflow-execution`. When any item is unsatisfied, stay in this phase — planning cannot schedule what the design has not settled.
 
-- The approved Design Doc (`docs/features/{feature}/design-{part}.md`)
-- Any ADR written in step 6, plus the existing ADRs the design treats as prerequisites — the plan binds tasks to them
-- Generated test skeleton paths, so the plan schedules extending them rather than recreating them
-- The approved PRD and UXRD, for traceability
+☐ Design Doc exists and is approved after `design-sync` consistency verification
+☐ Every `focusAreas` entry from fact gathering has a row in the Fact Disposition Table with a disposition and evidence — an unaddressed fact is an unexamined behavior
+☐ Every acceptance criterion in the PRD or UXRD is traceable to a Design Doc section, or explicitly recorded as out of scope
+☐ The ADR test was applied and its outcome recorded — either an approved ADR, or a note that no decision passed all three parts
+☐ Test skeletons are generated and their paths recorded
+☐ No `document-reviewer` verdict is left at `needs_revision`
+☐ Cross-layer: when this part depends on another layer's contract, that layer's design is approved first
 
-A design item omitted from the handoff cannot appear in the plan's traceability table, and a requirement that reaches neither is how work silently disappears between phases.
+**Handoff payload** — concrete paths, not a summary:
+
+| Item | Form |
+|------|------|
+| Design Doc | `docs/features/{feature}/design-{part}.md` |
+| ADRs | Paths of any written here, plus existing prerequisites; or "none passed the test" |
+| Test skeletons | Generated file paths |
+| PRD / UXRD | Carried through for plan traceability |
+
+**ENFORCEMENT**: an unchecked item means the phase is not finished. A design item missing from the payload cannot appear in the plan's traceability table, and a requirement reaching neither is how work silently disappears between phases.

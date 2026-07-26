@@ -126,6 +126,32 @@ Requirement analysis only, then a simplified plan → `workflow-execution`.
 
 The technical phase adds Design Doc approval and, when one is written, ADR approval. Batch approval belongs to `workflow-execution`.
 
+## Exit Gate [BLOCKING]
+
+Run before handing off to `workflow-technical`. Same contract as `workflow-product`, with the game artifacts substituted.
+
+☐ The user has confirmed requirements and the detected development mode
+☐ Scenario (A or B) is recorded, with the evidence that selected it
+☐ Go/No-Go decision recorded (Scenario A)
+☐ GDD exists and is approved, or an explicit note that this feature does not change it
+☐ Conditional disciplines are either produced or explicitly marked not applicable — game feel, art direction, UI/UX, analytics
+☐ Every open question is written down with the decision it blocks and who resolves it
+☐ No `document-reviewer` verdict is left at `needs_revision`
+
+**Handoff payload**:
+
+| Item | Form |
+|------|------|
+| GDD | `docs/game-design/{project}-gdd.md`, or "unchanged by this feature" |
+| Feature spec | Path, when `mid-game-designer` produced one |
+| Discipline outputs | Paths for mechanics, game feel, art direction, UI/UX, analytics — or "N/A" each |
+| Scale | `{small\|medium\|large}` plus `decidingAxis` |
+| Open questions | List of `question → decision it blocks → owner` |
+
+**Design Only mode terminates here** — deliver the payload as the design package rather than handing off.
+
+**ENFORCEMENT**: an unchecked item means the phase is not finished. A discipline left neither produced nor marked N/A becomes an unowned gap that surfaces during implementation.
+
 ## Phase Note for Execution
 
 The 6 game development phases (Core Mechanics, Game Feel, Art, UI, Analytics, QA) are phases **within one work plan**, not separate plans. The `per-phase` commit strategy in `workflow-execution` groups commits by them. Reach for a second plan only when a later pass is genuinely deferred — a post-playtest tuning round — rather than to model the phase sequence.

@@ -429,6 +429,7 @@ skills:
       - "Delegated Authority"
       - "5 Whys - Toyota Production System"
     sections:
+      - "Entry Gate"
       - "Planning"
       - "Entry Conditions"
       - "Commit Strategy Selection"
@@ -437,6 +438,7 @@ skills:
       - "Final Cleanup"
       - "Stopping Autonomous Execution"
       - "Error-Fixing Impulse Control Protocol"
+      - "Exit Gate"
       - "Execution Flow"
 
   workflow-product:
@@ -448,12 +450,13 @@ skills:
       - "Problem Before Solution"
     sections:
       - "Scope"
+      - "Entry Gate"
       - "Flow"
       - "Document Requirements by Scale"
       - "Stop Points"
       - "Requirement Changes"
       - "Revision Loop"
-      - "Handoff to Technical"
+      - "Exit Gate"
 
   workflow-technical:
     skill: "workflow-technical"
@@ -465,6 +468,7 @@ skills:
       - "Authority Boundary"
     sections:
       - "Domain Independence"
+      - "Entry Gate"
       - "Flow"
       - "Why the ADR Comes After the Design"
       - "Why Fact Gathering Precedes Design"
@@ -472,4 +476,4 @@ skills:
       - "Stop Points"
       - "Revision Loop"
       - "Cross-Layer Sequencing"
-      - "Handoff to Execution"
+      - "Exit Gate"
