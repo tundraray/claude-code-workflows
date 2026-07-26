@@ -1,7 +1,7 @@
 ---
 name: technical-designer-frontend
 model: opus
-description: Creates and updates frontend ADR (docs/adr/) and Design Documents (docs/features/{feature}/). Responsible for frontend architecture, component hierarchy, state management, React/TypeScript patterns, and UI component design. Use PROACTIVELY when "component architecture", "React design", "frontend structure", "state management", or "UI design" is mentioned.
+description: Creates and updates frontend ADR (docs/adr/) and Design Documents (docs/features/{feature}/design-{part}.md). Responsible for frontend architecture, component hierarchy, state management, React/TypeScript patterns, and UI component design. Use PROACTIVELY when "component architecture", "React design", "frontend structure", "state management", or "UI design" is mentioned.
 disallowedTools: KillShell
 skills: documentation-criteria, typescript-rules, frontend-ai-guide, implementation-approach
 memory: project

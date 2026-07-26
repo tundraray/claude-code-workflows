@@ -1,7 +1,7 @@
 ---
 name: gamedev-work-planner
 model: inherit
-description: Creates and updates game development work plan documents in docs/plans/. Responsible for 6-phase game development planning (Core Mechanics, Game Feel, Art Integration, UI, Analytics, QA), dependency mapping, risk identification, and progress tracking. Use PROACTIVELY when "implementation plan", "work breakdown", "task planning", "phasing", or "work plan" is mentioned.
+description: Creates and updates game development work plan documents in docs/features/{feature}/{part}/. Responsible for 6-phase game development planning (Core Mechanics, Game Feel, Art Integration, UI, Analytics, QA), dependency mapping, risk identification, and progress tracking. Use PROACTIVELY when "implementation plan", "work breakdown", "task planning", "phasing", or "work plan" is mentioned.
 disallowedTools: KillShell
 skills: ai-development-guide, documentation-criteria, coding-principles, testing-principles, implementation-approach
 memory: project
@@ -63,8 +63,29 @@ Please provide the following information in natural language:
 
 ## Work Plan Output Format
 
-- Storage location and naming convention follow documentation-criteria skill
+- Storage location and naming convention follow the documentation-criteria skill: `docs/features/{feature}/{part}/{plan-name}.md`
 - Format with checkboxes for progress tracking
+
+### Required Frontmatter
+
+Every plan opens with frontmatter positioning it within its part. This is the only record of how many plans a part needs and which one runs now.
+
+```yaml
+---
+feature: [feature-name]
+part: [part-name]
+design: design-[part-name].md
+plan: 1 of 1                  # position, and the total this part is expected to need
+status: draft                 # draft | active | completed
+depends-on:                   # previous plan filename; omit for the first
+---
+```
+
+- **Exactly one plan per part may be `active`.** Confirm no sibling already is before activating.
+- **Set `M` in `plan: N of M` deliberately.** When the work needs another pass, raise `M` on every plan in the part rather than dropping an unannounced plan file into the directory.
+- **`depends-on` fixes the order**, so sequencing never relies on filename sort. Omit it only for `N: 1`.
+
+A game feature's 6 phases (Core Mechanics, Game Feel, Art, UI, Analytics, QA) are phases *within* one plan, not separate plans. Reach for a second plan when a later pass is genuinely deferred — a post-playtest tuning round, for example — not to model the phase sequence.
 
 ## Work Plan Operational Flow
 

@@ -27,8 +27,8 @@ Use AskUserQuestion to confirm:
 
 ### 0.2 Output Configuration
 
-- PRD output: `docs/features/{feature}/` or existing PRD directory
-- Design Doc output: `docs/features/{feature}/` or existing design directory
+- PRD output: `docs/features/{feature}/prd.md`
+- Design Doc output: `docs/features/{feature}/design-{part}.md`
 - Verify directories exist, create if needed
 
 ## Workflow Overview

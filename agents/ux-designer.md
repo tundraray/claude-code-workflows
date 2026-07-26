@@ -1,6 +1,6 @@
 ---
 name: ux-designer
-description: Creates and updates UX Requirement Documentation (UXRD) in docs/features/{feature}/. Responsible for user experience design, interaction patterns, user flows, wireframes, accessibility requirements (WCAG), and visual specifications. Use PROACTIVELY when "UX", "user experience", "wireframe", "user flow", "interaction", "accessibility", or "usability" is mentioned.
+description: Creates and updates UX Requirement Documentation (UXRD) at docs/features/{feature}/uxrd.md. Responsible for user experience design, interaction patterns, user flows, wireframes, accessibility requirements (WCAG), and visual specifications. Use PROACTIVELY when "UX", "user experience", "wireframe", "user flow", "interaction", "accessibility", or "usability" is mentioned.
 disallowedTools: KillShell
 model: opus
 skills:

@@ -158,7 +158,7 @@ Edit, Write, and MultiEdit are performed by subagents, never by the orchestrator
 | `docs/adr/*.md` | technical-designer(-frontend) |
 | `docs/features/*/design-*.md` | technical-designer(-frontend) |
 | `docs/features/*/*/*.md` (work plans) | work-planner |
-| `docs/features/<feature>/<part>/<plan-name>/*.md` | task-decomposer |
+| `docs/features/{feature}/{part}/{plan-name}/*.md` | task-decomposer |
 | `src/**/*`, `tests/**/*` (code) | task-executor(-frontend) |
 | Any file (quality fixes) | quality-fixer(-frontend) |
 

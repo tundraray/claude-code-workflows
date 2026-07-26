@@ -245,20 +245,57 @@ Each step names the evidence that must exist before the next step starts. A step
 
 ## Storage Locations
 
+Documents are grouped **by feature**, not by document type. Game-wide documents (GDD, market analysis) stay global, as do ADRs — a decision usually outlives and spans features.
+
+```
+docs/
+├── adr/ADR-0007-save-format.md
+├── game-design/{project}-gdd.md
+└── features/{feature}/
+    ├── prd.md
+    ├── uxrd.md
+    ├── design-{part}.md
+    └── {part}/
+        ├── {plan-name}.md
+        └── {plan-name}/{_overview,task-01,phase1-completion}.md
+```
+
 | Document | Path | Naming Convention | Template |
 |----------|------|------------------|----------|
-| PRD | `docs/features/{feature}/` | `[feature-name]-prd.md` | [prd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/prd-template.md) |
+| PRD | `docs/features/{feature}/` | `prd.md` | [prd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/prd-template.md) |
 | ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | [adr-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/adr-template.md) |
-| Design Doc | `docs/features/{feature}/` | `[feature-name]-design.md` | [design-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/design-template.md) |
+| Design Doc | `docs/features/{feature}/` | `design-{part}.md` | [design-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/design-template.md) |
 | Work Plan | `docs/features/{feature}/{part}/` | `YYYYMMDD-{type}-{description}.md` | [plan-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/plan-template.md) |
 | Task File | `docs/features/{feature}/{part}/{plan-name}/` | `task-{number}.md` | [task-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/task-template.md) |
-| UXRD | `docs/features/{feature}/` | `[feature-name]-uxrd.md` | [uxrd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/uxrd-template.md) |
+| UXRD | `docs/features/{feature}/` | `uxrd.md` | [uxrd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/uxrd-template.md) |
 | GDD | `docs/game-design/` | `[project-name]-gdd.md` | [gdd-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/gdd-template.md) |
 | Market Analysis | `docs/market-research/` | `[project-name]-market-analysis.md` | [market-analysis-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/market-analysis-template.md) |
 | Feature Spec | `docs/game-design/features/` | `[feature-name]-spec.md` | [feature-spec-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/feature-spec-template.md) |
 | Art Direction | `docs/art/` | `[project-name]-art-direction.md` | N/A |
 | Analytics Setup | `docs/analytics/` | `[project-name]-analytics.md` | [analytics-setup-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/analytics-setup-template.md) |
 | Handoff | `docs/handoffs/` | `[handoff-name]-handoff.md` | [handoff-template.md](${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/references/handoff-template.md) |
+
+
+### Parts and plans
+
+A **part** is one independently designable slice of a feature — `core`, `combat`, `hud`, `save-migration`. Every feature has at least one, so every agent resolves paths with a single glob. `design-{part}.md` and the directory `{part}/` share the part name and are read as a pair.
+
+A part may hold several plans, each paired with a directory of the same name holding its decomposition. Each plan declares its position in frontmatter:
+
+```yaml
+---
+feature: combat-rework
+part: core
+design: design-core.md
+plan: 1 of 2
+status: active                # draft | active | completed
+depends-on:                   # previous plan filename; omit for the first
+---
+```
+
+Exactly one plan per part may be `active`. Escalate rather than guess when two claim it, when the file count disagrees with `M`, or when a `depends-on` names a missing file.
+
+The 6 game phases (Core Mechanics, Game Feel, Art, UI, Analytics, QA) are phases *within* one plan, not separate plans. Reach for a second plan when a later pass is genuinely deferred — a post-playtest tuning round — not to model the phase sequence.
 
 *Note: Work plans are excluded by `.gitignore`
 

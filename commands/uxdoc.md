@@ -80,7 +80,7 @@ prompt: "Requirements: [user requirements]. Execute requirement analysis with fo
 
 **Think deeply**: Based on confirmed requirements, determine ux-designer operation mode:
 - `create`: New UXRD for new features/interactions
-- `update`: Modify existing UXRD (check docs/features/{feature}/ for existing files)
+- `update`: Modify existing UXRD (glob `docs/features/*/uxrd.md`)
 - `reverse-engineer`: Create UXRD from existing UI implementation
 
 ```yaml
@@ -115,7 +115,7 @@ prompt: "Review the UXRD at [document path] for completeness and consistency. Ve
 
 ### 4. Consistency Verification (Conditional)
 
-**Think deeply**: Check if a Design Doc exists in the project (docs/features/{feature}/ directory). If one exists, cross-document consistency verification is mandatory.
+**Think deeply**: Check whether a Design Doc exists for the feature (glob `docs/features/*/design-*.md`). If one exists, cross-document consistency verification is mandatory.
 
 **IF Design Doc exists**:
 
