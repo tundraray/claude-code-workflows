@@ -379,132 +379,13 @@ According to scale determination and scenario detection:
 
 ## Autonomous Execution Mode
 
-### Pre-Execution Environment Check
+Everything after batch approval — entry conditions, the per-task cycle, commit strategies, post-implementation verification, final cleanup, auto-stop triggers, and the error-fixing protocol — is governed by the **`workflows`** skill.
 
-**Principle**: Verify subagents can complete their responsibilities
+Load `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md` before entering autonomous mode.
 
-**Required environments**:
-- Commit capability (for per-task commit cycle)
-- Quality check tools (quality-fixer will detect and escalate if missing)
-- Test runner (task-executor will detect and escalate if missing)
+This guide stops at the batch-approval gate: it decides which subagent runs when across the game development phases, and which documents gate each one. The `workflows` skill decides how the loop behaves once no one is asked for permission any more.
 
-**If critical environment unavailable**: Escalate with specific missing component before entering autonomous mode
-**If detectable by subagent**: Proceed (subagent will escalate with detailed context)
-
-### Authority Delegation
-
-**After environment check passes**:
-- Batch approval for entire implementation phase delegates authority to subagents
-- task-executor: Implementation authority (can use Edit/Write)
-- quality-fixer: Fix authority (automatic quality error fixes)
-
-### Definition of Autonomous Execution Mode
-After "batch approval for entire implementation phase" with gamedev-work-planner, autonomously execute the following processes without human approval:
-
-```mermaid
-graph TD
-    START[Batch approval for entire implementation phase] --> AUTO[Start autonomous execution mode]
-    AUTO --> TD[task-decomposer: Task decomposition]
-    TD --> LOOP[Task execution loop]
-    LOOP --> TE[task-executor: Implementation]
-    TE --> ESCJUDGE{Escalation judgment}
-    ESCJUDGE -->|escalation_needed/blocked| USERESC[Escalate to user]
-    ESCJUDGE -->|testsAdded has int/e2e| ITR[integration-test-reviewer]
-    ESCJUDGE -->|No issues| QF
-    ITR -->|needs_revision| TE
-    ITR -->|approved| QF
-    QF[quality-fixer: Quality check and fixes] --> COMMIT[Orchestrator: Execute git commit]
-    COMMIT --> CHECK{Any remaining tasks?}
-    CHECK -->|Yes| LOOP
-    CHECK -->|No| REPORT[Completion report]
-
-    LOOP --> INTERRUPT{User input?}
-    INTERRUPT -->|None| TE
-    INTERRUPT -->|Yes| REQCHECK{Requirement change check}
-    REQCHECK -->|No change| TE
-    REQCHECK -->|Change| STOP[Stop autonomous execution]
-    STOP --> RA[Re-analyze with requirement-analyzer]
-```
-
-### Conditions for Stopping Autonomous Execution
-Stop autonomous execution and escalate to user in the following cases:
-
-1. **Escalation from subagent**
-   - When receiving response with `status: "escalation_needed"`
-   - When receiving response with `status: "blocked"`
-
-2. **When requirement change detected**
-   - Any match in requirement change detection checklist
-   - Stop autonomous execution and re-analyze with integrated requirements in requirement-analyzer
-
-3. **When gamedev-work-planner update restriction is violated**
-   - Requirement changes after task-decomposer starts require overall redesign
-   - Restart entire flow from requirement-analyzer
-
-4. **When user explicitly stops**
-   - Direct stop instruction or interruption
-
-## Quantitative Auto-Stop Triggers
-
-The following numeric thresholds MUST trigger immediate orchestrator action. These are non-negotiable safety boundaries:
-
-| Trigger Condition | Required Action |
-|---|---|
-| **5+ files changed** in a single task | STOP immediately. Create impact report listing all changed files and affected modules. Present to user before continuing. |
-| **Same error occurs 3 times** | STOP. Mandatory root cause analysis using 5 Whys technique. Do NOT attempt another fix without completing analysis. |
-| **3 files edited** without TodoWrite update | Force TodoWrite status update. Cannot proceed with next Edit until TodoWrite reflects current progress. |
-| **2nd consecutive error fix attempt** | Auto re-execute rule-advisor. Previous approach has failed — reassess task essence and strategy before continuing. |
-| **5 cumulative Edit tool uses** | Force creation of impact report. Document: files changed, modules affected, tests impacted. |
-| **3 edits to the same file** | STOP. Consider whether refactoring is needed instead of incremental patches. Present refactoring proposal to user. |
-
-### Auto-Stop Enforcement Rules
-
-1. Counters reset at the start of each new task
-2. Orchestrator MUST track edit counts per-file and cumulative
-3. Auto-stop triggers take priority over autonomous execution mode
-4. After any auto-stop, the orchestrator MUST present a status report before resuming
-5. User can explicitly override a stop with "continue" — but the stop MUST occur first
-
-## Error-Fixing Impulse Control Protocol
-
-When an error is discovered during implementation, the orchestrator MUST follow this protocol instead of immediately attempting a fix:
-
-### Protocol Steps
-
-1. **PAUSE** — Do NOT attempt to fix the error immediately
-2. **Re-execute rule-advisor** — Reassess the task with the error context:
-   ```yaml
-   subagent_type: rule-advisor
-   prompt: "Re-analyze task considering this error: [error details]. Determine if the original approach is still valid or if a different strategy is needed."
-   ```
-3. **Root Cause Analysis** — Apply 5 Whys technique:
-   ```
-   Error: [observed error]
-   Why 1: [immediate cause]
-   Why 2: [cause of Why 1]
-   Why 3: [cause of Why 2]
-   Why 4: [cause of Why 3]
-   Why 5: [root cause]
-   ```
-4. **Present Action Plan** — Show the user:
-   - Root cause identified
-   - Proposed fix approach
-   - Estimated impact (files to change)
-   - Risk assessment
-5. **Fix ONLY after user approval** — Execute the fix only when user confirms the action plan
-
-### When This Protocol Applies
-
-- Any error that occurs during task-executor execution
-- Build failures after code changes
-- Test failures that weren't expected
-- Quality-fixer reporting persistent issues
-
-### When This Protocol Does NOT Apply
-
-- Expected test failures during Red-Green-Refactor (TDD red phase)
-- Linting warnings that quality-fixer can auto-fix
-- Known/documented environment issues
+**Game-specific note**: the 6 development phases (Core Mechanics, Game Feel, Art, UI, Analytics, QA) are phases *within* one plan, so `per-phase` commit strategy groups commits by those phases.
 
 ## Metacognitive TodoWrite Integration
 

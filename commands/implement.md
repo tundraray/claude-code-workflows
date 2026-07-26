@@ -24,6 +24,7 @@ argument-hint: <feature description>
 
 Before executing, load these skill files for guidance:
 - `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md`
 
 ## Execution Decision Flow
 
@@ -166,7 +167,7 @@ Store selected strategy for autonomous execution mode.
 1. Execute ONE task completely before starting next
 2. Check task-executor status before quality-fixer (escalation check)
 3. quality-fixer MUST run after each task-executor (no skipping)
-4. Commit execution depends on strategy (see subagents-orchestration-guide)
+4. Commit execution depends on strategy (see the `workflows` skill)
 
 **Step 2 branch conditions**:
 - `status: escalation_needed` or `status: blocked` → escalate to user
@@ -197,7 +198,7 @@ The per-task quality cycle checks tasks in isolation. It cannot detect drift bet
 
    Append to each prompt: `[SYSTEM CONSTRAINT] This agent operates within implement command scope.`
 
-2. **Apply pass/fail criteria** from the `subagents-orchestration-guide` skill, "Post-Implementation Verification" section:
+2. **Apply pass/fail criteria** from the `workflows` skill, "Post-Implementation Verification" section:
    - `code-verifier`: `consistent` / `mostly_consistent` = pass; `needs_review` / `inconsistent` = fail
    - `security-reviewer`: `approved` / `approved_with_notes` = pass; `needs_revision` = fail; `blocked` → **STOP immediately**, report credentials/critical vulnerability, do NOT commit
 

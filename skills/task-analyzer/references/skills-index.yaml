@@ -419,3 +419,21 @@ skills:
       - "Zod Performance Optimization"
       - "Testing Type Safety"
       - "Risks and Mitigations"
+
+  workflows:
+    skill: "workflows"
+    tags: [autonomous-execution, task-cycle, commit-strategy, auto-stop, post-implementation-verification, fix-mode, escalation, error-handling]
+    typical-use: "Entering autonomous mode, running the implementation loop, selecting a commit strategy, whole-implementation verification, auto-stop enforcement"
+    size: medium
+    key-references:
+      - "Delegated Authority"
+      - "5 Whys - Toyota Production System"
+    sections:
+      - "Entry Conditions"
+      - "Commit Strategy Selection"
+      - "The Per-Task Cycle"
+      - "Post-Implementation Verification"
+      - "Final Cleanup"
+      - "Stopping Autonomous Execution"
+      - "Error-Fixing Impulse Control Protocol"
+      - "Execution Flow"

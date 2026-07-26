@@ -24,6 +24,7 @@ argument-hint: <game feature or project description>
 
 Before executing, load these skill files for guidance:
 - `${CLAUDE_PLUGIN_ROOT}/skills/subagents-gamedev-orchestration/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md`
 
 ## Execution Decision Flow
 

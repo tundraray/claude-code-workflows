@@ -80,6 +80,7 @@
     "./skills/implementation-approach",
     "./skills/project-context",
     "./skills/subagents-orchestration-guide",
+    "./skills/workflows",
     "./skills/task-analyzer",
     "./skills/technical-spec",
     "./skills/testing-principles",

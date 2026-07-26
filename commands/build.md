@@ -27,6 +27,7 @@ argument-hint: (no arguments - uses existing task files)
 
 Before executing, load these skill files for guidance:
 - `${CLAUDE_PLUGIN_ROOT}/skills/subagents-orchestration-guide/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflows/SKILL.md`
 
 Work plan: $ARGUMENTS
 
@@ -164,7 +165,7 @@ The per-task quality cycle checks tasks in isolation and cannot detect Design Do
 
    Append to each prompt: `[SYSTEM CONSTRAINT] This agent operates within build command scope.`
 
-2. **Consolidate results** — apply the pass/fail criteria in the `subagents-orchestration-guide` skill, "Post-Implementation Verification" section. Present a unified verification report to the user.
+2. **Consolidate results** — apply the pass/fail criteria in the `workflows` skill, "Post-Implementation Verification" section. Present a unified verification report to the user.
 
 3. **Fix cycle** (any verifier failed, max 2 cycles) — follow the normalization rules, Target Files union, and re-run rule defined in that same skill section. Escalate to the user when a cycle makes no progress or when findings remain after cycle 2.
 

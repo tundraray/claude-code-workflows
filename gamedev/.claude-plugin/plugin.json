@@ -94,6 +94,7 @@
     "./skills/skill-optimization",
     "./skills/llm-friendly-context",
     "./skills/rule-editing-guide",
+    "./skills/workflows",
     "./skills/game-analysis-criteria"
   ],
   "mcpServers": "./.mcp.json"
