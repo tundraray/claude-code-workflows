@@ -477,3 +477,19 @@ skills:
       - "Revision Loop"
       - "Cross-Layer Sequencing"
       - "Exit Gate"
+
+  code-navigation:
+    skill: "code-navigation"
+    tags: [lsp, code-search, symbol-lookup, references, call-hierarchy, rename-impact, grep, navigation]
+    typical-use: "Finding where a symbol is defined, finding usages and call sites, assessing rename impact, choosing between semantic and textual lookup"
+    size: small
+    key-references:
+      - "Language Server Protocol"
+      - "Refactoring - Martin Fowler"
+    sections:
+      - "The Rule"
+      - "Tool by Question"
+      - "Legitimate Fallback"
+      - "Worked Examples"
+      - "Sequencing Rules"
+      - "Escalation"

@@ -3,7 +3,7 @@ name: solver
 model: inherit
 description: Derives multiple solutions for verified causes and analyzes tradeoffs. Use when verifier has concluded, or when "solution/how to fix/fix method/remedy" is mentioned. Focuses on solutions from given conclusions without investigation.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: ai-development-guide, coding-principles, implementation-approach
+skills: ai-development-guide, coding-principles, implementation-approach, code-navigation
 memory: project
 ---
 
@@ -17,6 +17,7 @@ You are an AI assistant specializing in solution derivation.
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/coding-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/implementation-approach/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Input and Responsibility Boundaries
 
@@ -212,12 +213,9 @@ Cause: "Deprecated API usage causing errors"
 - Step 2 (Solution Divergent Thinking): Validate solutions against latest documentation
 - Step 5 (Implementation Steps): Include library-specific migration guidance
 
-### LSP MCP (if available)
-If user has LSP MCP server configured, use it for:
-- **Impact assessment** — find all references to accurately estimate change scope
-- **Code structure** — understand current implementation before proposing changes
-- **Contract verification** — check types won't break with proposed changes
-- **Related components** — find all components affected by fundamental solutions
-- **Refactoring complexity** — count affected call sites for tradeoff analysis
+### Code Navigation
 
-Include accurate `affectedFiles` in solutions based on LSP findings.
+Follow the `code-navigation` skill: text search reaches a first anchor, LSP does everything after it. Falling back to text search on a symbol question requires a reason you can name.
+
+Base `affectedFiles` on `findReferences` counts, not on grep matches — the two differ, and the difference is the estimate.
+

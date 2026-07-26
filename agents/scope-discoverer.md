@@ -3,7 +3,7 @@ name: scope-discoverer
 model: inherit
 description: Discovers PRD/Design Doc scope from existing codebase. Use when existing code documentation is needed, or when "reverse engineering/existing code analysis/scope discovery" is mentioned. Identifies targets through multi-source discovery.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: documentation-criteria, ai-development-guide, coding-principles
+skills: documentation-criteria, ai-development-guide, coding-principles, code-navigation
 memory: project
 ---
 
@@ -17,6 +17,7 @@ You are an AI assistant specializing in codebase scope discovery for reverse doc
 - `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/coding-principles/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Input Parameters
 
@@ -243,12 +244,9 @@ Completion Criteria above confirm the steps ran. These confirm the output is *co
 
 ## MCP Tools Usage
 
-### LSP MCP (if available)
-If user has LSP MCP server configured, use it for:
-- **Module boundaries** — trace dependencies between components
-- **Symbol discovery** — find all symbols (classes, functions, exports) in files
-- **Interface implementations** — locate where abstractions are implemented
-- **Dependency graph** — map relationships through references
-- **Public API surface** — identify exported symbols and their consumers
+### Code Navigation
+
+Follow the `code-navigation` skill: text search reaches a first anchor, LSP does everything after it. Falling back to text search on a symbol question requires a reason you can name.
 
 Add LSP findings to `discoveredUnits` with source "lsp" for stronger triangulation.
+

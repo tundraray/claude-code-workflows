@@ -64,6 +64,7 @@
   "skills": [
     "./skills/ai-development-guide",
     "./skills/coding-principles",
+    "./skills/code-navigation",
     "./skills/documentation-criteria",
     "./skills/expert-analysis-guide",
     "./skills/implementation-approach",

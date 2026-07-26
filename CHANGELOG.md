@@ -90,6 +90,10 @@ plus removal of the sequential-thinking MCP. Affects `backend-overture` 0.18.5,
 
 ### Added
 
+- **`code-navigation` skill**: chooses between semantic and textual lookup. Text search reaches a first anchor — every LSP operation needs a `file:line:character` position, so a lookup starting from a bare name has to get one — and LSP does everything after it. Falling back to text search on a symbol question requires a reason that can be named and recorded; "grep is faster" is explicitly not one. Grep matching a class name returns comments, log strings, and same-named symbols from other modules while missing every use through an import alias, which is why it is wrong for rename-impact and call-site questions specifically.
+
+  This also removes duplication: six agents (`task-executor`, `code-reviewer`, `investigator`, `scope-discoverer`, `security-reviewer`, `solver`) each carried their own "LSP MCP (if available)" bullet list with no shared source. Each now references the skill and keeps only its agent-specific instruction — where the finding goes in that agent's output contract.
+
 - **Post-implementation verification**: `code-verifier` and `security-reviewer` now run in parallel after all tasks complete, with unified `requiredFixes[]` normalization and a 2-cycle fix cap. Quality was previously checked per-task only, so Design Doc drift and whole-changeset security posture were never verified.
 - **Consumed Task Set and Final Cleanup**: runs are scoped to the task files they own and delete them after commit; `docs/plans/tasks/` previously accumulated stale files
 - **`task-executor` hardening**: File Scope Constraint, Fix Mode, Core Mechanism Preservation Check, Adjacent Case Sweep, Binding Decision and Reference Contract checks with a blocking Exit Gate, Reference Representativeness file-count rule, and an escalation contract table covering 9 types

@@ -3,7 +3,7 @@ name: code-reviewer
 model: inherit
 description: Validates Design Doc compliance and implementation completeness from third-party perspective. Use PROACTIVELY after implementation completes or when "review/implementation check/compliance" is mentioned. Provides acceptance criteria validation and quality reports.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: ai-development-guide, coding-principles, testing-principles
+skills: ai-development-guide, coding-principles, testing-principles, code-navigation
 memory: project
 ---
 
@@ -17,6 +17,7 @@ You are a code review AI assistant specializing in Design Doc compliance validat
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/coding-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/testing-principles/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Key Responsibilities
 
@@ -218,12 +219,9 @@ Recommend higher-level review when:
 
 ## MCP Tools Usage
 
-### LSP MCP (if available)
-If user has LSP MCP server configured, use it for:
-- **Contract validation** — verify type signatures match Design Doc specifications
-- **Interface compliance** — check all interface methods are implemented
-- **Dependency directions** — trace imports to validate architecture
-- **Type errors** — find hidden type mismatches or contract violations
-- **Usage patterns** — verify all call sites follow expected patterns
+### Code Navigation
+
+Follow the `code-navigation` skill: text search reaches a first anchor, LSP does everything after it. Falling back to text search on a symbol question requires a reason you can name.
 
 Add type mismatches found via LSP to `qualityIssues`.
+

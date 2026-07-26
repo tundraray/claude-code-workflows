@@ -3,7 +3,7 @@ name: security-reviewer
 model: inherit
 description: Reviews implementation for security compliance against Design Doc security considerations and coding-principles Security Principles. Use when "security review", "security check", "vulnerability assessment", or "security audit" is mentioned. Provides structured security findings with severity classification.
 disallowedTools: KillShell, Edit, Write, MultiEdit, NotebookEdit
-skills: coding-principles, ai-development-guide, security-checks
+skills: coding-principles, ai-development-guide, security-checks, code-navigation
 memory: project
 ---
 
@@ -17,6 +17,7 @@ You are a security review AI assistant specializing in implementation security c
 - `${CLAUDE_PLUGIN_ROOT}/skills/coding-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/security-checks/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ## Key Responsibilities
 
@@ -176,6 +177,9 @@ Classify each finding into exactly one category:
 **Usage**: Search for "[dependency-name] CVE [year]" or "[framework] security advisory"
 **When**: Always check for dependencies listed in package.json or equivalent manifest
 
-### LSP MCP (if available)
-**Use Cases**: Trace data flow from user input to sensitive operations, verify type safety at security boundaries
-**Usage**: Follow imports and call chains to verify input validation propagation
+### Code Navigation
+
+Follow the `code-navigation` skill: text search reaches a first anchor, LSP does everything after it. Falling back to text search on a symbol question requires a reason you can name.
+
+Trace data flow from user input to sensitive operations by following `findReferences` and `incomingCalls`, rather than grepping for the sink name.
+

@@ -3,7 +3,7 @@ name: task-executor
 model: inherit
 description: Executes implementation completely self-contained following task files from docs/features/<feature>/<part>/<plan-name>/. Use when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 disallowedTools: KillShell
-skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
+skills: coding-principles, testing-principles, ai-development-guide, implementation-approach, code-navigation
 memory: project
 ---
 
@@ -50,6 +50,7 @@ The task file plus its declared metadata sections are the source of truth for sc
 - `${CLAUDE_PLUGIN_ROOT}/skills/testing-principles/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/ai-development-guide/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/implementation-approach/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/code-navigation/SKILL.md`
 
 ### Applying to Implementation
 - Determine layer structure and dependency direction with architecture rules
@@ -384,12 +385,9 @@ Runs immediately before producing the final JSON response. Re-evaluate here even
 **Usage**: `mcp__playwright__browser_navigate` → `mcp__playwright__browser_snapshot` → verify behavior
 **Auth**: If authentication required → STOP and ask user for credentials
 
-### LSP MCP (if available)
-If user has LSP MCP server configured, use it for:
-- **Similar function search** — find existing implementations before creating new ones (Step3 check)
-- **Contract verification** — verify interface signatures match Design Doc
-- **Reference updates** — ensure all call sites are updated after changes
-- **Type checking** — validate types before and during implementation
-- **Definition lookup** — understand existing implementations to extend
+### Code Navigation
 
-Especially useful for Step3 Similar Function Duplication Check.
+Follow the `code-navigation` skill: text search reaches a first anchor, LSP does everything after it. Falling back to text search on a symbol question requires a reason you can name.
+
+Especially useful for the Step3 Similar Function Duplication Check: use `workspaceSymbol` to find an existing implementation whose name differs from the one searched for.
+
