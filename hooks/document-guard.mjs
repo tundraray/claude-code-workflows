@@ -78,6 +78,18 @@ const RULES = [
 const WRITE_TOOLS = new Set(['Write', 'NotebookEdit']);
 const EDIT_TOOLS = new Set(['Edit', 'MultiEdit']);
 
+/**
+ * `agent_type` arrives bare (`prd-creator`) or plugin-scoped
+ * (`backend-overture:prd-creator`) depending on how the agent was resolved.
+ * Both forms name the same agent, so compare on the bare, lowercased name.
+ */
+const normalise = (a) => String(a).trim().split(':').pop().toLowerCase();
+
+/** Every agent named anywhere in the table — used to tell "wrong agent" from "unknown name". */
+const KNOWN_AGENTS = new Set(
+  RULES.flatMap((r) => [...r.authors, ...r.updaters]).map(normalise),
+);
+
 function decide(kind, toolName, agentType) {
   const rule = RULES.find((r) => r.test.test(kind));
   if (!rule) return null; // not a governed document
@@ -97,17 +109,30 @@ function decide(kind, toolName, agentType) {
     };
   }
 
-  const bare = agentType.includes(':') ? agentType.split(':').pop() : agentType;
+  const bare = normalise(agentType);
 
-  if (rule.authors.includes(bare)) return { decision: 'allow' };
+  if (rule.authors.some((a) => normalise(a) === bare)) return { decision: 'allow' };
 
-  if (rule.updaters.includes(bare)) {
+  if (rule.updaters.some((a) => normalise(a) === bare)) {
     if (isEdit) return { decision: 'allow' };
     return {
       decision: 'deny',
       reason: `${bare} may make targeted edits to this ${rule.name} `
         + `(progress checkboxes), but Write replaces the whole file. `
         + `Authoring it belongs to ${rule.authors.join(' or ')}. Use Edit, or escalate.`,
+    };
+  }
+
+  // An agent this guard has never heard of is not evidence of a violation — it
+  // is more likely a name arriving in a shape the table does not list. Denying
+  // here would block the legitimate owner over a labelling mismatch, so ask and
+  // report the observed value, which makes the mismatch diagnosable.
+  if (!KNOWN_AGENTS.has(bare)) {
+    return {
+      decision: 'ask',
+      reason: `${rule.name} is owned by ${rule.authors.join(' or ')}. `
+        + `The caller reports agent_type "${agentType}", which this guard does not recognise — `
+        + `confirm this is intended, and if the name is legitimate add it to hooks/document-guard.mjs.`,
     };
   }
 
