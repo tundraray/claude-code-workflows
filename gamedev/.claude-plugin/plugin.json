@@ -95,6 +95,8 @@
     "./skills/llm-friendly-context",
     "./skills/rule-editing-guide",
     "./skills/workflow-execution",
+    "./skills/workflow-orchestration",
+    "./skills/workflow-technical",
     "./skills/game-analysis-criteria"
   ],
   "mcpServers": "./.mcp.json"

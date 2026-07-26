@@ -16,6 +16,7 @@ argument-hint: (no arguments - reviews current implementation)
 
 Before executing, load these skill files for guidance:
 - `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-technical/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/documentation-criteria/SKILL.md`
 
 ## Execution Method

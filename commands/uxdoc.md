@@ -23,6 +23,7 @@ argument-hint: <UX feature or interaction description>
 
 Before executing, load these skill files for guidance:
 - `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-product/SKILL.md`
 
 ## Workflow Overview
 

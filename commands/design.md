@@ -23,6 +23,7 @@ argument-hint: <feature description>
 
 Before executing, load these skill files for guidance:
 - `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-technical/SKILL.md`
 
 ## Workflow Overview
 

@@ -437,3 +437,37 @@ skills:
       - "Stopping Autonomous Execution"
       - "Error-Fixing Impulse Control Protocol"
       - "Execution Flow"
+
+  workflow-product:
+    skill: "workflow-product"
+    tags: [requirements, prd, uxrd, product-scope, user-value, scale-determination, stop-points]
+    typical-use: "Requirement analysis, PRD creation and review, UXRD creation and review, product-phase stop points"
+    size: small
+    key-references:
+      - "Problem Before Solution"
+    sections:
+      - "Scope"
+      - "Flow"
+      - "Document Requirements by Scale"
+      - "Stop Points"
+      - "Requirement Changes"
+      - "Revision Loop"
+      - "Handoff to Technical"
+
+  workflow-technical:
+    skill: "workflow-technical"
+    tags: [technical-design, adr, design-doc, work-plan, batch-approval, fact-gathering, design-sync, test-skeletons]
+    typical-use: "ADR and Design Doc creation, codebase fact gathering, consistency verification, work plan creation and review up to batch approval"
+    size: medium
+    key-references:
+      - "Fact Disposition"
+      - "Authority Boundary"
+    sections:
+      - "Planner Parameter"
+      - "Flow"
+      - "Why Fact Gathering Precedes Design"
+      - "Document Requirements by Scale"
+      - "Stop Points"
+      - "Revision Loop"
+      - "Cross-Layer Sequencing"
+      - "Handoff to Execution"

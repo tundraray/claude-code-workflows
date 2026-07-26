@@ -23,7 +23,9 @@ argument-hint: <game feature or project description>
 ## Required Skills
 
 Before executing, load these skill files for guidance:
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-orchestration/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/workflow-gamedev/SKILL.md`
+- `${CLAUDE_PLUGIN_ROOT}/skills/workflow-technical/SKILL.md`
 - `${CLAUDE_PLUGIN_ROOT}/skills/workflow-execution/SKILL.md`
 
 ## Execution Decision Flow

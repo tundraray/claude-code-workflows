@@ -262,64 +262,25 @@ Criteria for timing when to call each agent:
 - **ux-designer**: Request updates according to UX/UI requirement changes → Execute document-reviewer for consistency check
 - **document-reviewer**: Always execute before user approval after PRD/ADR/UXRD/Design Doc creation/update
 
-## Basic Flow for Work Planning
+## Workflow Phases
 
-When receiving new features or change requests, start with requirement-analyzer.
-According to scale determination:
+This skill holds the mechanics shared by every phase. The phases themselves live in their own skills, so a change to one does not drag the others along:
 
-**Scale is not file count alone.** `task-analyzer` evaluates five axes — files, observable outcomes, contracts/data, boundaries, decision risk — and reports the highest scale any axis triggers, along with `scaleRationale.decidingAxis` naming which one decided it. Route on that reported scale, not on a file count you estimate yourself.
+| Phase | Skill | Answers | Ends at |
+|-------|-------|---------|---------|
+| Product | `workflow-product` | What to build and why | UXRD approval |
+| Technical | `workflow-technical` | How to build it | Batch approval |
+| Execution | `workflow-execution` | Doing it without asking | Completion report |
 
-When `decidingAxis` is anything other than `files`, state it at the confirmation stop point: "6 files but routed as Large because this is a breaking contract change" is information the user needs in order to approve or override the routing. When the axis is `unknown` and could raise the scale, resolve it before routing rather than defaulting to the lower flow — the lower flow skips documents the higher scale requires.
+Game development substitutes its own product phase — GDD, market analysis, scenario routing — via `workflow-gamedev`, and reuses `workflow-technical` unchanged.
 
-### Large Scale
-1. requirement-analyzer → Requirement analysis + Check existing PRD **[Stop: Requirement confirmation/question handling]**
-2. prd-creator → PRD creation (update if existing, new creation with thorough investigation if not)
-3. document-reviewer → PRD review **[Stop: PRD Approval]**
-4. ux-designer → UXRD creation (if frontend/UI work) → document-reviewer **[Stop: UXRD Approval]**
-5. technical-designer(-frontend) → ADR creation (if architecture changes, new technology, or data flow changes)
-6. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
-7. [Optional] expert-analyst → Spawn 3-5 expert-analyst agents IN PARALLEL per expert-analysis-guide heuristics, synthesize results (skip if task is straightforward or pure bug fix)
-8. codebase-analyzer (and ui-analyzer for frontend/UI work) → Read-only fact gathering → `focusAreas`
-9. technical-designer(-frontend) → Design Doc creation (consume `focusAreas` into the Fact Disposition Table; include expert analysis synthesis if performed)
-10. document-reviewer → Design Doc review
-11. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-12. acceptance-test-generator → Integration and E2E test skeleton generation
-    → Orchestrator: Verify generation, then pass information to work-planner (*1)
-13. work-planner → Work plan creation (including integration and E2E test information)
-14. document-reviewer → Work plan review (traceability to Design Doc, Failure Mode Checklist coverage) **[Stop: Batch approval for entire implementation phase]**
-15. **Start autonomous execution mode**: task-decomposer → Execute all tasks
-16. Post-Implementation Verification → code-verifier + security-reviewer IN PARALLEL (pass/fail criteria and 2-cycle fix cap in that section)
-17. Final Cleanup → Delete consumed task files
-18. Completion report
-
-### Medium Scale
-1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
-2. [Optional] expert-analyst → Spawn 3-5 expert-analyst agents IN PARALLEL per expert-analysis-guide heuristics, synthesize results (skip if task is straightforward or pure bug fix)
-3. ux-designer → UXRD creation (if frontend/UI work) → document-reviewer **[Stop: UXRD Approval]**
-4. codebase-analyzer (and ui-analyzer for frontend/UI work) → Read-only fact gathering → `focusAreas`
-5. technical-designer(-frontend) → Design Doc creation (consume `focusAreas` into the Fact Disposition Table; include expert analysis synthesis if performed)
-6. document-reviewer → Design Doc review
-7. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-8. acceptance-test-generator → Integration and E2E test skeleton generation
-   → Orchestrator: Verify generation, then pass information to work-planner (*1)
-9. work-planner → Work plan creation (including integration and E2E test information)
-10. document-reviewer → Work plan review (traceability to Design Doc, Failure Mode Checklist coverage) **[Stop: Batch approval for entire implementation phase]**
-11. **Start autonomous execution mode**: task-decomposer → Execute all tasks
-12. Post-Implementation Verification → code-verifier + security-reviewer IN PARALLEL (pass/fail criteria and 2-cycle fix cap in that section)
-13. Final Cleanup → Delete consumed task files
-14. Completion report
-
-### Small Scale
-1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
-2. **Start autonomous execution mode**: Direct implementation → Completion report
+**Load the phase skill for the phase you are in.** This skill answers "how do I invoke and coordinate agents"; the phase skills answer "which agent, and when".
 
 ## Autonomous Execution Mode
 
-Everything that happens after batch approval — entry conditions, the per-task cycle, commit strategies, post-implementation verification, final cleanup, auto-stop triggers, and the error-fixing protocol — is governed by the **`workflows`** skill.
+Everything after batch approval — entry conditions, the per-task cycle, commit strategies, post-implementation verification, final cleanup, auto-stop triggers, and the error-fixing protocol — is governed by `workflow-execution`.
 
 Load `${CLAUDE_PLUGIN_ROOT}/skills/workflow-execution/SKILL.md` before entering autonomous mode.
-
-This guide stops at the batch-approval gate: it decides *which* subagent runs *when* and which documents gate each phase. The `workflow-execution` skill decides how the loop behaves once no one is asked for permission any more.
 
 ## Metacognitive TodoWrite Integration
 

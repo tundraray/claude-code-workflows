@@ -71,6 +71,8 @@
     "./skills/project-context",
     "./skills/workflow-orchestration",
     "./skills/workflow-execution",
+    "./skills/workflow-product",
+    "./skills/workflow-technical",
     "./skills/task-analyzer",
     "./skills/technical-spec",
     "./skills/testing-principles",
